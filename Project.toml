@@ -3,6 +3,10 @@ uuid = "12e721be-0bcd-11ea-03f3-d9a62b570b99"
 authors = ["Sam Dierickx"]
 version = "0.1.0"
 
+[deps]
+Documenter = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
+Kronecker = "2c470bb0-bcc8-11e8-3dad-c9649493f05e"
+
 [compat]
 julia = "1"
 
