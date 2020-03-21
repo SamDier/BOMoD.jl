@@ -4,6 +4,6 @@
 
 
 
- ```julia
+ ```Julia
 using BOMoD
  ```
