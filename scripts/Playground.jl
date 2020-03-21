@@ -1,4 +1,4 @@
-using BoMod
+
 #include("Combinatroics.jl")
 
 # construct moduels
@@ -9,7 +9,7 @@ mt_b = Mod("b")
 mt_c = Mod("c")
 mt_d = Mod("d")
 
-Group_Mod([mt_b,mt_a,mt_c,mt_c])
+Group_Mod([Mod("a"),Mod("b"),Mod("c"),Mod("d")])
 
 mt_Symbol_array = group_mod([:sym, :sym1, :sym3])
 mt_String_array = group_mod(["a", "b", "c", "d","e"])

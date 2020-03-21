@@ -31,3 +31,11 @@ If the full design space is generated, Construct saved in AbstractArray
 struct Computed_Space{T} <: Eff_Space{T}
     space::T
 end
+
+
+"""
+    func(x)
+
+Returns double the number `x` plus `1`.
+"""
+func(x) = 2x + 1

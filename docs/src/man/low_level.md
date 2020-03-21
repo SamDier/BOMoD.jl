@@ -1,8 +1,5 @@
-
 # Low level interface
 
-
-
-```@doc
-
+```@docs
+func(x)
 ```

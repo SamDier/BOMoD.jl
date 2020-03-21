@@ -1,6 +1,5 @@
-
-## Step 1) Generated Design space
-
+# Step 1) Generated Design space
+## Intro
 ### Some Key concepts
 Start of Combinatorial problem terms need to be clarified
 1) **A module:** A single element with no given features
@@ -23,27 +22,36 @@ Multiple modules are needed to make a constructs and can be grouped. T
 Modules can be a group in different ways, all result should be equal.
 
 1) Group modules of an array of
-    ```julia
+
+```
     md_group = Group_Mod([Mod("a"),Mod("b"),Mod("c"),Mod("d"),Mod("e")])
-    ```
+```
 2) sum different modules
-    ```julia
+```
     md_group2 = Mod("a") + Mod("b") + Mod("c") + Mod("d") + Mod("e")
-    ```
+```
 3) group module function: Array{T} where T is an Symbol or String
 
-    ```julia
+```
     md_group3 = group_mod(["a", "b", "c", "d","e"])
-    ```
+```
 Addionally the grouped modules are ordered to have reproducible results and Duplicated modules are removed. As example:
 
-```julia
+```
 md_group4 = group_mod(["b", "c", "a", "d","e","e"])
 ```
-All the above code will result in the same Groupstructurde
 
-```@repl
+All the above code will result in the same Groupstruct
+
+```@example
+    using BOMoD
     md_group4 = group_mod(["b", "c", "a", "d","e","e"])
     md_group = group_mod(["a", "b", "c", "d","e"])
 ```
-@repl
+
+teste 123
+```@example
+a = 1
+b = 2
+a + b
+```

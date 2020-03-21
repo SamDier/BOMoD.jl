@@ -5,6 +5,8 @@ export construct_ordered_design
 export No_Constrain, Ordered_Constrain, UnOrdered_Constrain, Possition_Constrain
 export Ordered_Construct, Unordered_Construct
 export Frame_Space,Computed_Space,Full_Ordered_space
+export func
+
 
 using Kronecker
 import Base: +, *, getindex,length, eltype

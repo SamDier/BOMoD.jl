@@ -34,6 +34,7 @@ Base.:+(des1::Multi_Design{T} where T, des2::Multi_Design{N} where N) = Multi_De
 
 
 """
+
 ordered space is where the possition in the construct has a functional role, the construct [a,b,c] is different compeared to [c,b,a].
 In the General case all every module can be used infinted times.
 Arguments:
@@ -48,6 +49,8 @@ struct Ordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: Abs
     con::Tcon
     space:: Tspace
 end
+
+
 """
 genaral space generator
 """
