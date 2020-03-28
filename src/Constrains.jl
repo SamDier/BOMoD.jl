@@ -42,11 +42,10 @@ end
 # add two  space Constrains
 Base.:+(con1::N  ,con2::N ) where N <: Single_Space_Constrains{T} where T = Compose_Space_Constrain([con1,con2])
 # add to compose constrainse
-Base.:+(con1::Compose_Space_Constrain,con2::Single_Space_Constrains) = Compose_Space_Constrain([con1.space_con...,con2])
-Base.:+(con1::Single_Space_Constrains,con2::Compose_Space_Constrain) = Compose_Space_Constrain([con2.space_con...,con1])
-# allow multipe somations
-#+(con1::Space_Constrains,con2::Space_Constrains...) = +(con1,+(con2...))
-Base.:+(con1::Compose_Space_Constrain,con2::Compose_Space_Constrain)  = Compose_space_Constrains([con1.space_con...,con2.space_con...])
+Base.:+(con1::Compose_Space_Constrain,con2::Single_Space_Constrains) = Compose_Space_Constrain([con1.space_con;con2])
+Base.:+(con1::Single_Space_Constrains,con2::Compose_Space_Constrain) = Compose_Space_Constrain([con2.space_con;con1])
+
+Base.:+(con1::Compose_Space_Constrain,con2::Compose_Space_Constrain)  = Compose_space_Constrains([con1.space_con;con2.space_con])
 
 
 abstract type Construct_Constrains{T} <: Element_Constrains{T} end
@@ -69,9 +68,9 @@ end
 
 
 Base.:+(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains) = Compose_Construct_Constrains([con1,con2])
-Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains) = Compose_Construct_Constrains([con1.construct_con...,con2])
+Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains) = Compose_Construct_Constrains([con1.construct_con;con2])
 Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains) = +(con2,con1)
-Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N) = Compose_Construct_Constrains([con1.construct_con...,con2.construct_con...])
+Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N) = Compose_Construct_Constrains([con1.construct_con;con2.construct_con;])
 
 
 #+(con1::Construct_Constrains,con2::Construct_Constrains...) = +(con1,+(con2...))

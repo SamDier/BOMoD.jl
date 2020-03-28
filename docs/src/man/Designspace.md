@@ -54,8 +54,8 @@ All the above code will result in the same Groupstruct
     md_group4 = group_mod(["b", "c", "a", "d","e","e"])
     md_group = group_mod(["a", "b", "c", "d","e"])
 ```
-
 ### Constrains
+
 The hierarchy used corresponds to the types of hierarchy in the packages.
 1)**Construct constrains**
 	a)**Single**
@@ -63,9 +63,9 @@ The hierarchy used corresponds to the types of hierarchy in the packages.
 		**  Unordered **
 	b) **Compese Constrain
 2)**Space** constraints
-	**Single Constrain
+	**Single Constrain**
 		**Position**
-    	**Compose Constrain
+    	**Compose Constrain**
 
 
 Constrains are split into two large types
@@ -87,4 +87,4 @@ Currently, 3 single con constraints are defined:
 2) Unordered constrains
 
 
-##### Compse 
+##### Compse

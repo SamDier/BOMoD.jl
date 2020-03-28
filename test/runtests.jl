@@ -1,6 +1,10 @@
-using BOMoD
-using Test
 
-@testset "BOMoD.jl" begin
-    # Write your own tests here.
+using Test
+using BOMoD
+
+@testset "BoMod" begin
+    include("Mod_test.jl")
+    include("Filter_test.jl")
+    include("Space_test.jl")
+    include("Constrain_test.jl")
 end

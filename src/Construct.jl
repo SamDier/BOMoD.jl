@@ -16,11 +16,12 @@ end
 #*(m2::Moduels{<:T} where T  ,m1::AbstractArray{N} where N <: Moduels{<:T} where T) = [m1... , m2]
 
 # Moduels * Moduels
-*(m1::Mod{<:T} where T,m2::Mod{<:T} where T) = Ordered_Construct([m1  m2])
+*(m1::Mod,m2::Mod) = Ordered_Construct([m1  m2])
 
 # Moduels * multi_construct
-*(m1::Ordered_Construct{N} where N <: AbstractArray{<:T} where T ,m2::Mod{<:T} where T) = Ordered_Construct([m1.c...  m2])
-*(m2::Mod{<:T} where T ,  m1::Ordered_Construct{N} where N <: AbstractArray{<:T} where T) = Ordered_Construct([m1.c...  m2])
+*(m1::Ordered_Construct ,m2::Mod) = Ordered_Construct([m1.c...  m2])
+*(m2::Mod,  m1::Ordered_Construct) = Ordered_Construct([m1.c...  m2])
 
 Base.getindex(Construct::Ordered_Construct,i) = Construct.c[i]
 Base.length(Construct::AbstractConstruct) = length(Construct.c)
+Base.isequal(c1::AbstractConstruct,c2::AbstractConstruct) = c1.c == c2.c

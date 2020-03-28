@@ -25,18 +25,27 @@ end
 Group_Mod_test = Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e])
 Group_Mod_test_order = Group_Mod([mt_b,mt_a,mt_c,mt_d,mt_e,mt_c])
 
-@testset "group_mod" begin
-    @test group_mod(["b", "a", "c","c","e","d"]).m == Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e]).m
-    @test group_mod(["b", "a","c","c","e","d","e","f"]) == Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e]).m
-end
-
-mt_String_array = group_mod(["b", "a", "c","c","e","d"])
-
 @testset "Group_mod" begin
-    @test mt_String_array.m == Group_Mod_test.m
     @test Group_Mod_test_order.m == Group_Mod_test.m
     @test sum([mt_a mt_b mt_c mt_d mt_e]).m == Group_Mod_test.m
     @test (mt_a + mt_b).m == Group_Mod([mt_a,mt_b]).m
+end
+
+@testset "group_mod" begin
+    @test group_mod(["b", "a", "c","c","e","d"]).m == Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e]).m
+    @test group_mod([:b, :a, :c,:c,:e,:d]).m == Group_Mod([Mod(:a),Mod(:b),Mod(:c),Mod(:d),Mod(:e)]).m
+end
+
+mt_String_array = group_mod(["b", "a", "c","c","e","d"])
+@testset "length" begin
+    @test length(mt_String_array) == 5
+    @test length(Mod("a")) == 1
+end
+
+@testset "isless" begin
+    @test isless(Mod(:b),Mod(:a)) == false
+    @test isless(Mod(:c),Mod(:e)) == true
+    @test isless(Mod("a"),Mod("begin")) == true
 end
 
 end
