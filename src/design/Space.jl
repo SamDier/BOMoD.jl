@@ -1,4 +1,6 @@
 import Base: getindex,iterate
+using Random: AbstractRNG
+
 abstract type AbstractSpace{T} end
 
 

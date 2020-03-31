@@ -6,7 +6,7 @@ module BOMoD
     using LinearAlgebra
 
     import Base: +, *, getindex,length, eltype
-    import Stheno ew, pw,Kernel
+    import Stheno: ew, pw,Kernel
 
     export Mod, Group_Mod , group_mod
     export construct_ordered_design
@@ -19,10 +19,10 @@ module BOMoD
 
 
     # include construction of space
-    include(joinpath("desing", "Mod.jl"))
-    include(joinpath("desing", "Constrains.jl"))
-    include(joinpath("desing", "Space.jl"))
-    include(joinpath("desing", "Construct.jl"))
+    include(joinpath("design", "Mod.jl"))
+    include(joinpath("design", "Constrains.jl"))
+    include(joinpath("design", "Space.jl"))
+    include(joinpath("design", "Construct.jl"))
     include(joinpath("BO", "Hyper_opt.jl"))
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "TS_sampeling.jl"))
