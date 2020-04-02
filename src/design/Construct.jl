@@ -1,4 +1,4 @@
-import Base: *,+,getindex
+#import Base: *,+,getindex
 
 abstract type AbstractConstruct{T} end
 
@@ -21,7 +21,19 @@ end
 # Moduels * multi_construct
 *(m1::Ordered_Construct ,m2::Mod) = Ordered_Construct([m1.c...  m2])
 *(m2::Mod,  m1::Ordered_Construct) = Ordered_Construct([m1.c...  m2])
-
+Base.eltype(::Ordered_Construct{T}) where T = T
 Base.getindex(Construct::Ordered_Construct,i) = Construct.c[i]
 Base.length(Construct::AbstractConstruct) = length(Construct.c)
+
+
+function Base.iterate(Construct::Ordered_Construct,state=1)
+    if  state <= length(Construct)
+        mod = Construct[state]
+        state += 1
+        return (mod,state)
+    else
+        return
+    end
+end
+
 Base.isequal(c1::AbstractConstruct,c2::AbstractConstruct) = c1.c == c2.c

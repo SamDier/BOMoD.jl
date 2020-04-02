@@ -1,5 +1,5 @@
-import Base: *,+,push!,split
-using Base
+#import Base: *,+,push!,split
+
 
 """
 Abstract type for a moduele of type T

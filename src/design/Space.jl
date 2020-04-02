@@ -1,5 +1,5 @@
-import Base: getindex,iterate
-using Random: AbstractRNG
+#import Base: getindex,iterate
+#using Random: AbstractRNG
 
 abstract type AbstractSpace{T} end
 
@@ -112,9 +112,6 @@ function Base.length(space::Frame_Space)
       @info " $y is the maximual length (no constrains) , no effienct length calculation, generated construct for exact length"
       return length(space.space)
 end
-
-
-
 
 
 """

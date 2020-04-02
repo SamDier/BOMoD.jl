@@ -8,7 +8,7 @@ The kernel for of the levensteindistance
 """
 
 struct LevStehnoexp{T} <: Kernel
-    s ::T
+    s::T
 end
 
 
