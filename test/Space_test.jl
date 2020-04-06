@@ -23,7 +23,7 @@
     test_space = first_design.space
     rng = MersenneTwister()
     n_samples = rand(1:20)
-    a_sample = sample(rng,test_space,n_samples, with_index = false)
+    a_sample = StatsBase.sample(rng,test_space,n_samples, with_index = false)
 
     @testset "sample_with_index = false " begin
         @test size(a_sample)[1] == n_samples

@@ -11,8 +11,9 @@ module BOMoD
     import Stheno: ew,pw,Kernel
     import LinearAlgebra: norm, eigvals!
     import Optim: minimizer
+    import StatsBase: sample
 
-    export Mod, Group_Mod , group_mod
+    export Mod, Group_Mod , group_mod ,getspace
     export construct_ordered_design
     export No_Constrain, Ordered_Constrain, UnOrdered_Constrain, Possition_Constrain
     export Ordered_Construct, Unordered_Construct

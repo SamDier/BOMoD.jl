@@ -1,7 +1,8 @@
 
 using Test
 using BOMoD
-
+using Random
+using StatsBase
 @testset "BoMod" begin
     include("Mod_test.jl")
     include("Filter_test.jl")
