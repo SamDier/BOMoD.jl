@@ -75,7 +75,7 @@ function Base.iterate(space::Eff_Space, state = 1 )
     end
 end
 
-function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=true, ordered::Bool=false)
+function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
     index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
     if with_index
         return [[space.space[i] for i in index]  index]
@@ -84,15 +84,15 @@ function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; 
     end
 end
 
-StatsBase.sample!(a::Eff_Space, x::AbstractArray; with_index::Bool = false, replace::Bool=true, ordered::Bool=false) =
+StatsBase.sample!(a::Eff_Space, x::AbstractArray; with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
     sample!(Random.GLOBAL_RNG, a, x; whit_index = with_index, replace=replace, ordered=ordered)
 
 function StatsBase.sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,
-                replace::Bool=true, ordered::Bool=false)
+                replace::Bool=false, ordered::Bool=false)
     sample!(rng, a, Vector{Int}(undef, n); with_index = with_index, replace=replace, ordered=ordered)
 end
 
-StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Bool=true, ordered::Bool=false) =
+StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
     sample(Random.GLOBAL_RNG, a, n; whit_index = with_index, replace=replace, ordered=ordered)
 
 
