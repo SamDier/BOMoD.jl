@@ -13,7 +13,7 @@ module BOMoD
 
     import Base: +, *, getindex,length, eltype
     import Stheno: ew,pw,Kernel
-    import LinearAlgebra: norm, eigvals!
+    import LinearAlgebra: norm, eigvals!, Diagonal
     import Optim: minimizer
     import StatsBase: sample
 

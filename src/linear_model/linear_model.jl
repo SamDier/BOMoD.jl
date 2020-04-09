@@ -56,6 +56,7 @@ Calculates the true value of a construct given the Toy Data set.
 """
 
 ground_truth(construct,Toy_data) = sum([Toy_data[mod] for mod in construct])
+
 """
 _eval_con(rng,construct,Toy_data,sigma,repeat)
 
