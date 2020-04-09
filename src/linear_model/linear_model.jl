@@ -166,6 +166,7 @@ Function you probably don't need.
 """
 
 function model_linear(design,n_first,n_samples,Toy_data,n_cycles)
+    rng = MersenneTwister()
     # to save the output
     max_model = Vector{Float64}(undef,n_cycles)
     #first steps
@@ -197,6 +198,7 @@ model_random(design,n_first,n_samples,Toy_data,n_cycles)
 Simple random model to use as a baseline to compear with other models.
 """
 function model_random(design,n_first,n_samples,Toy_data,n_cycles)
+    rng = MersenneTwister()
     max_random = Vector{Float64}(undef,n_cycles)
     #first steps
     space = getspace(design)
@@ -222,7 +224,7 @@ update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
 Linear model that updates the posterior in every cycle
 """
 function update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
-    # to save the output
+    rng = MersenneTwister()    # to save the output
     max_model = Vector{Float64}(undef,n_cycles)
     #first steps
     space = getspace(design)
