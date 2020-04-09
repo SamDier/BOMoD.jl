@@ -53,7 +53,7 @@ abstract type Construct_Constrains{T} <: Element_Constrains{T} end
 struct Compose_Construct_Constrains{T} <: Construct_Constrains{T}
     construct_con :: AbstractArray{T}
 end
-
+Base.eltype(K::Compose_Construct_Constrains{T}) where {T} = T;
 abstract type Single_Construct_Constrains{T} <: Construct_Constrains{T} end
 
 struct UnOrdered_Constrain{T} <: Single_Construct_Constrains{T}

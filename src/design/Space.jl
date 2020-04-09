@@ -47,22 +47,9 @@ The full design space isn't constucted explisitly. The Eff frame space suggest t
 
 abstract type Eff_Space{T}  <: AbstractSpace{T} end
 
-"""
-Struct for ordered space without contrains to allow
-"""
-struct Full_Ordered_space{T}<: Eff_Space{T}
-    space::T
-end
 Base.eltype(::Type{Eff_Space{T}}) where {T} = eltype(T)
-"""
-If the full design space is generated, Construct saved in AbstractArray
-"""
-struct Computed_Space{T} <: Eff_Space{T}
-    space::T
-end
-
 Base.getindex(space::Eff_Space,i::Int) = space.space[i]
-Base.eltype(::Eff_Space) = Ordered_Construct{T} where T
+Base.getindex(space::Eff_Space,A::Array) = map(i -> space.space[i], A)
 Base.length(space::Eff_Space) = length(space.space)
 
 function Base.iterate(space::Eff_Space, state = 1 )
@@ -75,25 +62,35 @@ function Base.iterate(space::Eff_Space, state = 1 )
     end
 end
 
-function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
-    index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
-    if with_index
-        return [[space.space[i] for i in index]  index]
-    else
-        return ([space.space[i] for i in index])
-    end
+
+"""
+Struct for ordered space without contrains to allow
+"""
+struct Full_Ordered_space{T}<: Eff_Space{T}
+    space::T
 end
 
-StatsBase.sample!(a::Eff_Space, x::AbstractArray; with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
-    sample!(Random.GLOBAL_RNG, a, x; whit_index = with_index, replace=replace, ordered=ordered)
 
-function StatsBase.sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,
-                replace::Bool=false, ordered::Bool=false)
-    sample!(rng, a, Vector{Int}(undef, n); with_index = with_index, replace=replace, ordered=ordered)
+"""
+Struct for Unordered space without contrains to allow
+"""
+struct Full_Unordered_space{T}<: Eff_Space{T}
+    space::T
 end
 
-StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
-    sample(Random.GLOBAL_RNG, a, n; whit_index = with_index, replace=replace, ordered=ordered)
+
+
+"""
+If the full design space is generated, Construct saved in AbstractArray
+"""
+struct Computed_Space{T} <: Eff_Space{T}
+    space::T
+end
+
+
+
+
+
 
 
 """
