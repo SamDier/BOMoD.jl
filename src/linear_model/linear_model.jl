@@ -122,6 +122,13 @@ function BO_Lin_wrapper(f_post,constructs,activities,sigma,moduels)
     Σ_noise = Diagonal(sigma)
     return BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
 end
+"""
+make_predictions(Unseen_space, mod)
+
+Wrapper function to make predictions using the model
+
+"""
+make_predictions(Unseen_space, mod) = mean.(marginals(Model_output(transpose(design_maxtrix(Unseen_space ,mod)),eps())))
 
 """
 Linear_TS_sampling(f,moduels,constructs,n_samples,σ² = 10^-6)
