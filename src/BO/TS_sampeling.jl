@@ -1,6 +1,6 @@
 #Sampling methods
 """
-    thompson_sampling(f, x::AbstractVector,n_samples, σ²)
+thompson_sampling(f, x::AbstractVector,n_samples, σ²)
 Brute force thompson sampling over the inter undiscovered search space.
 """
 
