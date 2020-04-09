@@ -128,7 +128,7 @@ make_predictions(Unseen_space, mod)
 Wrapper function to make predictions using the model
 
 """
-make_predictions(Unseen_space, mod) = mean.(marginals(Model_output(transpose(design_maxtrix(Unseen_space ,mod)),eps())))
+make_predictions(Model_output,Unseen_space, mod) = mean.(marginals(Model_output(transpose(design_maxtrix(Unseen_space ,mod)),eps())))
 
 """
 Linear_TS_sampling(f,moduels,constructs,n_samples,σ² = 10^-6)
