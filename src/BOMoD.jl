@@ -7,6 +7,7 @@ module BOMoD
     using Random
     using Statistics
     using Distributions
+    using DataFrames
     using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
 
 
