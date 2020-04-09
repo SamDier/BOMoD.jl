@@ -5,6 +5,10 @@ module BOMoD
     using Stheno
     using Optim
     using Random
+    using Statistics
+    using Distributions
+    using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
+
 
 
     import Base: +, *, getindex,length, eltype
@@ -13,8 +17,9 @@ module BOMoD
     import Optim: minimizer
     import StatsBase: sample
 
+
     export Mod, Group_Mod , group_mod ,getspace
-    export construct_ordered_design
+    export construct_design
     export No_Constrain, Ordered_Constrain, UnOrdered_Constrain, Possition_Constrain
     export Ordered_Construct, Unordered_Construct
     export Frame_Space,Computed_Space,Full_Ordered_space
@@ -30,9 +35,12 @@ module BOMoD
     include(joinpath("design", "Construct.jl"))
     include(joinpath("design", "Design_space.jl"))
     include(joinpath("design", "Sample.jl"))
+    include(joinpath("design", "Combinatroics.jl"))
+    #BO
     include(joinpath("BO", "Hyper_opt.jl"))
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "TS_sampeling.jl"))
+    #linear_model
     include(joinpath("linear_model", "linear_model.jl"))
 
 end # module
