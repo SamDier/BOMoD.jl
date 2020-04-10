@@ -33,6 +33,12 @@ version = "0.2.4"
 [[Base64]]
 uuid = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 
+[[BayesianLinearRegressors]]
+deps = ["Distributions", "FDM", "IRTools", "LinearAlgebra", "Random", "Statistics", "Test", "Zygote"]
+git-tree-sha1 = "1c0f2f2ce6203ce4bcf0609d5f53697dbe0f6d24"
+uuid = "f579363c-4606-5e5c-a623-c4549f609c4b"
+version = "0.1.0"
+
 [[BinaryProvider]]
 deps = ["Libdl", "SHA"]
 git-tree-sha1 = "5b08ed6036d9d3f0ee6369410b830f8873d4024c"
@@ -168,6 +174,12 @@ deps = ["Base64", "Dates", "DocStringExtensions", "InteractiveUtils", "JSON", "L
 git-tree-sha1 = "3bacd94d853a6bccaee1d0104d8b06d29a7506ac"
 uuid = "e30172f5-a6a5-5a46-863b-614d45cd2de4"
 version = "0.24.6"
+
+[[FDM]]
+deps = ["LinearAlgebra", "Printf"]
+git-tree-sha1 = "51f56372090c3af1ce784610c5cf3c4c224563e4"
+uuid = "e25cca7e-83ef-51fa-be6c-dfe2a3123128"
+version = "0.6.1"
 
 [[FFMPEG]]
 deps = ["FFMPEG_jll"]
