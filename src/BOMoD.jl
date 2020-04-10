@@ -8,6 +8,7 @@ module BOMoD
     using Statistics
     using Distributions
     using DataFrames
+    using Plots
     using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
 
 
