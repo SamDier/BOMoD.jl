@@ -178,7 +178,7 @@ function model_linear(design,n_first,n_samples,Toy_data,n_cycles)
     Unseen_space = getspace(design,full = true).space
     for i in 1:n_cycles
         # make model
-        Model_output = BO_Lin_wrapper(df.constructs,df.μ,df.σ,mod)
+        Model_output = BO_Lin_wrapper(df.constructs,df.μ,df.σ,design.mod)
         # filter space
         Unseen_space = filter(x-> !(x in new_constructs) , Unseen_space)
         #sample with TS
@@ -240,7 +240,7 @@ function update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
     for i in 1:n_cycles
         # make model, update prior and only use new data points
         if i == 1
-            model_vector[1] = BO_Lin_wrapper(df.constructs,df.μ,df.σ,mod)
+            model_vector[1] = BO_Lin_wrapper(df.constructs,df.μ,df.σ,design.mod)
         else
             model_vector[1] = BO_Lin_wrapper(model_vector[1],df_new_vector[1].constructs,df_new_vector[1].μ,df_new_vector[1].σ,mod)
         end
