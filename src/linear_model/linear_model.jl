@@ -182,7 +182,7 @@ function model_linear(design,n_first,n_samples,Toy_data,n_cycles)
         # filter space
         Unseen_space = filter(x-> !(x in new_constructs) , Unseen_space)
         #sample with TS
-        new_constructs = Linear_TS_sampling(Model_output,mod,Unseen_space,n_samples)
+        new_constructs = Linear_TS_sampling(Model_output,design.mod,Unseen_space,n_samples)
         #evaluated new points
         lab_μ,lab_σ = go2lab(rng,new_constructs,Toy_data);
         new_df = DataFrame(constructs = new_constructs, μ = lab_μ, σ = lab_σ)
@@ -242,12 +242,12 @@ function update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
         if i == 1
             model_vector[1] = BO_Lin_wrapper(df.constructs,df.μ,df.σ,design.mod)
         else
-            model_vector[1] = BO_Lin_wrapper(model_vector[1],df_new_vector[1].constructs,df_new_vector[1].μ,df_new_vector[1].σ,mod)
+            model_vector[1] = BO_Lin_wrapper(model_vector[1],df_new_vector[1].constructs,df_new_vector[1].μ,df_new_vector[1].σ,design.mod)
         end
         # filter space
         Unseen_space = filter(x-> !(x in new_constructs) , Unseen_space)
         #sample with TS
-        new_constructs = Linear_TS_sampling(model_vector[1],mod,Unseen_space,n_samples)
+        new_constructs = Linear_TS_sampling(model_vector[1],design.mod,Unseen_space,n_samples)
         #evaluated new points
         lab_μ,lab_σ = go2lab(rng,new_constructs,Toy_data);
         df_new_vector[1] = DataFrame(constructs = new_constructs, μ = lab_μ, σ = lab_σ)
