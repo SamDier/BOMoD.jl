@@ -13,7 +13,7 @@ struct Combination{T} <: Combinatroics{T}
 end
 Base.length(c::Combination) = binomial(length(c.mod),c.len);
 Base.size(c::Combination) = (length(c),1);
-Base.eltype(K::Combination{T}) where {T} = T;
+Base.eltype(K::Combination{T}) where {T} = Unordered_Construct;
 
 
 """
