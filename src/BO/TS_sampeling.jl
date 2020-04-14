@@ -38,3 +38,27 @@ function save_thompson_sampling(f_post, constructs_test::AbstractVector,n_sample
     end
     return nextsample
 end
+
+
+#Sampling methods
+"""
+thompson_sampling(f, x::AbstractVector,n_samples, σ²)
+Brute force thompson sampling over the inter undiscovered search space.
+"""
+
+function thompson_sampling_fast(f, x::AbstractVector,
+                n_samples, σ²)
+    @assert length(x) ≥ n_samples
+
+    # indices selected
+    selected = Int[]
+    all_test = copy(x)
+    Ndist = f(all_test, σ²)
+    f̂_matrix = rand(Ndist,n_samples)
+    for n in eachcol(f̂_matrix)
+        n[selected]  .= - Inf
+       i = argmax(n)
+       push!(selected, i)
+   end
+   return (x[selected],selected)
+end
