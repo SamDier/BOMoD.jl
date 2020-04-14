@@ -1,6 +1,6 @@
 using Test
 using BOMoD
-using BOMoD: filter_constrain
+using BOMoD: filter_constrain, Combination, Compose_Construct_Constrains
 using Random
 using StatsBase
 
