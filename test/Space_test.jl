@@ -19,7 +19,7 @@
         #@test eltype(test_space) == Ordered_Construct
     end
 
-    first_design =construct_design(mt_String_array,3)
+    first_design =construct_design(mt_String_array,3,order=true)
     test_space = first_design.space
     rng = MersenneTwister()
     n_samples = rand(1:20)
