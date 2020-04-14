@@ -8,7 +8,7 @@ Abstract type for a moduele of type T
 abstract type AbstractMod{T} end
 
 """
-Structure to store a specific module fo type{T}
+Structure to store a specific modules fo type{T}
 """
 
 # problem input as array in unique gives an error if dims = 2 not added... ne
@@ -25,6 +25,11 @@ struct Group_Mod{N <: Mod{T} where T} <: AbstractMod{N}
     Group_Mod(m) =  m |> Set |> collect |> sort |> (y -> new{eltype(m)}(y))
 end
 
+"""
+group_mod(input::Array{T} where T)
+
+function to input the user diffient moduels
+"""
 group_mod(input::Array{T} where T) = Group_Mod([Mod(newmod) for newmod in input])
 
 function Base.iterate(Group::Group_Mod,state =1 )
