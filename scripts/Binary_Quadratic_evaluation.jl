@@ -19,7 +19,7 @@ mod1 = Mod(Symbol(1))
 all_moduels = Group_Mod([mod0,mod1])
 σ²_mean = 10^-6
 # the design
-design = construct_ordered_design(all_moduels,lenght_c)
+design = construct_design(all_moduels,lenght_c)
 # the space
 space = BOMoD.getspace(design)
 

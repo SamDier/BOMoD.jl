@@ -11,12 +11,12 @@ rng = MersenneTwister(1)
 # make binary moduels
 mod0 = Mod(Symbol(0))
 mod1 = Mod(Symbol(1))
-lenght_c = 10
+lenght_c = 5
 # no constrains model of lenght 10, not all constructs are generated
 all_moduels =Group_Mod([mod0,mod1])
 σ²_mean = 10^-6
 # the design
-design = construct_ordered_design(all_moduels,lenght_c)
+design = construct_design(all_moduels,lenght_c,order = true)
 # the space
 a_space = BOMoD.getspace(design)
 
@@ -31,8 +31,8 @@ const Q = compute_decay(rng,lenght_c,Lc)
 
 # first sampling step
 
-points = sample(rng,a_space,20,with_index = true )
-
+points = sample(rng,a_space,10,with_index = true )
+unpackconstruct(points[:,1][1])
 #get y_train values
 # zet up the generated data
 y_train = map(x -> unpackconstruct(x) |> (x -> quad(x,Q,λ)),points[:,1])
