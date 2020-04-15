@@ -149,6 +149,7 @@ currently implemented for every step:
 `sample(rng,Space,n_samples)`
 ### Surrogate model
 1) Gaussian process: using [Stheno](https://github.com/willtebbutt/Stheno.jl)
+
 	*Kernels: Levenstein distance Kernel:
 	`LevStehnoexp(1)`
 	* Hyperparmere optimisation:
