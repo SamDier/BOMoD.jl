@@ -1,6 +1,6 @@
-abstract type AbstractConstruct{T} <: AbstractArray{T,2} end
+abstract type AbstractConstruct{T}
 
-
+#Base.IndexStyle(::Type{<AbstractConstruct}) = IndexCartesian()
 Base.eltype(::AbstractConstruct{T}) where T = eltype(T)
 Base.getindex(Construct::AbstractConstruct,i,j) = Construct.c[i,j]
 Base.length(Construct::AbstractConstruct) = length(Construct.c)

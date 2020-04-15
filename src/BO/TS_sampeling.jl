@@ -53,8 +53,8 @@ function thompson_sampling_fast(f, x::AbstractVector,
     # indices selected
     selected = Int[]
     all_test = copy(x)
-    Ndist = f(all_test, σ²)
-    f̂_matrix = rand(Ndist,n_samples)
+    Ndist = marginals(f(all_test, σ²))
+    f̂_matrix = hcat(rand.(Ndist,n_samples)...) |> permutedims
     for n in eachcol(f̂_matrix)
         n[selected]  .= - Inf
        i = argmax(n)

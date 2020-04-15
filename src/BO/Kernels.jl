@@ -33,8 +33,42 @@ function levenshtein(xᵢ, xⱼ)
     end
     return last(lev)
 end
+
+# to use in Stheno
 ew(k::LevStehnoexp, x::AbstractVector{N} where N) = exp.(-k.s .*zeros(length(x)))
 ew(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = [exp(-k.s*levenshtein(xᵢ,xⱼ)) for (xᵢ,xⱼ) in zip(x, x′)]
 
 pw(k::LevStehnoexp, x::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
 pw(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
+
+
+
+function myword2vec(word,letter2index)
+    word2vec = letter2index  |> t -> length(t) |> l-> zeros(l)
+    for letter in word
+        word2vec[letter2index[letter]] += 1
+    end
+    return word2vec
+end
+
+
+
+
+@doc raw"""
+cossim(xi,xj)
+
+´´ cossim(x_i,x_j) = \dfrac{x_i \cdot x_j}{\|x_i\|*\|x_j\|} ´´
+
+Cosine similarity between to array xi and xj
+"""
+cossim(xᵢ,xⱼ) = dot(xᵢ,xⱼ)/(norm(xᵢ) * norm(xⱼ))
+
+# to use in Stheno
+struct CosStehno <: Kernel end
+
+ew(::CosStehno, x::AbstractVector{N} where N) = ones(length(x))
+ew(::CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = [cossim(xᵢ,xⱼ) for (xᵢ,xⱼ) in zip(x, x′)]
+
+
+pw(k:: CosStehno, x::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
+pw(k:: CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
