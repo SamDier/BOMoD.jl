@@ -56,7 +56,7 @@ Order Constrains a group of modules that can not co-occur in one construct if th
 Order because the location of these models in the constructed is used in the evaluation of the constrain.
 
 These modules are given as ``Array{T} where T <: Mod``
-The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.  
+The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.
 
 for more information see [`filter_constrain`]@ref
 """
@@ -64,9 +64,6 @@ struct Ordered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
     pos::Array{Int}
     combination::Array{T}
 end
-
-
-
 
 
 """

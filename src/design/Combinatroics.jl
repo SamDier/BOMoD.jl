@@ -17,7 +17,7 @@ end
 # base types of
 Base.length(c::Combination) = binomial(length(c.mod),c.len);
 Base.size(c::Combination) = (length(c),1);
-Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{eltype(T)};
+Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{N} where N <: eltype(T) ;
 
 
 """
@@ -81,6 +81,12 @@ Index based on rank Combination.
 https://en.wikipedia.org/wiki/Combinatorial_number_system
 """
 function getindex(c::Combination,pos::Int,pos2=1)
+
+    # spacial case of lenght is 1
+    if c.len == 1
+        return Unordered_Construct([c.mod[pos]])
+    end
+    # if not 1
     com = Array{Int}(undef, c.len, 1)
     for i in c.len:-1:1
         n = i-1

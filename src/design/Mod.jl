@@ -1,4 +1,3 @@
-#import Base: *,+,push!,split
 
 
 """
@@ -73,7 +72,7 @@ group_mod(input::Array{T} where T) = Group_Mod([Mod(newmod) for newmod in input]
 """
     Base.iterate(Group::Group_Mod,state =1 )
 
-Extationtions of ``Base.iterate`` for modules of type Mod
+Extationtions of ``Base.iterate`` for modules of type ``Group_Mod``
 for more infromation [see](https://docs.julialang.org/en/v1/manual/interfaces/)
 """
 function Base.iterate(Group::Group_Mod,state =1 )
