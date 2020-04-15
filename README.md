@@ -37,10 +37,10 @@ Currently, two special cases of possible combinatorial design are supported.
 
 1) **Ordered structure**: The positions of the modules in the construct is essential. Addionlay every module can occur multiple times
 (Permutation with infinite redraw)
-** Example** cone of ice cream with first Vanilla and then Chocolate is different than ice cream with first Chocolate  and then Vanilla
+**Example** cone of ice cream with first Vanilla and then Chocolate is different than ice cream with first Chocolate  and then Vanilla
 
 2) **Unordered structure**:  The position of the modules has no meaning. Every module can only occur ones.  ( Combination without redraw)
-** Example** Making a jar of ice cream instead of a cone of ice cream, now there is no difference between first adding  Vanilla or Chocolate.
+**Example** Making a jar of ice cream instead of a cone of ice cream, now there is no difference between first adding  Vanilla or Chocolate.
 The position is not relevant in this case.
 
 :construction: allowing constraints on these design space, for example, no vanilla on the first position.
