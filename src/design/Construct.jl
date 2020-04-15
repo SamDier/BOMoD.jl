@@ -1,36 +1,16 @@
-abstract type AbstractConstruct{T} <: AbstractArray{T,2} end
+abstract type AbstractConstruct{T} end
 
-
-Base.eltype(::AbstractConstruct{T}) where T = eltype(T)
-Base.getindex(Construct::AbstractConstruct,i,j) = Construct.c[i,j]
+# Define some base function on AbstractConstruct
+Base.eltype(::AbstractConstruct{T}) where {T} = T
+Base.getindex(Construct::AbstractConstruct,i::Int) = Construct.c[i]
+Base.getindex(Construct::AbstractConstruct,i::UnitRange) = Ordered_Construct(Construct.c[i])
 Base.length(Construct::AbstractConstruct) = length(Construct.c)
+Base.lastindex(Construct::AbstractConstruct) =  last(eachindex(IndexLinear(), Construct.c))
 Base.size(Construct::AbstractConstruct) = (1,length(Construct.c))
-Base.isequal(c1::AbstractConstruct,c2::AbstractConstruct) = c1.c == c2.c
+Base.isequal(c1::AbstractConstruct,c2::AbstractConstruct) = isequal(c1.c,c2.c)
 
 
-struct Ordered_Construct{T}  <: AbstractConstruct{T}
-    c::Array{T}
-end
-
-
-# make costruct form moduels
-#*(m1::Moduels{<:T} where T,m2::Moduels{<:T} where T) = [m1 , m2]
-#*(m1::AbstractArray{N} where N <: Moduels{<:T} where T,m2::Moduels{<:T} where T) = [m1... , m2]
-#*(m2::Moduels{<:T} where T  ,m1::AbstractArray{N} where N <: Moduels{<:T} where T) = [m1... , m2]
-
-# Moduels * Moduels
-*(m1::Mod,m2::Mod) = Ordered_Construct([m1 m2])
-
-# Moduels * multi_construct
-*(m1::Ordered_Construct ,m2::Mod) = Ordered_Construct([m1.c...  m2])
-*(m2::Mod,  m1::Ordered_Construct) = Ordered_Construct([m1.c...  m2])
-
-#Base.eltype(::Ordered_Construct{T}) where T = T
-#Base.getindex(Construct::Ordered_Construct,i) = Construct.c[i]
-#Base.length(Construct::AbstractConstruct) = length(Construct.c)
-
-
-function Base.iterate(Construct::Ordered_Construct,state=1)
+function Base.iterate(Construct::AbstractConstruct,state=1)
     if  state <= length(Construct)
         mod = Construct[state]
         state += 1
@@ -41,12 +21,23 @@ function Base.iterate(Construct::Ordered_Construct,state=1)
 end
 
 
+struct Ordered_Construct{T}  <: AbstractConstruct{T}
+    c::Array{T}
+end
+
+
+*(m1::Mod,m2::Mod) = Ordered_Construct([m1,m2])
+*(c::Ordered_Construct ,m::Mod) = push!(c.c,m) |> Ordered_Construct
+*(m::Mod,  c::Ordered_Construct) = pushfirst!(c.c,m) |> Ordered_Construct
+*(c1::Ordered_Construct ,c2::Ordered_Construct) = vcat(c1.c,c2.c)
 
 
 struct Unordered_Construct{T} <: AbstractConstruct{T}
     c::Array{T}
 end
 
-+(m1::Mod,m2::Mod) = Unordered_Construct([m1 m2])
-+(m1::Unordered_Construct ,m2::Mod) = Unordered_Construct([m1.c... m2])
-+(m2::Mod,  m1::Unordered_Construct) = Unordered_Construct([m1.c... m2])
+
++(m1::Mod,m2::Mod) = Unordered_Construct([m1,m2])
++(c::Unordered_Construct ,m::Mod) = push!(c.c,m) |> Unordered_Construct
++(m::Mod, c::Unordered_Construct) = pushfirst!(c.c,m) |> Unordered_Construct
++(c1::Unordered_Construct,c2::Unordered_Construct) = vcat(c1,c2)

@@ -1,19 +1,23 @@
 abstract type Combinatroics{T} <: AbstractArray{T,1} end
 
 
-
-#Base.IndexStyle(::Type{<:Combinatroics}) = IndexCartesian()
 """
-Structure to generated all Combinations of the given moduels with given lenght
+    Combination{T} <: Combinatroics{T}
 
+Structure to generated all Combinations of the given moduels with given length
+low_level structure that a user don't need to use normaly
+mod = Array with modulels or where combination can be generated from
+len = lenght of the made constructs
 """
 struct Combination{T} <: Combinatroics{T}
     mod::T
     len::Int
 end
+
+# base types of
 Base.length(c::Combination) = binomial(length(c.mod),c.len);
 Base.size(c::Combination) = (length(c),1);
-Base.eltype(K::Combination{T}) where {T} = Unordered_Construct;
+Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{eltype(T)};
 
 
 """
@@ -23,7 +27,7 @@ Iterater for Combinations, printed in lexicografical order.
 function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
     max = length(c.mod)
 
-    if c.len == 1 # special case len = 1
+    if c.len == 1 # special case len = 1 ( needed?)
         if state[1] <= max
             construct = [c.mod[state[1]]]
             state[1] +=1
@@ -32,13 +36,15 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
             return
         end
     end
-    # check when done
 
+    # check when done, last constructed is printed
     if state[1] > max
         return nothing
     end
-    # make the construct
+
+    # make the current construct based on given state
     construct = sum(c.mod[state])
+
     # update the state
     # i start at the last index, length of the construct
     i = c.len
@@ -58,8 +64,8 @@ end;
 
 """
 _restate(state,i)
- Update state at index i and rest all values behind to lower values.
- use iterater for combinations
+ Update state at index i and reset all values behind to lowsted allow values.
+ function used in the Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
 """
 function _restate(state,i)
     state[i] +=1;
@@ -69,6 +75,7 @@ end
 
 """
 Base.getindex(Combination,pos)
+Get the index in a Combination struct
 
 Index based on rank Combination.
 https://en.wikipedia.org/wiki/Combinatorial_number_system
