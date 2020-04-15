@@ -38,6 +38,14 @@ for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
 Base.isequal(mod1::Mod, mod2::Mod) = isequal(mod1.m,mod2.m)
 
 """
+    Base.length(mod1::Mod)
+
+Extationtions of ``Base.length`` for modules of type ``Mod``
+"""
+
+Base.length(mod1::Mod) = 1
+
+"""
     Group_Mod{N <: Mod{T} where T} <: AbstractMod{N}
 
 Structure to group multiple modules.
