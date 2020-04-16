@@ -10,4 +10,5 @@ using StatsBase
     include("Space_test.jl")
     include("Constrain_test.jl")
     include("Combination_test.jl")
+    include("Constructs_test.jl")
 end
