@@ -32,7 +32,7 @@ Base.isless(mod1::Mod, mod2::Mod) = isless(mod1.m,mod2.m)
 """
     isequal(mod1::Mod, mod2::Mod)
 
-Extationtions of ``Base.isequal`` for modules of type ``Mod``
+Extationtion of ``Base.isequal`` for modules of type ``Mod``
 for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
 """
 Base.isequal(mod1::Mod, mod2::Mod) = isequal(mod1.m,mod2.m)

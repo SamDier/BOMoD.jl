@@ -225,11 +225,11 @@ end
 """
 addition of differnt designs
 """
-Base.length(design::Multi_or_Design) = length(design.design)
-Base.iterate(design::Multi_or_Design,state = 1) = length(design.design) >= state ? (design[state],state+1) : nothing
-Base.getindex(design::Multi_or_Design,i) = design.design[i]
-Base.eltype(::Multi_or_Design) = Single_Design{T} where T
-Base.size(design::Multi_or_Design) = (length(design), map((i -> length(i.space,nothing)),design) |> sum )
+Base.length(design::Multi_Design) = length(design.design)
+Base.iterate(design::Multi_Design,state = 1) = length(design.design) >= state ? (design[state],state+1) : nothing
+Base.getindex(design::Multi_Design,i) = design.design[i]
+Base.eltype(::Multi_Design) = Single_Design{T} where T
+Base.size(design::Multi_Design) = (length(design), map((i -> length(i.space,nothing)),design) |> sum )
 
 
 
@@ -254,7 +254,7 @@ construct_design(mod::Group_Mod, min::Int, max::Int; order = false) = Mulit_Desi
 Simple wrapper to obtain all different space in the Multi_Design object using `getspace(Design::Single_Design; full = false)` iteratively
 """
 
-function getspace(multiple_design::Multi_or_Design; full = false )
+function getspace(multiple_design::Multi_Design; full = false )
         all_spaces = AbstractSpace[]
          for design in multiple_design
              push!(all_spaces,getspace(design, full = full))
