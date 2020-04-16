@@ -100,14 +100,12 @@ The constraints are attributed and evaluated if they are useful for the given co
 Ordered constraints are only helpful if  `order = true`, then an `Ordered_Design` is returned
 See [`Unordered_Design`](@ref) or [`Ordered_Design`](@ref)
 """
-function construct_design(mod::Group_Mod, len::Int, con::Construct_Constrains ; order = false)
+function construct_design(mod::Group_Mod, len::Int, con::Construct_Constrains{T} where T; order = false)
     if order == true
-        make_ordered_space(mod,len) |> Frame_Space |> (y -> Ordered_Design(mod,len,con,y))
+        make_ordered_space(mod,len) |> x -> Frame_Space(x,con) |> (y -> Ordered_Design(mod,len,con,y))
     else
-        if isa(con,Compose_Construct_Constrains) && eltype(con) == UnOrdered_Constrain
-            return make_unordered_space(mod,len) |> Frame_Space |> (y -> Unordered_Design(mod,len,con,y))
-        elseif isa(con,UnOrdered_Constrain)
-            return make_unordered_space(mod,len) |> Frame_Space |> (y -> Unordered_Design(mod,len,con,y))
+        if isa(con,UnOrdered_Constrain) || promote_type(eltype(con),UnOrdered_Constrain) == UnOrdered_Constrain
+            return make_unordered_space(mod,len) |> x -> Frame_Space(x,con) |> (y -> Unordered_Design(mod,len,con,y))
         else
             error("Ordered contrains can't be used in unorderd design set order to true or remove constrains")
         end

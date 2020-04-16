@@ -1,5 +1,19 @@
+###
+# Sampler is currently implemented equally for  Unordered_Design and Ordered_Design base on index.
+# Can be improved, special for Unordered_Design but for small space it should be oke
+###
 
+####
+# implementaiton base on the StatsBase version [StatsBase](https://juliastats.org/StatsBase.jl/stable/sampling/)
+####
+"""
+    StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
 
+Extend the StatsBase.sample! function to sample for a`Eff_Space`.
+Using the default settings, It fills `x` with unique samples from the `Eff_Space`. It returns a vector with the corresponding samples.
+If with_index = true, corresponding indexes returned together with the sampled constructs.
+For more information see [StatsBase](https://juliastats.org/StatsBase.jl/stable/sampling/)
+"""
 
 function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
     index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
@@ -10,35 +24,42 @@ function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; 
     end
 end
 
+# if no RNG object is given
 StatsBase.sample!(a::Eff_Space, x::AbstractArray; with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
     sample!(Random.GLOBAL_RNG, a, x; whit_index = with_index, replace=replace, ordered=ordered)
 
 
 """
-sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,
-                replace::Bool=false, ordered::Bool=false)
-take random sample without replacement out of the space of contructs
+    StatsBase.sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,replace::Bool=false, ordered::Bool=false)
+
+Extend the StatsBase.Sample function to sample for a`Eff_Space`.
+Using the default settings,  It draws `n` unique constructs form the `Eff_Space`.
+It returns a vector with the corresponding samples.
+If with_index = true, corresponding indexes are returned together with the sampled constructs.
+For more information see [StatsBase](https://juliastats.org/StatsBase.jl/stable/sampling/)
 """
 function StatsBase.sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,
                 replace::Bool=false, ordered::Bool=false)
     sample!(rng, a, Vector{Int}(undef, n); with_index = with_index, replace=replace, ordered=ordered)
 end
 
+# if no RNG object is given
 StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
     sample(Random.GLOBAL_RNG, a, n; whit_index = with_index, replace=replace, ordered=ordered)
 
 
 """
-sample_reject(rng::AbstractRNG,space,n::Int,con; with_index::Bool = true)
+    sample_reject(rng::AbstractRNG,space,n::Int,con; with_index::Bool = true)
+
 take random sample without replacement out of the space of contructs
-    """
-function sample_reject(rng::AbstractRNG,space,n::Int,con; with_index::Bool = true)
-    sample_reject!(rng,Full_Ordered_space(space.space),n,con,Array{Int}(undef, 0, 1),  Array{Any}(undef, 0, 2))
+"""
+function sample_reject(rng::AbstractRNG,space::Frame_Space,n::Int)
+    sample_reject!(rng,Full_Ordered_space(space.space),n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(Frame_Space)}(undef, 0, 2))
 end
 
 
 
-function sample_reject!(rng::AbstractRNG,space::Frame_Space,n::Int,con,save_index::Array,check_constructs::Array ;
+function sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array ;
     with_index::Bool = true, replace::Bool=false, ordered::Bool=false)
 
             n_start = size(check_constructs)[1]
@@ -59,7 +80,7 @@ function sample_reject!(rng::AbstractRNG,space::Frame_Space,n::Int,con,save_inde
 
             else
                 delta = n - (n_stop - n_start)
-                sample_reject!(space,delta,con,save_index,check_constructs)
+                sample_reject!(rng,space,delta,con,save_index,check_constructs)
             end
 end
 

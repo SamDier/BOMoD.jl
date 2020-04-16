@@ -1,17 +1,18 @@
 #import Base: +
 """
-AbstractConstrains{T}
+    AbstractConstrains{T}
 Abstract type for all possible constructs
 """
 abstract type AbstractConstrains{T} end
 
 """
-Element_Constrains{T}
+    Element_Constrains{T}
 Abstract Constrains with effect on the element that are allow in the constructs
 """
 abstract type Element_Constrains{T} <: AbstractConstrains{T} end
 
 """
+    No_Constrain{T}
 If no constrain is given
 """
 
@@ -20,7 +21,7 @@ struct No_Constrain{T} <: Element_Constrains{T}
 end
 
 """
-Construct_Constrains{T}
+    Construct_Constrains{T}
 
 Constrains that are applicable on a generated construct.
 These can only be used in a filter with isn't very effiecent for large design space.
@@ -28,14 +29,14 @@ These can only be used in a filter with isn't very effiecent for large design sp
 abstract type Construct_Constrains{T} <: Element_Constrains{T} end
 
 """
-Single_Construct_Constrains{T}
+    Single_Construct_Constrains{T}
 
 abstract type for one single constrain
 """
 abstract type Single_Construct_Constrains{T} <: Construct_Constrains{T} end
 
 """
-UnOrdered_Constrain{T<:Mod}
+    UnOrdered_Constrain{T<:Mod}
 
 an unorder Constrain is a group of modules that can not co-occur in one construct.
 These group is given as:  ``Array{T,1} where T <: Mod``
@@ -50,7 +51,7 @@ struct UnOrdered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
 end
 
 """
-Ordered_Constrain{T<:Mod}
+    Ordered_Constrain{T<:Mod}
 
 Order Constrains a group of modules that can not co-occur in one construct if these modules are in a specific position.
 Order because the location of these models in the constructed is used in the evaluation of the constrain.
@@ -91,6 +92,8 @@ Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_C
 # To allow this a special type was constructed and see how it good be implemented
 # No need to check
 #################################
+
+#=
 """
 space contrains has effect on how the space is repesanted without real evaluation of the constructs
 """
@@ -172,3 +175,4 @@ end
 
 group_len_constrain(con1::Len_Constrain,con2::Len_Constrain) = Group_Len_Constrain(Tuple(con1,con2))
 group_len_constrain(con1::Len_Constrain,con2::Len_Constrain...) = Group_Len_Constrain(Tuple(con1,Tuple(con2...)))
+=#

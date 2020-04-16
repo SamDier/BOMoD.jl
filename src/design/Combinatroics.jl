@@ -21,7 +21,8 @@ Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{N} where N <: elt
 
 
 """
-Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
+    Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
+
 Iterater for Combinations, printed in lexicografical order.
 """
 function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
@@ -48,8 +49,8 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
     # update the state
     # i start at the last index, length of the construct
     i = c.len
-    #evaluated if the difference between the last and the next is higher than 1 ( still a construct that can be made)
-    # if not than lower the index with one. i>1 prevents error
+    #evaluated if the difference between the last and the next is higher than 1 (than their is still a construct that can be made)
+    # if not than lower the index with one and recheck if the difference is 1 . i>1 prevents error
     while i > 1  && state[i-1] - state[i] == 1
         i -=1
     end
@@ -63,9 +64,10 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
 end;
 
 """
-_restate(state,i)
- Update state at index i and reset all values behind to lowsted allow values.
- function used in the Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
+    _restate(state,i)
+
+Update state at index i and reset all values behind to lowsted allow values.
+function used in the Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
 """
 function _restate(state,i)
     state[i] +=1;
@@ -74,7 +76,8 @@ function _restate(state,i)
 end
 
 """
-Base.getindex(Combination,pos)
+    Base.getindex(Combination,pos)
+    
 Get the index in a Combination struct
 
 Index based on rank Combination.

@@ -1,5 +1,3 @@
-
-
 @doc raw"""
 LevStehnoexp{T} <: Kernel
 The kernel for of the levensteindistance
