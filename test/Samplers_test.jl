@@ -30,16 +30,19 @@
     end
 
     Unordered_con_c_e = UnOrdered_Constrain([Mod("c") , Mod("e")])
-    constrained_design =construct_design(mt_String_array,3,Unordered_con_c_e,order=true)
+    constrained_design = construct_design(mt_String_array,3,Unordered_con_c_e,order=true)
     test_space2 = constrained_desig.space
     n_samples2 = rand(1:10)
-    a_sample = sample_reject(rng,test_space,n_samples2)
+    a_sample2 = sample_reject(rng,test_space,n_samples2)
 
     @testset "sample_reject " begin
-        @test size(a_sample_with_index)[1] == n_samples2
-        @test size(a_sample_with_index)[2] == 2
-        #number of samples oke
-        @test 
-        @test  isequal(test_space[a_sample_with_index[1,2]],a_sample_with_index[1,1]) == true
+        # number of samples
+        @test size(a_sample2)[1] == n_samples2
+        # all unique elements
+        @test a_sample2[:,1] |> unique |> lenght == n_samples2
+        #contrain is used
+        for i in a_sample
+            @test (Mod("c") in a_sample && Mod("e") in a_sample) == false
+        end
         # collect works
-    end
+end
