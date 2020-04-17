@@ -49,12 +49,12 @@ StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Boo
 
 
 """
-    sample_reject(rng::AbstractRNG,space::Frame_Space,n::Int)
+    sample(rng::AbstractRNG,space::Frame_Space,n::Int)
 
 Return Array with dimension (n x 2).  The function samples `n` constructs from the input `space`, these are stored in the first collum.
 The second column returns the corresponding indices of the construct in the closest efficient design space.
 These are not the correct indexes in the constrained space.
-Currently not sure if returning them is useful.
+Currently not sure if returning them is useful. The with_index = true is to be similar to the other sampler, has no influence on the output
 
 The sampling is based on a recursive function with a reject the unwanted constructs.
 These are the constructs which are not allowed based on the given constraints.
@@ -62,23 +62,23 @@ For design space with many constraints, it is not efficient, and explicit calcul
 `getspace(Frame Space, full = true) `
 
 """
-function sample_reject(rng::AbstractRNG,space::Frame_Space,n::Int)
-    sample_reject!(rng,Full_Ordered_space(space.space),n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(space)}(undef, 0, 2))
+function StatsBase.sample(rng::AbstractRNG,space::Frame_Space,n::Int, with_index = true)
+    sample_reject!(rng,space.space,n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(space)}(undef, 0, 2))
 end
 
 """
     sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array)
 
-    Return Array with dimension (n x 2).  The function samples `n` constructs from the input `space` and corresponding indexes.
-    These constructs are added to the  `check_constructs` array containing the previously sampled constructs.
-    The `save_index` contains al previous evaluated constructs and prevents resampling  and the revaluation of an unwanted constructs.
+Return Array with dimension (n x 2).  The function samples `n` constructs from the input `space` and corresponding indexes.
+These constructs are added to the  `check_constructs` array containing the previously sampled constructs.
+The `save_index` contains al previous evaluated constructs and prevents resampling  and the revaluation of an unwanted constructs.
 
-    The sampling is based on a recursive function with a reject the unwanted constructs.
-    These are the constructs which are not allowed based on the given constraints.
-    For design space with many constraints, it is not efficient, and explicit calculation of the design space may be a better alternative using
-    `getspace(Frame Space, full = true) `
+The sampling is based on a recursive function with a reject the unwanted constructs.
+These are the constructs which are not allowed based on the given constraints.
+For design space with many constraints, it is not efficient, and explicit calculation of the design space may be a better alternative using
+`getspace(Frame Space, full = true) `
 
-    [`sample_reject`]@ref
+[`sample_reject`]@ref
 
 """
 function sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array)
@@ -123,3 +123,25 @@ _filter_sample!(new_sample,con::Construct_Constrains) = map(y -> !filter_constra
 
 """
 _filter_sample!(new_sample,saved_index::Array) = map((y -> y ∉ saved_index),new_sample[:,2]) |> (y -> new_sample[y,:])
+
+
+"""
+    StatsBase.sample(rng::AbstractRNG, space::Multi_Space, n::Integer; with_index::Bool = true)
+
+Extend the StatsBase.sample function to sample for a `Multi_Space`.
+Using the default settings, It fills `x` with unique samples from the `Multi_Space`. It returns a vector with the corresponding samples.
+If with_index = true, corresponding indexes returned together with the sampled constructs.
+For more information see [StatsBase](https://juliastats.org/StatsBase.jl/stable/sampling/)
+"""
+
+
+function StatsBase.sample(rng::AbstractRNG, space::Multi_Space, n::Integer; with_index::Bool = true)
+    if isa(space,Frame_Space) == false
+        index = sample(rng,1:length(space),n;replace=false)
+        if with_index
+            return [[space[i] for i in index]  index]
+        else
+            return ([space[i] for i in index])
+        end
+    end
+end

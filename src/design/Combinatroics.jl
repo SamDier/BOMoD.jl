@@ -9,16 +9,16 @@ low_level structure that a user don't need to use normaly
 mod = Array with modulels or where combination can be generated from
 len = lenght of the made constructs
 """
-struct Combination{T} <: Combinatroics{T}
-    mod::T
+struct Combination{Tm} <: Combinatroics{Tm}
+    mod::Array{Tm}
     len::Int
 end
 
 # base types of
 Base.length(c::Combination) = binomial(length(c.mod),c.len);
 Base.size(c::Combination) = (length(c),1);
-Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{N} where N <: eltype(T) ;
-
+#Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{N} where N <: eltype(T) ;
+Base.eltype(K::Combination{T}) where T = Unordered_Construct{T} ;
 
 """
     Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
@@ -77,7 +77,7 @@ end
 
 """
     Base.getindex(Combination,pos)
-    
+
 Get the index in a Combination struct
 
 Index based on rank Combination.
