@@ -49,32 +49,56 @@ StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Boo
 
 
 """
-    sample_reject(rng::AbstractRNG,space,n::Int,con; with_index::Bool = true)
+    sample_reject(rng::AbstractRNG,space::Frame_Space,n::Int)
 
-take random sample without replacement out of the space of contructs
+Return Array with dimension (n x 2).  The function samples `n` constructs from the input `space`, these are stored in the first collum.
+The second column returns the corresponding indices of the construct in the closest efficient design space.
+These are not the correct indexes in the constrained space.
+Currently not sure if returning them is useful.
+
+The sampling is based on a recursive function with a reject the unwanted constructs.
+These are the constructs which are not allowed based on the given constraints.
+For design space with many constraints, it is not efficient, and explicit calculation of the design space may be a better alternative using
+`getspace(Frame Space, full = true) `
+
 """
 function sample_reject(rng::AbstractRNG,space::Frame_Space,n::Int)
-    sample_reject!(rng,Full_Ordered_space(space.space),n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(Frame_Space)}(undef, 0, 2))
+    sample_reject!(rng,Full_Ordered_space(space.space),n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(space)}(undef, 0, 2))
 end
 
+"""
+    sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array)
+
+    Return Array with dimension (n x 2).  The function samples `n` constructs from the input `space` and corresponding indexes.
+    These constructs are added to the  `check_constructs` array containing the previously sampled constructs.
+    The `save_index` contains al previous evaluated constructs and prevents resampling  and the revaluation of an unwanted constructs.
+
+    The sampling is based on a recursive function with a reject the unwanted constructs.
+    These are the constructs which are not allowed based on the given constraints.
+    For design space with many constraints, it is not efficient, and explicit calculation of the design space may be a better alternative using
+    `getspace(Frame Space, full = true) `
+
+    [`sample_reject`]@ref
+
+"""
+function sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array)
 
 
-function sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index::Array,check_constructs::Array ;
-    with_index::Bool = true, replace::Bool=false, ordered::Bool=false)
-
+            # number of started constructs
             n_start = size(check_constructs)[1]
             #make new samples
             new_sample = sample(rng,space,n,with_index = true)
             #check if draw before
-            new_sample = filter_sample!(new_sample,save_index)
+            new_sample = _filter_sample!(new_sample,save_index)
             #updated check indexes
             save_index = [save_index;new_sample[:,2]]
             #check constrain
-            new_sample = filter_sample!(new_sample,con)
+            new_sample = _filter_sample!(new_sample,con)
             #updata approved constructs
             check_constructs = [check_constructs;new_sample]
+            #number of constructs ad the end
             n_stop = size(check_constructs)[1]
-
+            # evaluated if their where rejections, if not return else resample for the remaining open positions
             if  n_stop-n_start == n
                 return (check_constructs)
 
@@ -84,6 +108,18 @@ function sample_reject!(rng::AbstractRNG,space::Eff_Space,n::Int,con,save_index:
             end
 end
 
+"""
+    _filter_sample!(new_sample,con::Construct_Constrains)
 
-filter_sample!(new_sample,con::Construct_Constrains) = map(y -> !filter_constrain(y,con),new_sample[:,1]) |> (y -> new_sample[y,:])
-filter_sample!(new_sample,saved_index::Array) = map((y -> y ∉ saved_index),new_sample[:,2]) |> (y -> new_sample[y,:])
+Internal function to sample_reject!. Evaluates all samples based on the given constraints and removes the unallowed constructs.
+
+"""
+_filter_sample!(new_sample,con::Construct_Constrains) = map(y -> !filter_constrain(y,con),new_sample[:,1]) |> (y -> new_sample[y,:])
+
+"""
+    _filter_sample!(new_sample,saved_index::Array)
+
+ Evaluates is all samples were sampled or evaluated before and remove them if this is true
+
+"""
+_filter_sample!(new_sample,saved_index::Array) = map((y -> y ∉ saved_index),new_sample[:,2]) |> (y -> new_sample[y,:])

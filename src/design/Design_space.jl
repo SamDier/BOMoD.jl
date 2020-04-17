@@ -119,9 +119,7 @@ end
 
 
 If the input design has no constrains, then an efficient space is generated This space type allow most `Base` function that you would have on the explicit generated design space.
-
 If constraints are added than no efficient space can be generated. For most functionalities explicitly, generation is needed. In some case one can continue using the whole design structure.
-
 If `full = true` the whole space is generated explicitly, which isn't recommended for large designs. Still for constrained problems is sometimes the best or only option.
 """
 
@@ -171,13 +169,25 @@ end
 """
     created_space(space::Comuputed_space)
 
-fall back if space was computed before
+fall back if space was computed before.
 """
 created_space(space::Computed_Space,::AbstractConstrains) = space.space
 
 
+"""
+    constrain_check(len_construct::Int,constrain)
+
+quick check if the constrain make sense given the length of the constructs.
+"""
+constrain_check(len_construct::Int,constrain) = (len_construct >= length(constrain.combination)) && (len_construct >= maximum(constrain.pos))
+
+
+
 """"
-fitler constrains, gives actions for every specific constrains type. Act on a single construct
+    filter_constrain(construct::Ordered_Construct, con::Ordered_Constrain)
+
+Evaluated if the `construct` is allowed given  `con`.  Returns `true` when the construct isn't allowed.
+Because the constrain is ordered, the given modules are only tested on the given position. Only with an exact match, it returns true,if no match is found it returns `false`.
 """
 function filter_constrain(construct::Ordered_Construct, con::Ordered_Constrain)
     # check if constrains makes sence to given construct
@@ -194,7 +204,22 @@ function filter_constrain(construct::Ordered_Construct, con::Ordered_Constrain)
     return true
 end
 
+""""
+    filter_constrain(construct::AbstractConstruct, con::UnOrdered_Constrain)
+
+Evaluated if the `construct` is allowed given  `con`.  Returns `true` when the construct isn't allowed.  If no match is found it returns `false`
+Because the constrain is unordered only all modules in the constrain need to be present in construct.
+The position is not evaluated.
+"""
+
 filter_constrain(construct::AbstractConstruct, con::UnOrdered_Constrain) = (construct.c ∩ con.combination) |> length |> (y -> y == length(con.combination))
+
+""""
+    filter_constrain(construct::AbstractConstruct, con::Compose_Construct_Constrains)
+
+A wrapper to evaluated multiple constraints regarding the same constructs.
+The function terminates if one of the constrain matches to the given constructs and returns `true`.
+"""
 
 function filter_constrain(construct::AbstractConstruct, con::Compose_Construct_Constrains)
     for temp_con in con.construct_con
@@ -205,7 +230,6 @@ function filter_constrain(construct::AbstractConstruct, con::Compose_Construct_C
     return false
 end
 
-constrain_check(len_construct::Int,constrain) = (len_construct >= length(constrain.combination)) && (len_construct >= maximum(constrain.pos))
 
 
 

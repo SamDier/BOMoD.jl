@@ -99,7 +99,7 @@ end
     Frame_Space{T, Tc <: Construct_Constrains}
 
 Structure generated for a space where no effiecent alterative is implented currently.
-The closed efficient design space is stored together with the uncheck constrains. 
+The closed efficient design space is stored together with the uncheck constrains.
 """
 
 struct Frame_Space{T, Tc <: Construct_Constrains} <: AbstractSpace{T}
@@ -182,6 +182,8 @@ function Base.iterate(d::Multi_Space, state = [1 1])
         return (j,state)
     end
 end
+
+
 Base.eltype(::Multi_Space) =  AbstractConstruct
 # special length, prevent printing of the warning
 Base.size(d::Multi_Space) = (length(d), map(x -> length(x,nothing),d.space) |> sum )

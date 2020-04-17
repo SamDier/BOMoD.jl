@@ -76,13 +76,40 @@ These can only be used in a filter with isn't very effiecent for large design sp
 struct Compose_Construct_Constrains{T <: Single_Construct_Constrains} <: Construct_Constrains{T}
     construct_con :: Array{T}
 end
+
 Base.eltype(K::Compose_Construct_Constrains{T}) where {T} = T
 
 
+# concentration of multiple constrains can be done using + sign
+
+"""
+    +(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing both constrains `con1` and `con2`.
+"""
 
 Base.:+(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains) = Compose_Construct_Constrains([con1,con2])
+
+"""
+    Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing where `con2` is add to the `con1`
+"""
+
 Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains) = Compose_Construct_Constrains([con1.construct_con;con2])
+
+"""
+    Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing where `con1` is add to the `con2`
+"""
 Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains) = +(con2,con1)
+
+"""
+    Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N)
+
+Returns a `Compose_Construct_Constrains` concatenation of `con1` and `con2`
+"""
 Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N) = Compose_Construct_Constrains([con1.construct_con;con2.construct_con;])
 
 
@@ -90,7 +117,7 @@ Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_C
 # Code below has currently no application in the package, this will probably not change shortly
 # The idea is that for some constraints, we can prevent that unwanted constructs are generated, instead of generational filtering afterwards.
 # To allow this a special type was constructed and see how it good be implemented
-# No need to check
+# No need to check, 
 #################################
 
 #=
