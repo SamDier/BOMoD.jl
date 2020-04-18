@@ -22,4 +22,13 @@
         end
     end
 
+    test_collect = collect(test_com)
+    @testset "test_collect" begin
+        @test length(test_collect) == binomial(9,n_rand)
+        @test eltype(test_collect) == Unordered_Construct{Mod{String}}
+    end
+
+
+
+
 end

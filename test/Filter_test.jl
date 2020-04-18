@@ -5,9 +5,7 @@
     mt_c = Mod("c")
     mt_d = Mod("d")
     mt_e = Mod("e")
-    # a full design
-    Group_Mod_test = Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e])
-    first_design = construct_design(Group_Mod_test,3,order = true)
+
     # some test constructs
     oc1 = Ordered_Construct([mt_a mt_d mt_b])
     oc2 = Ordered_Construct([mt_a mt_b mt_e])
