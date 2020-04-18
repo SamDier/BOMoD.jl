@@ -46,4 +46,17 @@
         @test isless(Mod("a"),Mod("begin")) == true
     end
 
+    @testset "isless" begin
+        @test isless(Mod(:b),Mod(:a)) == false
+        @test isless(Mod(:c),Mod(:e)) == true
+        @test isless(Mod("a"),Mod("begin")) == true
+    end
+
+    test_collect = collect(Group_Mod_test_order)
+    @testset "collect" begin
+        @test length(test_collect) == 5
+        @test eltype(test_collect) == Mod{String}
+    end
+
+
 end

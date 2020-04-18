@@ -26,12 +26,18 @@
         @test eltype(collect(oc1)) == typeof(mt_a)
     end
 
-    @testset "multi_ordered" begin
+    @testset "*_ordered" begin
         @test isequal(mt_a*mt_b,Ordered_Construct([mt_a,mt_b])) == true
         @test isequal(Ordered_Construct([mt_a,mt_b])*mt_c,Ordered_Construct([mt_a,mt_b,mt_c])) == true
         @test isequal(mt_c*Ordered_Construct([mt_a,mt_b]),Ordered_Construct([mt_c,mt_a,mt_b])) == true
         @test isequal((Ordered_Construct([mt_a,mt_b])*Ordered_Construct([mt_d,mt_e])),Ordered_Construct([mt_a,mt_b,mt_d,mt_e])) == true
     end
 
+    @testset "+_unordered" begin
+        @test isequal((mt_a+mt_b),Unordered_Construct([mt_a,mt_b])) == true
+        @test isequal(Unordered_Construct([mt_a,mt_b])+mt_c,Unordered_Construct([mt_a,mt_b,mt_c])) == true
+        @test isequal(mt_c+Unordered_Construct([mt_a,mt_b]),Unordered_Construct([mt_c,mt_a,mt_b])) == true
+        @test isequal((Unordered_Construct([mt_a,mt_b])+Unordered_Construct([mt_d,mt_e])),Unordered_Construct([mt_a,mt_b,mt_d,mt_e])) == true
+    end
 
 end
