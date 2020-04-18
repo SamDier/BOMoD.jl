@@ -32,12 +32,12 @@ module BOMoD
 
     # include construction of space
     include(joinpath("design", "Mod.jl"))
+    include(joinpath("design", "Combinatroics.jl"))
     include(joinpath("design", "Constrains.jl"))
     include(joinpath("design", "Space.jl"))
     include(joinpath("design", "Construct.jl"))
     include(joinpath("design", "Design_space.jl"))
     include(joinpath("design", "Sample.jl"))
-    include(joinpath("design", "Combinatroics.jl"))
     #BO
     include(joinpath("BO", "Hyper_opt.jl"))
     include(joinpath("BO", "Kernels.jl"))
