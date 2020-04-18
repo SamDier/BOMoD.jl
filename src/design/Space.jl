@@ -164,7 +164,7 @@ Inefficient calculation has tot iterated overall allowed constructs.
 """
 
 function Base.length(space::Frame_Space)
-    @warn "No efficient calculation iterate to all allowed options to get the lenght"
+    @warn "No efficient calculation iterate to all allowed options to get the length"
     len = 0
     for i in space
         len +=1

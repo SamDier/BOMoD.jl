@@ -9,8 +9,8 @@ low_level structure that a user don't need to use normaly
 mod = Array with modulels or where combination can be generated from
 len = lenght of the made constructs
 """
-struct Combination{Tm} <: Combinatroics{Tm}
-    mod::Array{Tm}
+struct Combination{T} <: Combinatroics{T}
+    mod::Array{T}
     len::Int
 end
 
@@ -76,14 +76,14 @@ function _restate(state,i)
 end
 
 """
-    Base.getindex(Combination,pos)
+    function getindex(c::Combination,pos::Int)
 
-Get the index in a Combination struct
+Get the index of `c` at position `pos`.
 
 Index based on rank Combination.
 https://en.wikipedia.org/wiki/Combinatorial_number_system
 """
-function getindex(c::Combination,pos::Int,pos2=1)
+function getindex(c::Combination,pos::Int)
 
     # spacial case of lenght is 1
     if c.len == 1
