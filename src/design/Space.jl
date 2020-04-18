@@ -206,6 +206,18 @@ The second number is the number of `sing` that are used to construct the entire 
 
 Base.size(space::Multi_Space) = (length(space), length(space.space))
 
+"""
+    Base.size(space::Multi_Space)
+
+Returns a tuple of two numbers, the first position contains the number of constructs in the `space`.
+The second number is the number of `sing` that are used to construct the entire design space
+
+"""
+
+
+
+
+
 
 # chained the signal iterators, can be done with Base.Iterators.flatten(space.space) but less consistent with other spaces.
 
@@ -216,7 +228,7 @@ function Base.iterate(space::Multi_Space, state = [1 1])
 
     if temp == nothing
         state[1] += 1
-        if (state[1] <= size(space)[2]) 
+        if (state[1] <= size(space)[2])
             temp = iterate(space.space[state[1]],1)
             state[2] = temp[2]
             return (temp[1],state)
