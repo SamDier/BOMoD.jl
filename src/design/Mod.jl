@@ -92,3 +92,17 @@ function Base.iterate(Group::Group_Mod,state =1 )
         return
     end
 end
+
+"""
+    Base.length(m::Group_Mod)
+
+Return the number of `Mod` in `m`
+"""
+Base.length(m::Group_Mod) = length(m.m)
+
+"""
+    Base.length(m::Group_Mod)
+
+Return the type of the iterator
+"""
+Base.eltype(::Group_Mod{T}) where {T} = T

@@ -191,7 +191,7 @@ Concatenated two `Unordered_Construct` `c1` and `c2`,
 where the construct that is in the second argument position will be appended to the end of the construct in the first argument position
 """
 
-+(c1::Unordered_Construct,c2::Unordered_Construct) = vcat(c1,c2)
++(c1::Unordered_Construct,c2::Unordered_Construct) = vcat(c1.c,c2.c) |> Unordered_Construct
 
 """
     Base.isequal(c1::Unordered_Construct,c2::Unordered_Construct)
@@ -199,4 +199,4 @@ where the construct that is in the second argument position will be appended to 
 Evaluates if two `Unordered_Construct` are equal.
 """
 
-#Base.isequal(c1::Unordered_Construct,c2::Unordered_Construct) = isequal(Set(c1.c),Set(c2.c))
+Base.isequal(c1::Unordered_Construct,c2::Unordered_Construct) = isequal(Set(c1.c),Set(c2.c))

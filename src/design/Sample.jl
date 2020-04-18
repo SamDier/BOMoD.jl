@@ -65,7 +65,7 @@ For design space with many constraints, it is not efficient, and explicit calcul
 `getspace(Frame Space, full = true) `
 
 """
-function StatsBase.sample(rng::AbstractRNG,space::Frame_Space,n::Int, with_index = true)
+function StatsBase.sample(rng::AbstractRNG,space::Frame_Space,n::Int; with_index = true)
     sample_reject!(rng,space.space,n,space.con,Array{Int}(undef, 0, 1),  Array{eltype(space)}(undef, 0, 2))
 end
 
@@ -144,7 +144,7 @@ For design space with many constraints, it is not efficient, and explicit calcul
 `getspace(Frame Space, full = true) `
 
 [`sample(rng::AbstractRNG,space::Frame_Space,n::Int)`](@ref)
-[sample(rng::AbstractRNG,space::Eff_Space,n::Int)]()@ref)
+[sample(rng::AbstractRNG,space::Eff_Space,n::Int)](@ref)
 
 """
 
@@ -153,16 +153,19 @@ function StatsBase.sample(rng::AbstractRNG, space::Multi_Space, n::Integer; with
     #prelocated
     samples = Array{T where T,2}(undef,n,2)
     #set weigths of the sampler
-    w = FrequencyWeights([length(s) for s in space.space])
+
+    w,max = [length(s) for s in space.space] |> x ->(FrequencyWeights(x),sum(x))
+    println(max)
+    @assert n < max "can only sample $max points"
     # one point
-    samples[1,:] = sample(rng,collect(1:size(space)[2]), w,1)  |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
+    samples[1,:] = sample(rng,collect(1:_nspace(space)), w,1)  |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
     #sampels form whole the design space n times
     #sampler one selects with space is chosen, this is weighted, sample step 2 samples form that space
     if n == 1
          return samples
     end
     for i in 2:n
-        new_point = sample(rng,collect(1:size(space)[2]), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
+        new_point = sample(rng,collect(1:_nspace(space)), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
         # select n unique sample, evaluated if draw before
 
         while  new_point[2] in samples[1:i-1,2]
