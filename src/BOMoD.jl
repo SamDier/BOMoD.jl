@@ -9,7 +9,8 @@ module BOMoD
     using Distributions
     using DataFrames
     using Plots
-    using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
+    #using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
+    
 
 
     import Base: +, *, getindex,length, eltype,isequal,isless,push!,in
