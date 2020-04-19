@@ -101,7 +101,7 @@ Return the number of `Mod` in `m`
 Base.length(m::Group_Mod) = length(m.m)
 
 """
-    Base.length(m::Group_Mod)
+    Base.eltype(m::Group_Mod)
 
 Return the type of the iterator
 """
