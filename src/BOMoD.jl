@@ -12,8 +12,7 @@ module BOMoD
     using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
 
 
-
-    import Base: +, *, getindex,length, eltype
+    import Base: +, *, getindex,length, eltype,isequal,isless,push!,in
     import Stheno: ew,pw,Kernel
     import LinearAlgebra: norm, eigvals!, Diagonal
     import Optim: minimizer

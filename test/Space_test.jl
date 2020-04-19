@@ -4,7 +4,7 @@
 
     first_design =construct_design(mt_String_array,3,order = true)
     test_space = getspace(first_design)
-    index = rand(1:125)
+    index = rand(1:125);
 
     @testset "Full_orderd_space" begin
         #length works
