@@ -173,6 +173,12 @@ function Base.length(space::Frame_Space)
     return len
 end
 
+"""
+    Base.eltype(K::Frame_Space{T}) where {T}
+
+Return the type of `Frame_Space{T}` if they are collected
+"""
+
 Base.eltype(K::Frame_Space{T}) where {T} = eltype(K.space)
 
 
