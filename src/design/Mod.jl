@@ -1,14 +1,18 @@
-import Base: *,+,push!,split
-using Base
+
 
 """
-Abstract type for a moduele of type T
+    AbstractMod{T}
+
+Abstract type for all Modueles of type T
 
 """
 abstract type AbstractMod{T} end
 
 """
-Structure to store a specific module fo type{T}
+    Mod{T} <: AbstractMod{T}
+
+Structure to store one specific modules of type{T}
+
 """
 
 # problem input as array in unique gives an error if dims = 2 not added... ne
@@ -16,38 +20,89 @@ struct Mod{T} <: AbstractMod{T}
     m::T
 end
 
+# some base base function for the new type
+"""
+    isless(mod1::Mod, mod2::Mod)
+
+Extationtions of ``Base.isless`` for modules of type Mod
+for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
+"""
+Base.isless(mod1::Mod, mod2::Mod) = isless(mod1.m,mod2.m)
+
+"""
+    isequal(mod1::Mod, mod2::Mod)
+
+Extationtion of ``Base.isequal`` for modules of type ``Mod``
+for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
+"""
+Base.isequal(mod1::Mod, mod2::Mod) = isequal(mod1.m,mod2.m)
+
+"""
+    Base.length(mod1::Mod)
+
+Extationtions of ``Base.length`` for modules of type ``Mod``
+"""
+
+Base.length(mod1::Mod) = 1
+
+"""
+    Group_Mod{N <: Mod{T} where T} <: AbstractMod{N}
+
+Structure to group multiple modules.
+The input values are first filtered to prevent duplicated modules.
+Afterwards, the modules are sorted to give consistent results even if modules are load in a different order.
+"""
 
 struct Group_Mod{N <: Mod{T} where T} <: AbstractMod{N}
     m::Array{N}
-    Group_Mod(m) = m |> unique! |> sort! |> (y -> new{eltype(m)}(y))
+    Group_Mod(m) =  m |> Set |> collect |> sort |> (y -> new{eltype(m)}(y))
 end
-Base.isless(mod1::Mod, mod2::Mod) = isless(mod1.m,mod2.m)
+
+"""
+    group_mod(input::Array{T} where T)
+
+A Function to facilitate the input of multiple modules. It returns a "Group_mod" structure.
+The input is an array containing the data that needs to be transformed to an ``Mod`` and grouped afterwards. See
+[`Group_mod`](@ref)
+
+```jldoctest
+Mods = [:a,:b,:c]
+grouped_mods = group_mod(Mods)
+isa(grouped_mods,Group_Mod)
+
+# output
+
+true
+```
+"""
 group_mod(input::Array{T} where T) = Group_Mod([Mod(newmod) for newmod in input])
 
-#=
-Base.:+(m1::Mod{T} where T,m2::Mod{T} where T) = Group_Mod([m1 ,m2])
-Base.:+(m1::Group_Mod ,m2::Mod{T} where T) = Group_Mod([m1.m...  , m2])
-Base.:+(m2::Mod{T} where T , m1::Group_Mod) = Group_Mod([m1.m... ,  m2])
-Base.:+(m1::Group_Mod,m2::Group_Mod) = Group_Mod([m1.m...,  m2.m...])
-Base.:+(m1::AbstractMod,m2::AbstractMod...) = +(m1,+(m2...))
-=#
-Base.:+(m1::Mod{T} where T,m2::Mod{T} where T) = Group_Mod([m1 ,m2])
-Base.:+(m1::Group_Mod ,m2::Mod{T} where T) = Group_Mod([m1.m; m2])
-Base.:+(m2::Mod{T} where T , m1::Group_Mod) = Group_Mod([m1.m;  m2])
-Base.:+(m1::Group_Mod,m2::Group_Mod) = Group_Mod([m1.m;  m2.m])
-Base.:+(m1::AbstractMod,m2::AbstractMod...) = +(m1,+(m2...))
+"""
+    Base.iterate(Group::Group_Mod,state =1 )
 
-
-struct Group_Moduel_Pos{T} <: AbstractMod{T}
-    pos::Int
-    m::T
-    Group_Moduel_Pos(m) = m |> unique! |> sort! |> (y -> new{typeof(m)}(pos,y))
+Extationtions of ``Base.iterate`` for modules of type ``Group_Mod``
+for more infromation [see](https://docs.julialang.org/en/v1/manual/interfaces/)
+"""
+function Base.iterate(Group::Group_Mod,state =1 )
+    if  state <= length(Group.m)
+        mod = Group.m[state]
+        state += 1
+        return (mod,state)
+    else
+        return
+    end
 end
 
-Base.length(mod::Group_Mod) = length(mod.m)
-Base.length(m::Mod) = 1
+"""
+    Base.length(m::Group_Mod)
 
+Return the number of `Mod` in `m`
+"""
+Base.length(m::Group_Mod) = length(m.m)
 
+"""
+    Base.eltype(m::Group_Mod)
 
-#Base.push!(m1::Moduels{T} where T <: AbstractArray ,m2::Moduels{T} where T ) = push!(m1.m,m2.m) |> Moduels
-#split(m::Moduels{T} where T <: AbstractArray) = reshape([Moduels(i) for i in m.m],length(m),1);
+Return the type of the iterator
+"""
+Base.eltype(::Group_Mod{T}) where {T} = T

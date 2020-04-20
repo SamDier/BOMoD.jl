@@ -1,5 +1,3 @@
-
-
 @doc raw"""
 LevStehnoexp{T} <: Kernel
 The kernel for of the levensteindistance
@@ -8,7 +6,7 @@ The kernel for of the levensteindistance
 """
 
 struct LevStehnoexp{T} <: Kernel
-    s ::T
+    s::T
 end
 
 
@@ -38,3 +36,36 @@ ew(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where 
 
 pw(k::LevStehnoexp, x::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
 pw(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
+
+####
+#Cosine kernel
+####
+
+####
+#make vectors first
+####
+
+function myword2vec(word,letter2index)
+    word2vec = letter2index  |> t -> length(t) |> l-> zeros(l)
+    for letter in word
+        word2vec[letter2index[letter]] += 1
+    end
+    return word2vec
+end
+
+function cossim(xi,xj)
+    letter2index = Dict( letter => index for (index,letter) in enumerate(Set([xi...,xj...])))
+    xi_v = myword2vec(xi,letter2index)
+    xj_v = myword2vec(xj,letter2index)
+    return dot(xi_v,xj_v)/(norm(xi_v) * norm(xj_v))
+end
+
+struct CosStehno <: Kernel end
+
+
+ew(::CosStehno, x::AbstractVector{N} where N) = ones(length(x))
+ew(::CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = [cossim(xᵢ,xⱼ) for (xᵢ,xⱼ) in zip(x, x′)]
+
+
+pw(k:: CosStehno, x::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
+pw(k:: CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))

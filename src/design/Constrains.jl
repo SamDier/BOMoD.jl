@@ -1,13 +1,18 @@
-import Base: +
-
+#import Base: +
+"""
+    AbstractConstrains{T}
+Abstract type for all possible constructs
+"""
 abstract type AbstractConstrains{T} end
 
 """
-Constrains with effect on the element that are allow in the constructs
+    Element_Constrains{T}
+Abstract Constrains with effect on the element that are allow in the constructs
 """
 abstract type Element_Constrains{T} <: AbstractConstrains{T} end
 
 """
+    No_Constrain{T}
 If no constrain is given
 """
 
@@ -15,8 +20,107 @@ struct No_Constrain{T} <: Element_Constrains{T}
     con :: T
 end
 
+"""
+    Construct_Constrains{T}
+
+Constrains that are applicable on a generated construct.
+These can only be used in a filter with isn't very effiecent for large design space.
+"""
+abstract type Construct_Constrains{T} <: Element_Constrains{T} end
+
+"""
+    Single_Construct_Constrains{T}
+
+abstract type for one single constrain
+"""
+abstract type Single_Construct_Constrains{T} <: Construct_Constrains{T} end
+
+"""
+    UnOrdered_Constrain{T<:Mod}
+
+an unorder Constrain is a group of modules that can not co-occur in one construct.
+These group is given as:  ``Array{T,1} where T <: Mod``
+This constrain is unorder because the location of these models in the constructed is not considered
 
 
+for more information see [`filter_constrain`]@ref
+
+"""
+struct UnOrdered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
+    combination::Array{T}
+end
+
+"""
+    Ordered_Constrain{T<:Mod}
+
+Order Constrains a group of modules that can not co-occur in one construct if these modules are in a specific position.
+Order because the location of these models in the constructed is used in the evaluation of the constrain.
+
+These modules are given as ``Array{T} where T <: Mod``
+The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.
+
+for more information see [`filter_constrain`]@ref
+"""
+struct Ordered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
+    pos::Array{Int}
+    combination::Array{T}
+end
+
+
+"""
+Compose_Construct_Constrains{T} <: Construct_Constrains{T}
+
+Constrain that are applicable on a generated construct.
+These can only be used in a filter with isn't very effiecent for large design space.
+"""
+struct Compose_Construct_Constrains{T <: Single_Construct_Constrains} <: Construct_Constrains{T}
+    construct_con :: Array{T}
+end
+
+Base.eltype(K::Compose_Construct_Constrains{T}) where {T} = T
+
+
+# concentration of multiple constrains can be done using + sign
+
+"""
+    +(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing both constrains `con1` and `con2`.
+"""
+
+Base.:+(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains) = Compose_Construct_Constrains([con1,con2])
+
+"""
+    Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing where `con2` is add to the `con1`
+"""
+
+Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains) = Compose_Construct_Constrains([con1.construct_con;con2])
+
+"""
+    Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains)
+
+Returns a `Compose_Construct_Constrains` containing where `con1` is add to the `con2`
+"""
+Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains) = +(con2,con1)
+
+"""
+    Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N)
+
+Returns a `Compose_Construct_Constrains` concatenation of `con1` and `con2`
+"""
+Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N) = Compose_Construct_Constrains([con1.construct_con;con2.construct_con;])
+
+
+##################################
+# Code below has currently no application in the package, this will probably not change shortly
+# The idea is that for some constraints, we can prevent that unwanted constructs are generated, instead of generational filtering afterwards.
+# To allow this a special type was constructed and see how it good be implemented
+# No need to check, 
+#################################
+
+#=
 """
 space contrains has effect on how the space is repesanted without real evaluation of the constructs
 """
@@ -47,38 +151,7 @@ Base.:+(con1::Single_Space_Constrains,con2::Compose_Space_Constrain) = Compose_S
 
 Base.:+(con1::Compose_Space_Constrain,con2::Compose_Space_Constrain)  = Compose_space_Constrains([con1.space_con;con2.space_con])
 
-
-abstract type Construct_Constrains{T} <: Element_Constrains{T} end
-
-struct Compose_Construct_Constrains{T} <: Construct_Constrains{T}
-    construct_con :: AbstractArray{T}
-end
-
-abstract type Single_Construct_Constrains{T} <: Construct_Constrains{T} end
-
-struct UnOrdered_Constrain{T} <: Single_Construct_Constrains{T}
-    combination::Array{T}
-end
-
-
-struct Ordered_Constrain{T} <: Single_Construct_Constrains{T}
-    pos::Array{Int}
-    combination::Array{T}
-end
-
-
-Base.:+(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains) = Compose_Construct_Constrains([con1,con2])
-Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::N where N <: Single_Construct_Constrains) = Compose_Construct_Constrains([con1.construct_con;con2])
-Base.:+(con1::Single_Construct_Constrains,con2::Compose_Construct_Constrains) = +(con2,con1)
-Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_Constrains{N} where N) = Compose_Construct_Constrains([con1.construct_con;con2.construct_con;])
-
-
-#+(con1::Construct_Constrains,con2::Construct_Constrains...) = +(con1,+(con2...))
-
-#promote_rule(::Type{Ordered_Constrain}, ::Type{UnOrdered_Constrain{T}}) = Construct_Constrains
-
-
-
+Base.:+(con1::Element_Constrains,con2::Element_Constrains...) = +(con1,+(con2...))
 """
 Group all elementconstrains
 """
@@ -105,7 +178,7 @@ Base.:+(con1::Multipe_constrain,con2::Multipe_constrain) =  Multipe_constrain(co
 
 # fucntion(con1::Multipe_constrain,con2::Space_Constrains)
 
-Base.:+(con1::Element_Constrains,con2::Element_Constrains...) = +(con1,+(con2...))
+
 
 """
 Group length and constrains to one object
@@ -129,3 +202,4 @@ end
 
 group_len_constrain(con1::Len_Constrain,con2::Len_Constrain) = Group_Len_Constrain(Tuple(con1,con2))
 group_len_constrain(con1::Len_Constrain,con2::Len_Constrain...) = Group_Len_Constrain(Tuple(con1,Tuple(con2...)))
+=#

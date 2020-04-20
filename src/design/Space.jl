@@ -1,70 +1,50 @@
-import Base: getindex,iterate
-using Random: AbstractRNG
-
 abstract type AbstractSpace{T} end
 
-
-struct Multi_Space{T} <: AbstractSpace{T}
-    space::Array{T}
-end
-Base.length(d::Multi_Space) = length(d.space)
-
-function Base.iterate(d::Multi_Space, state = [1 1])
-    if state[1] > length(d)
-        return
-    end
-    current_space = d.space[state[1]]
-    if state[2] < _length(current_space,nothing)
-        i = current_space[state[2]]
-        state[2] += 1
-        return (i, state)
-    else
-        j = current_space[state[2]]
-        state[1] +=1
-        state[2] = 1
-        return (j,state)
-    end
-end
-Base.eltype(::Multi_Space) =  AbstractConstruct
-# special length, prevent printing of the warning
-Base.size(d::Multi_Space) = (length(d), map(x -> length(x,nothing),d.space) |> sum )
-
-
-function getindex(d::Multi_Space,index::Int , state = 1)
-    controle = _length(d.space[state],nothing)
-    if controle >= index
-        @inbounds return d.space[state][index]
-    else
-        getindex(d,index-controle,state+=1)
-    end
-end
-
 """
-Frame to generated effienct random Construct form the design space. If possible the given constrains are taken into account.
-This are indexalbe object to obtain repoduceble resultes every run.
-The full design space isn't constucted explisitly. The Eff frame space suggest that a effient way is used to allow constrains in the space
+    Eff_Space{T}  <: AbstractSpace{T}
+
+`Eff_Space{T}` are efficient design spaces.
+This means that implement function  `size`, `length`, `sample`, `getindex` can be used without the construction of all possible constructs in the space.
+Explicit calculation of al constructs is still possible.
 """
 
 abstract type Eff_Space{T}  <: AbstractSpace{T} end
 
+
 """
-Struct for ordered space without contrains to allow
+    Base.getindex(space::Eff_Space,i::Int)
+
+Returns the construct on the i-th possition in the design space.
 """
-struct Full_Ordered_space{T}<: Eff_Space{T}
-    space::T
-end
-Base.eltype(::Type{Eff_Space{T}}) where {T} = eltype(T)
-"""
-If the full design space is generated, Construct saved in AbstractArray
-"""
-struct Computed_Space{T} <: Eff_Space{T}
-    space::T
-end
 
 Base.getindex(space::Eff_Space,i::Int) = space.space[i]
-Base.eltype(::Eff_Space) = Ordered_Construct{T} where T
+"""
+    Base.getindex(space::Eff_Space,A::Array)
+
+Returns a vector of constructs out of `space` corresponding to the indices in `A`.
+"""
+Base.getindex(space::Eff_Space,A::Array) = map(i -> space.space[i], A)
+
+"""
+    Base.length(space::Eff_Space)
+
+Returns the number of constructs in the `space`.
+"""
 Base.length(space::Eff_Space) = length(space.space)
 
+"""
+    Base.size(space::Eff_Space)
+
+Returns a tuple with first the number of constructs in the `space` and second value 1.
+"""
+Base.size(space::Eff_Space) = (length(space.space),1)
+
+
+"""
+    Base.iterate(space::Eff_Space, state = 1)
+
+Creates iterater object for an `Eff_Space`.
+"""
 function Base.iterate(space::Eff_Space, state = 1 )
     if  state <= length(space)
         construct = space[state]
@@ -75,49 +55,212 @@ function Base.iterate(space::Eff_Space, state = 1 )
     end
 end
 
-function StatsBase.sample!(rng::AbstractRNG, space::Eff_Space,x::AbstractArray; with_index::Bool = false , replace::Bool=true, ordered::Bool=false)
-    index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
-    if with_index
-        return [[space.space[i] for i in index]  index]
-    else
-        return ([space.space[i] for i in index])
-    end
+
+"""
+    Full_Ordered_space{T}
+
+`Eff_Space{T}` space type for space filled with `Ordered_Construct` and without any constraints.
+"""
+struct Full_Ordered_space{T}<: Eff_Space{T}
+    space::KroneckerPower{T}
 end
 
-StatsBase.sample!(a::Eff_Space, x::AbstractArray; with_index::Bool = false, replace::Bool=true, ordered::Bool=false) =
-    sample!(Random.GLOBAL_RNG, a, x; whit_index = with_index, replace=replace, ordered=ordered)
+"""
+    Base.eltype(::Type{Full_Ordered_space{T}}) where {T}
 
-function StatsBase.sample(rng::AbstractRNG, a::Eff_Space, n::Integer; with_index::Bool = false,
-                replace::Bool=true, ordered::Bool=false)
-    sample!(rng, a, Vector{Int}(undef, n); with_index = with_index, replace=replace, ordered=ordered)
+Return the type of `Full_Ordered_space{T}` if they are collected
+"""
+
+
+Base.eltype(::Type{Full_Ordered_space{T}}) where {T} = Ordered_Construct{T}
+
+"""
+    Full_Unordered_space{T}
+
+`Eff_Space{T}` space type for space filled with `Unordered_Construct` and without any constraints
+"""
+struct Full_Unordered_space{T}<: Eff_Space{T}
+    space::Combination{T}
 end
-
-StatsBase.sample(a::Eff_Space, n::Integer;with_index::Bool = false, replace::Bool=true, ordered::Bool=false) =
-    sample(Random.GLOBAL_RNG, a, n; whit_index = with_index, replace=replace, ordered=ordered)
 
 
 """
-Frame to generated  random Construct form the design space. Constrains are taken into account. This are indexalbe object to obtain repoduceble resultes every run.
-The full design space isn't constucted explisitly. No effiencent way is used to do this so form most functialitys a Comuted space object is generated and used.
+    Base.eltype(::Type{Full_Unordered_space{T}}) where {T}
+
+Return the type of `Full_Unordered_space{T}` if they are collected
 """
-struct Frame_Space{T} <: AbstractSpace{T}
+
+Base.eltype(::Type{Full_Unordered_space{T}}) where {T} = Unordered_Construct{T}
+
+"""
+    Computed_Space{T}
+
+`Eff_Space{T}` space type for space where all constructs are explicitly generated.
+"""
+struct Computed_Space{T} <: Eff_Space{T}
     space::T
 end
 
-getindex(space::Frame_Space ,i::Int) = space.space[i]
-Base.iterate(space::Frame_Space, state = 1 ) = @warn "no effieciet iteration, first use getspace function to generated the full space"
+"""
+    Base.eltype(::Type{Computed_Space{T}}) where {T}
 
-function Base.length(space::Frame_Space)
-      y = length(space.space)
-      @info " $y is the maximual length (no constrains) , no effienct length calculation, generated construct for exact length"
-      return length(space.space)
+Return the type of `Computed_Space{T}` if they are collected
+"""
+
+Base.eltype(::Type{Computed_Space{T}}) where {T} = eltype(T)
+
+
+"""
+    Frame_Space{T, Tc <: Construct_Constrains}
+
+Structure generated for a space where no effiecent alterative is implented currently.
+The closed efficient design space is stored together with the uncheck constrains.
+"""
+
+struct Frame_Space{Ts <: Eff_Space{T} where T, Tc <: Construct_Constrains} <: AbstractSpace{Ts}
+    space::Ts
+    con::Tc
 end
 
-
-
-
+# getindex seem not very usefull in this case
+getindex(space::Frame_Space ,i::Int) = @warn "no efficient indexing, first use getspace function to generated the full space"
 
 """
-internal lenght, no warning printed
+    Base.iterate(space::Frame_Space, state = 1)
+
+Creates iterater object for an `Frame_Space`. Fitlers the no allow constructs
 """
-_length(space::AbstractSpace) = length(space.space)
+
+function Base.iterate(space::Frame_Space, state = 1 )
+    # make costruct
+
+    if  state > length(space.space)
+        return
+    end
+
+    construct = space.space[state]
+
+    #evaluated constrains
+    while filter_constrain(construct, space.con) == true
+        state += 1
+        if state > length(space.space)
+            return
+        end
+
+        construct = space.space[state]
+    end
+    #update state
+    state += 1
+
+    return (construct,state)
+
+end
+
+"""
+    Base.length(space::Frame_Space)
+
+Fallback to calculate the length Frame_Space.
+Inefficient calculation has tot iterated overall allowed constructs.
+"""
+
+function Base.length(space::Frame_Space)
+    @warn "No efficient calculation iterate to all allowed options to get the length"
+    len = 0
+    for i in space
+        len +=1
+    end
+
+    return len
+end
+
+"""
+    Base.eltype(K::Frame_Space{T}) where {T}
+
+Return the type of `Frame_Space{T}` if they are collected
+"""
+
+Base.eltype(K::Frame_Space{T}) where {T} = eltype(K.space)
+
+
+struct Multi_Space{T} <: AbstractSpace{T}
+    space::Array{T}
+    Multi_Space(space::Array) = promote_type([typeof(i) for i in space]...) |> x -> new{x}(space)
+end
+
+Base.eltype(::Multi_Space{T}) where {T} = eltype(T)
+
+"""
+    Base.length(space::Multi_Space)
+
+Returns the number of constructs in the `space`.
+"""
+Base.length(space::Multi_Space) = map(x -> length(x),space.space) |> sum
+
+"""
+    _nspace(space::Multi_Spac)
+
+Return the number of single space that are used to construct the whole `space`
+"""
+
+
+_nspace(space::Multi_Space) = length(space.space)
+
+"""
+    Base.size(space::Multi_Space)
+
+Returns a tuple of two numbers, the first position contains the number of constructs in the whole `space`.
+The second number is the number of single space that are construct the entire design space
+
+"""
+
+Base.size(space::Multi_Space) = (length(space), _nspace(space))
+
+# chained the signal iterators, can be done with Base.Iterators.flatten(space.space) but less consistent with other spaces.
+
+"""
+    Base.iterate(space::Multi_Space)
+
+Returns a tuple of two numbers, the first position contains the number of constructs in the `space`.
+The second number is the number of `sing` that are used to construct the entire design space
+
+"""
+
+function Base.iterate(space::Multi_Space, state = [1 1])
+
+    temp = iterate(space.space[state[1]],state[2])
+
+    if temp == nothing
+        state[1] += 1
+        if (state[1] <= _nspace(space))
+            temp = iterate(space.space[state[1]],1)
+            state[2] = temp[2]
+            return (temp[1],state)
+        else
+            return
+        end
+
+
+    else
+        state[2] = temp[2]
+        return (temp[1],state )
+    end
+end
+
+# special length, prevent printing of the warning
+
+
+
+function getindex(space::Multi_Space,i::Int)
+    @assert typeintersect(eltype(space),Frame_Space) != eltype(space) "Framespace don't have effiect indexing"
+    @assert length(space) >= i  "BoundsError index is to high "
+    return  _getindex(space,i, 1)
+end
+
+function _getindex(space::Multi_Space,index::Int, state = 1)
+    controle = length(space.space[state])
+    if controle >= index
+        @inbounds return space.space[state][index]
+    else
+        _getindex(space,index-controle,state+=1)
+    end
+end
