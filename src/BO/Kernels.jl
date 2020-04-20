@@ -1,19 +1,18 @@
 @doc raw"""
-LevStehnoexp{T} <: Kernel
-The kernel for of the levensteindistance
+    LevStehnoexp{T} <: Kernel
+
+The kernel for of the levenshteindistance
 `` k(x, x^\prime) = \exp(-levensthein(x_i,x_j))``
-
 """
-
 struct LevStehnoexp{T} <: Kernel
     s::T
 end
 
 
 """
-levensthein(xᵢ,xⱼ)
-dynamic calculations of the model the Levenstein distance between two vectors of modules
+    levensthein(xᵢ,xⱼ)
 
+Dynamic calculations of the Levenshtein distance between two vectors of modules.
 """
 function levenshtein(xᵢ, xⱼ)
     n, m = length(xᵢ), length(xⱼ)
@@ -53,12 +52,14 @@ function myword2vec(word,letter2index)
     return word2vec
 end
 
+#TODO: documentation?
 function cossim(xi,xj)
     letter2index = Dict( letter => index for (index,letter) in enumerate(Set([xi...,xj...])))
     xi_v = myword2vec(xi,letter2index)
     xj_v = myword2vec(xj,letter2index)
     return dot(xi_v,xj_v)/(norm(xi_v) * norm(xj_v))
 end
+
 
 struct CosStehno <: Kernel end
 
