@@ -1,9 +1,11 @@
+# FIXME: typo in function name `design_maxtrix` => `design_matrix`
 # make Toydata
 """
-design_maxtrix(subspace,moduels::Group_Mod)
+    design_maxtrix(subspace, moduels::Group_Mod)
 
 Generates the design matrix for the given subspace of constructs.
-The Designmatrix has n x p dimension where n is the number of constructs and p the number of modules.
+The Designmatrix has (n x p) dimension where `n` is the number of constructs and
+`p` the number of modules.
 Depending on the application it needs to be transposed.
 """
 
@@ -18,10 +20,13 @@ function design_maxtrix(subspace,moduels::Group_Mod)
     end
     return dm
 end
+
+# REVIEW this docstring
 """
-_design_vector(construct,dict_mod)
-internal function to genareted the design space
-generates the degign vector one construct.
+   _design_vector(construct,dict_mod)
+
+Internal function to genarete the design space.
+generates the design vector for one construct.
 """
 function _design_vector(construct,dict_mod)
     word2vec = zeros(length(dict_mod))
@@ -31,7 +36,7 @@ function _design_vector(construct,dict_mod)
 end
 
 """
-go2lab(rng,subspace,Toy_data ; repeat = 3 ,sigma = 1)
+    go2lab(rng, subspace, Toy_data ; repeat = 3 ,sigma = 1)
 
 Simulated the evaluation of constructs in the lab using the given Toy data set.
 This function wraps the evaluation of multiple constructs. The mean and standard deviation are returned:
@@ -39,7 +44,7 @@ This function wraps the evaluation of multiple constructs. The mean and standard
 [`_eval_con`](@ref)
 """
 
-function go2lab(rng,subspace,Toy_data ; repeat = 3 ,sigma = 1)
+function go2lab(rng, subspace, Toy_data; repeat=3 ,sigma=1)
     μ = Vector{Float64}(undef,length(subspace))
     σ = Vector{Float64}(undef,length(subspace))
     for (i,construct) in enumerate(subspace)
@@ -49,12 +54,12 @@ function go2lab(rng,subspace,Toy_data ; repeat = 3 ,sigma = 1)
     end
     return μ,σ
 end
+
 """
-ground_truth(construct,Toy_data)
+    ground_truth(construct, Toy_data)
 
 Calculates the true value of a construct given the Toy Data set.
 """
-
 ground_truth(construct,Toy_data) = sum([Toy_data[mod] for mod in construct])
 
 """
@@ -90,14 +95,15 @@ function BO_Lin_wrapper(constructs,activities,sigma,moduels)
 end
 
 """
-BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
+    BO_Lin_wrapper(constructs, activities, moduels, mw, Λw, Σ_noise)
+
 Wrapper fit a Bayesian linear regression model using the given constructs.
 Custom prior can be used in this case, if n = number of modules.
 Than mw = vector of mean values with length n
 Λw is the precision matrix nxn
 """
 
-function BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
+function BO_Lin_wrapper(constructs, activities, moduels, mw, Λw, Σ_noise)
     #setup of the prior
     f = BayesianLinearRegressor(mw, Λw)
     #make design Matrix
@@ -110,7 +116,8 @@ function BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
 end
 
 """
-BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
+    BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
+
 Wrapper fit a Bayesian linear regression model using the given constructs.
 Allow the model to update the prior base on the posterior of the previous model.
 """
@@ -122,23 +129,26 @@ function BO_Lin_wrapper(f_post,constructs,activities,sigma,moduels)
     Σ_noise = Diagonal(sigma)
     return BO_Lin_wrapper(constructs,activities,moduels,mw,Λw,Σ_noise)
 end
+
+#REVIEW: function not clear and too long, rework, you might use piping to make clear
 """
-make_predictions(Unseen_space, mod)
+    make_predictions(Unseen_space, mod)
 
 Wrapper function to make predictions using the model
 
 """
 make_predictions(Model_output,Unseen_space, mod) = mean.(marginals(Model_output(transpose(design_maxtrix(Unseen_space ,mod)),eps())))
 
+#FIXME: name should not start with capital letter
 """
-Linear_TS_sampling(f,moduels,constructs,n_samples,σ² = 10^-6)
+    Linear_TS_sampling(f,moduels,constructs,n_samples,σ² = 10^-6)
+
 Thomson sampler for linear models. Internally a design matrix is constructed.
 For more information see documentation or [`thompson_sampling`](@ref)
 
 """
-
 function Linear_TS_sampling(f,moduels,constructs,
-                n_samples,σ² = 10^-6)
+                n_samples, σ²=10^-6)
     @assert length(constructs) ≥ n_samples
     dm = transpose(design_maxtrix(constructs,moduels))
     # indices selected
@@ -154,17 +164,13 @@ function Linear_TS_sampling(f,moduels,constructs,
    return constructs[selected]
 end
 
-
-
 """
-model_linear(design,n_first,n_samples,Toy_data,n_cycles)
+    model_linear(design,n_first,n_samples,Toy_data,n_cycles)
 
 Wrapper to execute multiple cycles of the Optimisation process efficiently.
 A demonstration function only useful to multiple evaluated steps.
 Function you probably don't need.
-
 """
-
 function model_linear(design,n_first,n_samples,Toy_data,n_cycles)
     rng = MersenneTwister()
     # to save the output
@@ -194,8 +200,9 @@ end
 
 
 """
-model_random(design,n_first,n_samples,Toy_data,n_cycles)
-Simple random model to use as a baseline to compear with other models.
+    model_random(design,n_first,n_samples,Toy_data,n_cycles)
+
+Simple random model to use as a baseline to compare with other models.
 """
 function model_random(design,n_first,n_samples,Toy_data,n_cycles)
     rng = MersenneTwister()
@@ -218,12 +225,13 @@ function model_random(design,n_first,n_samples,Toy_data,n_cycles)
     return max_random
 end
 
-
+#FIXME: `Toy_data` => `toy_data`
 """
-update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
+    update_prior_model_linear(design, n_first, n_samples, Toy_data, n_cycles)
+
 Linear model that updates the posterior in every cycle
 """
-function update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
+function update_prior_model_linear(design, n_first, n_samples, Toy_data, n_cycles)
     rng = MersenneTwister()    # to save the output
     max_model = Vector{Float64}(undef,n_cycles)
     #first steps
@@ -257,8 +265,9 @@ function update_prior_model_linear(design,n_first,n_samples,Toy_data,n_cycles)
     return max_model
 end
 
+# FIXME: maybe a more indicative name?
 """
-make_plot(plt,max_values::Matrix; label="label",color = :blue)
+   make_plot(plt,max_values::Matrix; label="label",color = :blue)
 
 Generates the plots to compear different models.
 """

@@ -1,77 +1,96 @@
+#FIXME: it is `Constraints` with a "t", fix in file name and the names everywhere
+#NOTE: Not immediately clear what this does...
+
+#TODO: add explanations.
 #import Base: +
 """
     AbstractConstrains{T}
-Abstract type for all possible constructs
+
+Abstract type for all possible constructs.
 """
 abstract type AbstractConstrains{T} end
 
+# FIXME: using the style guide (https://docs.julialang.org/en/v1/manual/style-guide/index.html),
+# one uses `ElementConstrains` no underscores for types.
+
 """
     Element_Constrains{T}
-Abstract Constrains with effect on the element that are allow in the constructs
+
+Abstract Constrains with effect on the element that are allow in the constructs.
 """
 abstract type Element_Constrains{T} <: AbstractConstrains{T} end
 
+#FIXME: name
 """
     No_Constrain{T}
-If no constrain is given
-"""
 
+If no constrain is given.
+"""
 struct No_Constrain{T} <: Element_Constrains{T}
     con :: T
 end
 
+#FIXME: name
 """
     Construct_Constrains{T}
 
 Constrains that are applicable on a generated construct.
-These can only be used in a filter with isn't very effiecent for large design space.
+These can only be used in a filter with isn't very effiecent for large design
+space.
 """
 abstract type Construct_Constrains{T} <: Element_Constrains{T} end
 
+#FIXME: name
 """
     Single_Construct_Constrains{T}
 
-abstract type for one single constrain
+Abstract type for one single constrain. FIXME: constraint?
 """
 abstract type Single_Construct_Constrains{T} <: Construct_Constrains{T} end
 
+#FIXME: name
 """
     UnOrdered_Constrain{T<:Mod}
 
-an unorder Constrain is a group of modules that can not co-occur in one construct.
+an unorderedConstrain is a group of modules that cannot co-occur in one construct.
 These group is given as:  ``Array{T,1} where T <: Mod``
-This constrain is unorder because the location of these models in the constructed is not considered
+This constrain is unorder because the location of these models in the constructed
+is not considered
 
-
-for more information see [`filter_constrain`]@ref
-
+For more information see [`filter_constrain`]@ref
 """
 struct UnOrdered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
     combination::Array{T}
 end
+#FIXME: name
 
+#FIXME: name
+#FIXME: docstring not clear...
 """
     Ordered_Constrain{T<:Mod}
 
-Order Constrains a group of modules that can not co-occur in one construct if these modules are in a specific position.
-Order because the location of these models in the constructed is used in the evaluation of the constrain.
+Order Constrains a group of modules that can not co-occur in one construct if
+these modules are in a specific position.
+Order because the location of these models in the constructed is used in the
+evaluation of the constrain.
 
 These modules are given as ``Array{T} where T <: Mod``
 The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.
 
-for more information see [`filter_constrain`]@ref
+For more information see [`filter_constrain`]@ref.
 """
 struct Ordered_Constrain{T<:Mod} <: Single_Construct_Constrains{T}
     pos::Array{Int}
     combination::Array{T}
 end
 
-
+#FIXME: name
 """
-Compose_Construct_Constrains{T} <: Construct_Constrains{T}
+    Compose_Construct_Constrains{T}
 
 Constrain that are applicable on a generated construct.
-These can only be used in a filter with isn't very effiecent for large design space.
+These can only be used in a filter that is not very efficient for large design
+spaces.
 """
 struct Compose_Construct_Constrains{T <: Single_Construct_Constrains} <: Construct_Constrains{T}
     construct_con :: Array{T}
@@ -81,13 +100,12 @@ Base.eltype(K::Compose_Construct_Constrains{T}) where {T} = T
 
 
 # concentration of multiple constrains can be done using + sign
-
+#FIXME: name
 """
     +(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains)
 
 Returns a `Compose_Construct_Constrains` containing both constrains `con1` and `con2`.
 """
-
 Base.:+(con1::Single_Construct_Constrains,con2::Single_Construct_Constrains) = Compose_Construct_Constrains([con1,con2])
 
 """
@@ -117,7 +135,7 @@ Base.:+(con1::Compose_Construct_Constrains{T} where T, con2::Compose_Construct_C
 # Code below has currently no application in the package, this will probably not change shortly
 # The idea is that for some constraints, we can prevent that unwanted constructs are generated, instead of generational filtering afterwards.
 # To allow this a special type was constructed and see how it good be implemented
-# No need to check, 
+# No need to check,
 #################################
 
 #=
