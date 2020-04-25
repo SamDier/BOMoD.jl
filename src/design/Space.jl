@@ -1,49 +1,53 @@
+#FIXME: names! `Eff_Space` => `EffSpace`
+
 abstract type AbstractSpace{T} end
 
 """
     Eff_Space{T}  <: AbstractSpace{T}
 
-`Eff_Space{T}` are efficient design spaces.
-This means that implement function  `size`, `length`, `sample`, `getindex` can be used without the construction of all possible constructs in the space.
-Explicit calculation of al constructs is still possible.
+`Eff_Space{T}` is a type for efficient design spaces.
+This means that they implement the functions  `size`, `length`, `sample`,
+`getindex` can be used without the construction of all possible constructs in the
+space. Explicit calculation of all constructs is still possible.
 """
-
 abstract type Eff_Space{T}  <: AbstractSpace{T} end
 
 
 """
-    Base.getindex(space::Eff_Space,i::Int)
+    getindex(space::Eff_Space,i::Int)
 
 Returns the construct on the i-th possition in the design space.
 """
 
 Base.getindex(space::Eff_Space,i::Int) = space.space[i]
 """
-    Base.getindex(space::Eff_Space,A::Array)
+    getindex(space::Eff_Space,A::Array)
 
 Returns a vector of constructs out of `space` corresponding to the indices in `A`.
 """
 Base.getindex(space::Eff_Space,A::Array) = map(i -> space.space[i], A)
 
 """
-    Base.length(space::Eff_Space)
+    length(space::Eff_Space)
 
 Returns the number of constructs in the `space`.
 """
 Base.length(space::Eff_Space) = length(space.space)
 
+#NOTE: see my remarks on the need of `size`
 """
-    Base.size(space::Eff_Space)
+    size(space::Eff_Space)
 
-Returns a tuple with first the number of constructs in the `space` and second value 1.
+Returns a tuple with first the number of constructs in the `space` and second
+value 1.
 """
 Base.size(space::Eff_Space) = (length(space.space),1)
 
 
 """
-    Base.iterate(space::Eff_Space, state = 1)
+    iterate(space::Eff_Space, state = 1)
 
-Creates iterater object for an `Eff_Space`.
+Creates an iterater object for an `Eff_Space`.
 """
 function Base.iterate(space::Eff_Space, state = 1 )
     if  state <= length(space)
@@ -55,7 +59,7 @@ function Base.iterate(space::Eff_Space, state = 1 )
     end
 end
 
-
+#FIXME: names!
 """
     Full_Ordered_space{T}
 
@@ -66,14 +70,13 @@ struct Full_Ordered_space{T}<: Eff_Space{T}
 end
 
 """
-    Base.eltype(::Type{Full_Ordered_space{T}}) where {T}
+    eltype(::Type{Full_Ordered_space)
 
-Return the type of `Full_Ordered_space{T}` if they are collected
+Returns the type of `Full_Ordered_space{T}` if they are collected.
 """
-
-
 Base.eltype(::Type{Full_Ordered_space{T}}) where {T} = Ordered_Construct{T}
 
+#FIXME: names
 """
     Full_Unordered_space{T}
 
@@ -85,13 +88,13 @@ end
 
 
 """
-    Base.eltype(::Type{Full_Unordered_space{T}}) where {T}
+    eltype(::Type{Full_Unordered_space{T}}) where {T}
 
-Return the type of `Full_Unordered_space{T}` if they are collected
+Returns the type of `Full_Unordered_space{T}` if they are collected.
 """
-
 Base.eltype(::Type{Full_Unordered_space{T}}) where {T} = Unordered_Construct{T}
 
+#FIXME: names!
 """
     Computed_Space{T}
 
@@ -101,36 +104,35 @@ struct Computed_Space{T} <: Eff_Space{T}
     space::T
 end
 
+# QUESTION: should be 'when they are collected'?
 """
-    Base.eltype(::Type{Computed_Space{T}}) where {T}
+    eltype(::Type{Computed_Space)
 
-Return the type of `Computed_Space{T}` if they are collected
+Return the type of `Computed_Space` if they are collected.
 """
-
 Base.eltype(::Type{Computed_Space{T}}) where {T} = eltype(T)
 
 
 """
     Frame_Space{T, Tc <: Construct_Constrains}
 
-Structure generated for a space where no effiecent alterative is implented currently.
+Structure generated for a space where no efficient alterative is implented currently.
 The closed efficient design space is stored together with the uncheck constrains.
 """
-
 struct Frame_Space{Ts <: Eff_Space{T} where T, Tc <: Construct_Constrains} <: AbstractSpace{Ts}
     space::Ts
     con::Tc
 end
 
+#NOTE: not sure if you use `@warn` correctly, please check!
 # getindex seem not very usefull in this case
 getindex(space::Frame_Space ,i::Int) = @warn "no efficient indexing, first use getspace function to generated the full space"
 
 """
-    Base.iterate(space::Frame_Space, state = 1)
+    iterate(space::Frame_Space, state = 1)
 
-Creates iterater object for an `Frame_Space`. Fitlers the no allow constructs
+Creates iterater object for an `Frame_Space`. Filters the not allowed constructs
 """
-
 function Base.iterate(space::Frame_Space, state = 1 )
     # make costruct
 
@@ -157,13 +159,14 @@ function Base.iterate(space::Frame_Space, state = 1 )
 end
 
 """
-    Base.length(space::Frame_Space)
+    length(space::Frame_Space)
 
 Fallback to calculate the length Frame_Space.
 Inefficient calculation has tot iterated overall allowed constructs.
 """
 
 function Base.length(space::Frame_Space)
+    #NOTE: not sure if you use `@warn` correctly, please check!
     @warn "No efficient calculation iterate to all allowed options to get the length"
     len = 0
     for i in space
@@ -174,14 +177,13 @@ function Base.length(space::Frame_Space)
 end
 
 """
-    Base.eltype(K::Frame_Space{T}) where {T}
+    eltype(K::Frame_Space)
 
-Return the type of `Frame_Space{T}` if they are collected
+Returns the type of `Frame_Space{T}` if they are collected.
 """
-
 Base.eltype(K::Frame_Space{T}) where {T} = eltype(K.space)
 
-
+#FIXME: name
 struct Multi_Space{T} <: AbstractSpace{T}
     space::Array{T}
     Multi_Space(space::Array) = promote_type([typeof(i) for i in space]...) |> x -> new{x}(space)
@@ -190,7 +192,7 @@ end
 Base.eltype(::Multi_Space{T}) where {T} = eltype(T)
 
 """
-    Base.length(space::Multi_Space)
+    length(space::Multi_Space)
 
 Returns the number of constructs in the `space`.
 """
@@ -208,11 +210,10 @@ _nspace(space::Multi_Space) = length(space.space)
 """
     Base.size(space::Multi_Space)
 
-Returns a tuple of two numbers, the first position contains the number of constructs in the whole `space`.
-The second number is the number of single space that are construct the entire design space
-
+Returns a tuple of two numbers, the first position contains the number of
+constructs in the whole `space`. The second number is the number of single space
+that are construct the entire design space
 """
-
 Base.size(space::Multi_Space) = (length(space), _nspace(space))
 
 # chained the signal iterators, can be done with Base.Iterators.flatten(space.space) but less consistent with other spaces.
@@ -220,11 +221,10 @@ Base.size(space::Multi_Space) = (length(space), _nspace(space))
 """
     Base.iterate(space::Multi_Space)
 
-Returns a tuple of two numbers, the first position contains the number of constructs in the `space`.
-The second number is the number of `sing` that are used to construct the entire design space
-
+Returns a tuple of two numbers, the first position contains the number of
+constructs in the `space`. The second number is the number of `sing` that are
+used to construct the entire design space
 """
-
 function Base.iterate(space::Multi_Space, state = [1 1])
 
     temp = iterate(space.space[state[1]],state[2])
@@ -251,7 +251,8 @@ end
 
 
 function getindex(space::Multi_Space,i::Int)
-    @assert typeintersect(eltype(space),Frame_Space) != eltype(space) "Framespace don't have effiect indexing"
+    @assert typeintersect(eltype(space), Frame_Space) !=
+                    eltype(space) "Framespace don't have efficient indexing"
     @assert length(space) >= i  "BoundsError index is to high "
     return  _getindex(space,i, 1)
 end

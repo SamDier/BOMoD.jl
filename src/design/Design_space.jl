@@ -1,3 +1,5 @@
+#FIXME: `Design_Space` etc => `Design Space`
+
 ####
 # Moste complex code , can probebly be improved
 ####
@@ -15,18 +17,20 @@ abstract type Single_Design{T} <: AbstractDesign{T} end
 
 
 """
-    Ordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: AbstractSpace{T} where T} <: Single_Design{Tspace}
+    Ordered_Design
 
-Ordered space is where the possition in the construct has a functional role, the construct [a,b,c] is different compeared to [c,b,a].
-In the General case every module can be used infinted times.
+Ordered space is where the possition in the construct has a functional role, the
+construct [a,b,c] is different compeared to [c,b,a].
+In the General case every module can be used infinite number of times.
 
-# Arguments
-- `mod::AbstractMod`: The used moduels in this design
-- `len::Int` : The allowed length of the construct
-- `con::AbstractConstrains`:: The constrains of the design space
-- `space::AbstractSpace`:: Design space containing all constructs, if possible, these constructs are not explicitly generated.
+Fields:
+    - `mod::AbstractMod`: The used modules in this design
+    - `len::Int` : The allowed length of the construct
+    - `con::AbstractConstrains`: The constraints of the design space
+    - `space::AbstractSpace`: Design space containing all constructs, if
+                    possible, these constructs are not explicitly generated.
 """
-struct Ordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: AbstractSpace{T} where T} <: Single_Design{Tspace}
+struct Ordered_Design{Tm <: AbstractMod, Tcon <: AbstractConstrains,Tspace <: AbstractSpace{T} where T} <: Single_Design{Tspace}
     mod::Tm
     len::Int
     con::Tcon
@@ -34,25 +38,31 @@ struct Ordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: Abs
 end
 
 """
-    make_ordered_space(mod::Group_Mod,len::Int)
+    make_ordered_space(mod::Group_Mod, len::Int)
 
-The function generates all ordered constructs with given length and modules. The modules can be infinity redrawn.
-The constructs aren't explicitly generated.
-With the use of the Kronecker product, every construct can be made on the fly only on the moment it is required.
+The function generates all ordered constructs with given length and modules. The
+modules can be infinity redrawn. The constructs are not explicitly generated.
+With the use of the Kronecker product, every construct can be made on the fly
+only on the moment when it is required.
 """
-make_ordered_space(mod::Group_Mod,len::Int) =  reshape(mod.m,length(mod.m),1) |> (y -> len > 1 ? ⊗(y,len) : mod )
+make_ordered_space(mod::Group_Mod, len::Int) = reshape(mod.m, length(mod.m),1) |>
+                            (y -> len > 1 ? ⊗(y,len) : mod )
 
 
 """
-    Unordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: AbstractSpace{T} where T} <: Single_Design{Tspace}
+    Unordered_Design
 
-Unordered space is where the position in the construct has a non-functional role, the construct [a,b,c] is seen equal to [c,b,a], so only one of both will be generated.
-Al modules can only be used ones.
-# Arguments
-- `mod::AbstractMod`: The used moduels in this design
-- `len::Int` : The allowed length of the construct
-- `con::AbstractConstrains`:: The constrains of the design space
-- `space::AbstractSpace`:: Design space containing all constructs, if possible, these constructs are not explicitly generated.
+Unordered space is where the position in the construct has a non-functional role,
+the construct `[a,b,c]`` is seen as equal to [c,b,a], so only one of both will be
+generated.
+
+Al modules can only be used once.
+
+Fields:
+    - `mod::AbstractMod`: The used moduels in this design
+    - `len::Int`: The allowed length of the constructs
+    - `con::AbstractConstrains`: The constraints of the design space
+    - `space::AbstractSpace`: Design space containing all constructs, if possible, these constructs are not explicitly generated.
 """
 struct Unordered_Design{Tm <: AbstractMod,Tcon <: AbstractConstrains,Tspace <: AbstractSpace{T} where T} <: Single_Design{Tspace}
     mod::Tm
@@ -64,23 +74,24 @@ end
 """
     make_unordered_space(mod::Group_Mod,len::Int)
 
-The function generates all unordered constructs with given length and modules. Every module can only be used one single time in a construct.
+The function generates all unordered constructs with given length and modules.
+Every module can only be used one single time in a construct.
 The constructs aren't explicitly generated.
-With the use of the ``Combination`` structure, every construct can be made on the fly only on the moment it is required.
+With the use of the ``Combination`` structure, every construct can be made on
+the fly only on the moment it is required.
 """
-
-make_unordered_space(mod::Group_Mod,len::Int) =  len > 1 ? Combination(mod.m,len) : mod
+make_unordered_space(mod::Group_Mod, len::Int) =  len > 1 ? Combination(mod.m,len) : mod
 
 
 
 """
-    construct_design(mod::Group_Mod, len::Int ; con::No_Constrain = No_Constrain(nothing) , order::Bool = false)
+    construct_design(mod::Group_Mod, len::Int; con::No_Constrain = No_Constrain(nothing) , order::Bool = false)
 
 Returns a correct filled `Unordered_Design` with given input modules and desired length.
 If `order = true`, then an `Ordered_Design` is returned using the same input settings
 See [`Unordered_Design`](@ref) or [`Ordered_Design`](@ref)
 """
-function construct_design(mod::Group_Mod, len::Int ; order::Bool = false)
+function construct_design(mod::Group_Mod, len::Int; order::Bool = false)
     if order == true
         make_ordered_space(mod,len) |> Full_Ordered_space |> (y -> Ordered_Design(mod,len,No_Constrain(nothing),y))
     else
@@ -88,16 +99,20 @@ function construct_design(mod::Group_Mod, len::Int ; order::Bool = false)
     end
 end
 
-
+#FIXME: this function is too long for a one-liner
 # precomuted full space all other field are ignored, currently not used , manby usefull in the future.
 construct_design(Tspace::Computed_Space ; mod = Group_Mod(nothing), len = Len_Constrain(nothing), con = No_Constrain(nothing), order= false) =  order == true ?  Ordered_Design(mod,len,con,Tspace) : Unordered_Design(mod,len,con,Tspace)
 
 """
-    construct_design(mod::Group_Mod, len::Int, con::Construct_Constrains ; order = false)
+    construct_design(mod::Group_Mod, len::Int, con::Construct_Constrains; order = false)
 
-Returns a correct filled `Unordered_Design` with given input modules and desired length.
-The constraints are attributed and evaluated if they are useful for the given constructed type.
-Ordered constraints are only helpful if  `order = true`, then an `Ordered_Design` is returned
+Returns a correct filled `Unordered_Design` with given input modules and desired
+length. The constraints are attributed and evaluated if they are useful for the
+given constructed type.
+
+Ordered constraints are only helpful if  `order = true`, then an `Ordered_Design`
+is returned.
+
 See [`Unordered_Design`](@ref) or [`Ordered_Design`](@ref)
 """
 function construct_design(mod::Group_Mod, len::Int, con::Construct_Constrains{T} where T; order = false)

@@ -1,13 +1,19 @@
+
+# FIXME: Combinatroics.jl => Combinatrorics.jl
+# FIXME Combinatroics => Combinatroics elsewhere in the file as well
+
 abstract type Combinatroics{T} <: AbstractArray{T,1} end
 
 
 """
     Combination{T} <: Combinatroics{T}
 
-Structure to generated all Combinations of the given moduels with given length
-low_level structure that a user don't need to use normaly
-mod = Array with modulels or where combination can be generated from
-len = lenght of the made constructs
+Structure to generate all combinations of the given modules with given length
+low_level structure that a user do not need to use, normaly
+
+Fields:
+    - `mod`: Array with modulels or where combination can be generated from
+    - `len`: lenght of the made constructs
 """
 struct Combination{T} <: Combinatroics{T}
     mod::Array{T}
@@ -16,28 +22,30 @@ end
 
 # base types of
 Base.length(c::Combination) = binomial(length(c.mod),c.len);
-Base.size(c::Combination) = (length(c),1);
+Base.size(c::Combination) = (length(c),1);  #NOTE: I think size does not make sense for your purposes, consider removing
+#NOTE: returning (n, 1) size also does not make sense....
 #Base.eltype(K::Combination{T}) where {T} = Unordered_Construct{N} where N <: eltype(T) ;
 Base.eltype(K::Combination{T}) where T = Unordered_Construct{T} ;
 
+#REVIEW: this function is quite complex, maybe split?
 """
-    Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
+    iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
 
-Iterater for Combinations, printed in lexicografical order.
+Iterater for Combinations, printed in lexicographical order.
 """
 function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
+    #FIXME: `max` is also a function, rather use `n`?
     max = length(c.mod)
 
     if c.len == 1 # special case len = 1 ( needed?)
         if state[1] <= max
             construct = [c.mod[state[1]]]
             state[1] +=1
-            return (Unordered_Construct(construct),state)
+            return (Unordered_Construct(construct), state)
         else
             return
         end
     end
-
     # check when done, last constructed is printed
     if state[1] > max
         return nothing
@@ -64,12 +72,12 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
 end;
 
 """
-    _restate(state,i)
+    _restate(state, i)
 
 Update state at index i and reset all values behind to lowsted allow values.
 function used in the Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1])
 """
-function _restate(state,i)
+function _restate(state, i)
     state[i] +=1;
     state[(i+1):end] = collect(length(state)-i:-1:1);
     return state
