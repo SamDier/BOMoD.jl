@@ -1,8 +1,8 @@
 @testset "Samplers" begin
 
-    mt_String_array = group_mod(["b", "a", "c","e","d"])
+    mt_String_array = groupmod(["b", "a", "c","e","d"])
 
-    first_design =construct_design(mt_String_array,3,order=true)
+    first_design =constructdesign(mt_String_array,3,order=true)
     test_space = first_design.space
 
     rng = MersenneTwister()
@@ -29,8 +29,8 @@
         # collect works
     end
 
-    Unordered_con_c_e = UnOrdered_Constrain([Mod("c") , Mod("e")])
-    constrained_design = construct_design(mt_String_array,3,Unordered_con_c_e,order=true)
+    Unordered_con_c_e = UnOrderedConstraint([Mod("c") , Mod("e")])
+    constrained_design = constructdesign(mt_String_array,3,Unordered_con_c_e,order=true)
     test_space2 = constrained_design.space
     n_samples2 = rand(1:10)
     a_sample2 = sample(rng,test_space,n_samples2)
@@ -44,6 +44,6 @@
         for i in a_sample
             @test (Mod("c") in a_sample && Mod("e") in a_sample) == false
         end
-    end 
+    end
 
 end

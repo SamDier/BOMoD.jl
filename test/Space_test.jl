@@ -1,9 +1,9 @@
 @testset "Space" begin
         # make space
-    mt_String_array = group_mod(["b", "a", "c","c","e","d"])
+    mt_String_array = groupmod(["b", "a", "c","c","e","d"]);
 
-    first_design =construct_design(mt_String_array,3,order = true)
-    test_space = getspace(first_design)
+    first_design =constructdesign(mt_String_array,3,order = true);
+    test_space = getspace(first_design);
     index = rand(1:125);
 
     @testset "Full_orderd_space" begin
@@ -20,8 +20,8 @@
         @test (test_space[index][1] == collect(test_space)[index][1]) && (test_space[index][2] == collect(test_space)[index][2]) && (test_space[index][3] == collect(test_space)[index][3]) == true
     end
 
-    first_design2 = construct_design(mt_String_array,3)
-    test_space_2 =  getspace(first_design2)
+    first_design2 = constructdesign(mt_String_array,3);
+    test_space_2 =  getspace(first_design2);
     index = rand(1:10)
 
     @testset "Full_unorderd_space" begin
@@ -35,8 +35,8 @@
         @test Set(test_space_2[index]) == Set(collect(test_space_2)[index])
     end
 
-    con = UnOrdered_Constrain([Mod("c") , Mod("e")])
-    first_design_3 = construct_design(mt_String_array,3,con)
+    con = UnOrderedConstraint([Mod("c") , Mod("e")])
+    first_design_3 = constructdesign(mt_String_array,3,con)
     test_space_3 =  getspace(first_design_3)
 
     @testset "Frame_space" begin

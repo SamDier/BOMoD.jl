@@ -8,7 +8,7 @@ using StatsBase
     include("Mod_test.jl")
     include("Filter_test.jl")
     include("Space_test.jl")
-    include("Constrain_test.jl")
+    include("Constraint_test.jl")
     include("Combination_test.jl")
     include("Constructs_test.jl")
 end

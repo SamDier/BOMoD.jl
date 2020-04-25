@@ -22,19 +22,19 @@
         @test mt_a |> length == 1
     end
 
-    Group_Mod_test = Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e])
-    Group_Mod_test_order = Group_Mod([mt_b,mt_a,mt_c,mt_d,mt_e,mt_c])
+    Group_Mod_test = GroupMod([mt_a,mt_b,mt_c,mt_d,mt_e])
+    Group_Mod_test_order = GroupMod([mt_b,mt_a,mt_c,mt_d,mt_e,mt_c])
 
     @testset "Group_mod" begin
         @test Group_Mod_test_order.m == Group_Mod_test.m
     end
 
     @testset "group_mod" begin
-        @test group_mod(["b", "a", "c","c","e","d"]).m == Group_Mod([mt_a,mt_b,mt_c,mt_d,mt_e]).m
-        @test group_mod([:b, :a, :c,:c,:e,:d]).m == Group_Mod([Mod(:a),Mod(:b),Mod(:c),Mod(:d),Mod(:e)]).m
+        @test groupmod(["b", "a", "c","c","e","d"]).m == GroupMod([mt_a,mt_b,mt_c,mt_d,mt_e]).m
+        @test groupmod([:b, :a, :c,:c,:e,:d]).m == GroupMod([Mod(:a),Mod(:b),Mod(:c),Mod(:d),Mod(:e)]).m
     end
 
-    mt_String_array = group_mod(["b", "a", "c","c","e","d"])
+    mt_String_array = groupmod(["b", "a", "c","c","e","d"])
     @testset "length" begin
         @test length(mt_String_array) == 5
         @test length(Mod("a")) == 1
