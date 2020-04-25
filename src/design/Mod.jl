@@ -46,16 +46,16 @@ Extensions of ``Base.length`` for modules of type ``Mod``
 Base.length(mod1::Mod) = 1
 
 """
-    Group_Mod{N <: Mod{T} where T}
+    GroupMod{N <: Mod{T} where T}
 
 Structure to group multiple modules.
 The input values are first filtered to prevent duplicated modules.
 Afterwards, the modules are sorted to give consistent results even if modules are
 oad in a different order.
 """
-struct Group_Mod{N <: Mod{T} where T} <: AbstractMod{N}
+struct GroupMod{N <: Mod{T} where T} <: AbstractMod{N}
     m::Array{N}
-    Group_Mod(m) =  m |> Set |> collect |> sort |> (y -> new{eltype(m)}(y))
+    GroupMod(m) =  m |> Set |> collect |> sort |> (y -> new{eltype(m)}(y))
 end
 
 """
@@ -75,15 +75,15 @@ isa(grouped_mods,Group_Mod)
 true
 ```
 """
-group_mod(input::Array{T} where T) = Group_Mod([Mod(newmod) for newmod in input])
+groupmod(input::Array{T} where T) = GroupMod([Mod(newmod) for newmod in input])
 
 """
-    iterate(Group::Group_Mod,state =1 )
+    iterate(Group::GroupMod,state =1 )
 
 Extensions of ``Base.iterate`` for modules of type ``Group_Mod``
 for more infromation [see](https://docs.julialang.org/en/v1/manual/interfaces/)
 """
-function Base.iterate(Group::Group_Mod,state =1 )
+function Base.iterate(Group::GroupMod,state =1 )
     if  state <= length(Group.m)
         mod = Group.m[state]
         state += 1
@@ -94,15 +94,15 @@ function Base.iterate(Group::Group_Mod,state =1 )
 end
 
 """
-    length(m::Group_Mod)
+    length(m::GroupMod)
 
 Returns the number of `Mod` in `m`.
 """
-Base.length(m::Group_Mod) = length(m.m)
+Base.length(m::GroupMod) = length(m.m)
 
 """
-    eltype(m::Group_Mod)
+    eltype(m::GroupMod)
 
 Returns the type of the iterator.
 """
-Base.eltype(::Group_Mod{T}) where {T} = T
+Base.eltype(::GroupMod{T}) where {T} = T
