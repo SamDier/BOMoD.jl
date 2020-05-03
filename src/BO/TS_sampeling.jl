@@ -69,3 +69,17 @@ function thompson_sampling_fast(f, x::AbstractVector,
    end
    return (x[selected],selected)
 end
+
+"""
+    expect_imp(µ,sigma,fmax,sigma_min;ϵ = 0)
+
+expected improvement for a 1-D gaussianprocces.
+"""
+
+function expect_imp(µ,sigma,fmax,sigma_min;ϵ = 0)
+        Z = z(µ,sigma,fmax,ϵ)
+        EX_I = ((μ .- fmax) .*cdf.(Normal(),Z)) .+ sigma.* pdf.(Normal(),Z)
+        return EX_I
+end
+
+z(μ,sigma,fmax,ϵ) =  (μ .- fmax.-ϵ) ./ sigma
