@@ -1,3 +1,15 @@
+
+#test _word2vector
+mod = sort(["a","b","c","d"])
+dict_mod = Dict( j => i for (i,j) in enumerate(mod))
+@testset "_word2vector" begin
+    @test _word2vec(["a","b","c","d"],dict_mod) == [1,1,1,1]
+    @test _word2vec(["b","b","c","d"],dict_mod) == [0,2,1,1]
+    @test _word2vec(["b","b","c","c"],dict_mod) == [0,2,2,0]
+    @test _word2vec(["a","c","c","d"],dict_mod) == [1,0,2,1]
+end
+
+# test levenshteindistance
 s1 = ["a","b","c","d"]
 s2 = ["b","b","c","d"]
 s3 = ["b","b","c","c"]
@@ -9,28 +21,31 @@ s6 = ["b","b","b","d"]
 s7 = ["a","a","c","c"]
 s8 = ["d","c","c","d"]
 x2 = [s5,s6,s7,s8]
-testkernel = EditDistancesKernel(Levenshtein)
+
+
+testkernel = EditDistancesKernel(Levenshtein())
 #expexted output for custum ew
-ew_test = exp.[-evaluate(Levenshtein(),s1,s5),-evaluate(Levenshtein(),s2,s6),-evaluate(Levenshtein(),s3,s7),-evaluate(Levenshtein(),s1,s8)]
+ew_test = exp.([-evaluate(Levenshtein(),s1,s5)
+    ,-evaluate(Levenshtein(),s2,s6),
+    -evaluate(Levenshtein(),s3,s7),
+    -evaluate(Levenshtein(),s4,s8)])
 
-pw_test1 = Array{Float64,2}(undef,4,4)
-for i,si in enumerate(x1)
-    for j,sj in  enumerate(x2)
-        pw_test1[i,j] = -evaluate(Levenshtein(),si,sj)
-    end
-end
 
-pw_test2= Array{Float64,2}(undef,4,4)
-for i,si in enumerate(x1)
-    for j,sj in  enumerate(x1)
-        pw_test2[i,j] = -evaluate(Levenshtein(),si,sj)
-    end
-end
 
-for i in 1:length(x1)
 @testset "Editdistance" begin
-    @test map(x -> exp.(-evaluate(Levenshtein(),x,x),x1)) == ew(testkernel,x1)
+    @test map(x -> exp(-evaluate(Levenshtein(),x,x)),x1) == ew(testkernel,x1)
     @test ew_test == ew(testkernel,x1,x2)
-    @test pw_test1 == pw(testkernel,x1)
-    @test pw_test2 = pw(testkernel,x1,x2)
+    @test  Grammatrix_levenstein(x1,x1)== pw(testkernel,x1)
+    @test  Grammatrix_levenstein(x1,x2) == pw(testkernel,x1,x2)
+end
+
+#test cossim
+testkernel2 = CosStehno()
+v1 = [[1,1,1,1],[0,2,1,1],[0,2,2,0],[1,0,2,1]]
+v2 = [_word2vec(i,dict_mod) for i in x2]
+@testset "cossim" begin
+    @test map(x -> (1-cosine_dist(x,x)) ,v1) ≈ ew(testkernel2,x1)
+    @test [(1-cosine_dist(i,j)) for (i,j) in zip(v1,v2)] ≈ ew(testkernel2,x1,x2)
+    @test  Grammatrix_cossine(x1,x1,dict_mod) ≈ pw(testkernel2,x1)
+    @test  Grammatrix_cossine(x1,x2,dict_mod) ≈ pw(testkernel2,x1,x2)
 end
