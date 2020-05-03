@@ -9,15 +9,18 @@ module BOMoD
     using Distributions
     using DataFrames
     using Plots
+    using Distances
+    using StringDistances
     #using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
 
 
 
-    import Base: +, *, getindex,length, eltype,isequal,isless,push!,in
+    import Base: +, *, == ,getindex,length, eltype,isequal,isless,push!,in,show
     import Stheno: ew,pw,Kernel
-    import LinearAlgebra: norm, eigvals!, Diagonal
+    import LinearAlgebra: norm, eigvals!, Diagonal,dot
     import Optim: minimizer
     import StatsBase: sample
+
 
 
     export Mod, GroupMod , groupmod ,getspace
