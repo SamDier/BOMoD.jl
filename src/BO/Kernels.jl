@@ -70,3 +70,50 @@ ew(::CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) =
 
 pw(k:: CosStehno, x::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
 pw(k:: CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
+
+##
+@doc raw"""
+    EditDistancesKernel{T} <: Kernel
+
+The kernel for the edit distances diffiend in the [StringDistances.jl]@ref(https://github.com/matthieugomez/StringDistances.jl) package.
+`` k(x, x^\prime) = \exp(-distance(x_i,x_j))``
+"""
+struct EditDistancesKernel{T <: SemiMetric } <: Kernel
+    d::T
+end
+
+
+"""
+    ew(k::EditDistancesKernel, x::AbstractVector)
+
+Internal function to fit the `EditDistancesKernel` into the Stheno framework.
+More information can be found on [Stheno]@ref(https://github.com/willtebbutt/Stheno.jl)
+"""
+
+ew(k::EditDistancesKernel, x::AbstractVector) = exp.(-ones(lenght(x)))
+
+"""
+    ew(k::EditDistancesKernel, x::AbstractVector, x′::AbstractVector)
+
+Internal function to fit the `EditDistancesKernel` into the Stheno framework.
+More information can be found on [Stheno]@ref(https://github.com/willtebbutt/Stheno.jl)
+"""
+
+ew(k::EditDistancesKernel, x::AbstractVector, x′::AbstractVector) = [exp(-evaluate(k.d,xᵢ,xⱼ)) for (xᵢ,xⱼ) in zip(x, x′)]
+
+"""
+    ew(k::EditDistancesKernel, x::AbstractVector)
+
+Internal function to fit the `EditDistancesKernel` into the Stheno framework.
+More information can be found on [Stheno]@ref(https://github.com/willtebbutt/Stheno.jl)
+"""
+
+pw(k::EditDistancesKernel, x::AbstractVector) = reshape([exp(-evaluate(k.d,xᵢ,xⱼ)) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
+"""
+    ew(k::EditDistancesKernel, x::AbstractVector)
+
+Internal function to fit the `EditDistancesKernel` into the Stheno framework.
+More information can be found on [Stheno]@ref(https://github.com/willtebbutt/Stheno.jl)
+"""
+
+pw(k::EditDistancesKernel, x::AbstractVector, x′::AbstractVector) = reshape([exp(-evaluate(k.d,xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
