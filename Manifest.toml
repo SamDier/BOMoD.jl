@@ -548,6 +548,12 @@ git-tree-sha1 = "ff6a642fc3e27711af0ed925048ce793ebc7a0be"
 uuid = "8188c328-b5d6-583d-959b-9690869a5511"
 version = "0.6.3"
 
+[[StringDistances]]
+deps = ["Distances"]
+git-tree-sha1 = "d481aa2052d9be659e146eba285ed10c5fb7133a"
+uuid = "88034a9c-02f8-509d-84a9-84ec65e18404"
+version = "0.6.4"
+
 [[SuiteSparse]]
 deps = ["Libdl", "LinearAlgebra", "Serialization", "SparseArrays"]
 uuid = "4607b0f0-06f3-5cda-b6b1-a6196a1729e9"
