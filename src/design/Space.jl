@@ -11,7 +11,23 @@ space. Explicit calculation of all constructs is still possible.
 """
 abstract type EffSpace{T}  <: AbstractSpace{T} end
 
+"""
+  Base.summary(io::IO, a::EffSpace)
 
+provoides a summary of `a`
+"""
+function Base.summary(io::IO, a::EffSpace)
+    space_type,n = typeof(a),length(a)
+    print(io,"$n-element $space_type")
+end
+
+function Base.show(io::IO,a::EffSpace)
+    print("summary of space:\n")
+    space_type,construct_type,n = typeof(a),eltype(a),length(a)
+    print()
+    print(io," spacetype| $space_type \n generted constructs| $construct_type \n n_consturcts| $n")
+    _show(a)
+end
 """
     getindex(space::EffSpace,i::Int)
 
@@ -60,6 +76,19 @@ struct FullOrderedspace{T}<: EffSpace{T}
 end
 
 """
+    _show(a::FullOrderedspace)
+
+specific part of `show(io::IO,a::EffSpace)` for `FullOrderedspace`
+"""
+function _show(a::FullOrderedspace)
+    print("order| true ")
+    first_constructs = a[1:3]
+    last_constructs = a[end]
+    print("first_constructs| $first_constructs\n    .   \n    .   \n    . \n $last_constructs ")
+end
+
+
+"""
     eltype(::Type{FullOrderedspace)
 
 Returns the type of `FullOrderedspace{T}` if they are collected.
@@ -76,6 +105,18 @@ struct FullUnorderedspace{T}<: EffSpace{T}
     space::Combination{T}
 end
 
+"""
+    _show(a::FullUnorderedspace)
+
+specific part of `show(io::IO,a::EffSpace)` for `FullOrderedspace`
+"""
+function _show(a::FullOrderedspace)
+    print("order: is true ν")
+    first_constructs = a[1].c
+    print("first construct is = $first_constructs")
+end
+
+
 
 """
     eltype(::Type{FullUnorderedspace{T}}) where {T}
@@ -84,6 +125,12 @@ Returns the type of `FullUnorderedspace{T}` if they are collected.
 """
 Base.eltype(::Type{FullUnorderedspace{T}}) where {T} = UnorderedConstruct{T}
 
+
+function _show(a::FullOrderedspace)
+    print("order: is true ν")
+    first_construct = a[1].c
+    print("first construct is = first_construct")
+end
 
 """
     ComputedSpace{T}
