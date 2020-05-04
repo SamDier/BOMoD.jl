@@ -42,7 +42,7 @@ module BOMoD
     include(joinpath("design", "Designspace.jl"))
     include(joinpath("design", "Sample.jl"))
     #BO
-    include(joinpath("BO", "Hyperopt.jl"))
+    include(joinpath("BO", "Hyper_opt.jl"))
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "TSsampeling.jl"))
     #linearmodel

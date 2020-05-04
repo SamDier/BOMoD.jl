@@ -1,10 +1,42 @@
+####
+#make vectors first
+####
+
+
+"""
+   _word2vector(construct,dict_mod)
+
+Returns the vector embedding of a give `construct` where the
+length equals the number of modules in dict_mod. The occurrence of every model is counted.
+Afterwards, these numbers are stored in a vector ad the correct index.
+The corresponding index of every construct is stored in`dict_mod`.
+"""
+function _word2vec(construct,dict_mod)
+    word2vec = zeros(Int,length(dict_mod))
+    for mod in construct
+        word2vec[dict_mod[mod]]+=1
+    end
+    return word2vec
+end
+"""
+    _word2vec(construct,mod::GroupMod)
+
+Returns the vector embedding of a give `construct` where the
+length equals the number of modules in dict_mod. The occurrence of every model is counted.
+Afterwards, these numbers are stored in a vector ad the correct index.
+The corresponding index of every construct is stored in`dict_mod`.
+"""
+function _word2vec(construct,mod::GroupMod)
+    dict_mod = Dict(mod.m .=> collect(1:length(mod.m)))
+    _word2vec(construct,dict_mod)
+end
+
+
+
+
 
 ####
 #Cosine kernel
-####
-
-####
-#make vectors first
 ####
 
 @doc raw"""
@@ -18,9 +50,9 @@ and then between the obtained vectors the cosine similarity.
 """
 
 function cossim(xᵢ,xⱼ)
-    letter2index = Dict( letter => index for (index,letter) in enumerate(Set([xi...,xj...])))
-    xi_v = _word2vector(xi,letter2index)
-    xj_v = _word2vector(xj,letter2index)
+    letter2index = Dict( letter => index for (index,letter) in enumerate(Set([xᵢ;xⱼ])))
+    xi_v = _word2vec(xᵢ,letter2index)
+    xj_v = _word2vec(xⱼ,letter2index)
     return dot(xi_v,xj_v)/(norm(xi_v) * norm(xj_v))
 end
 
@@ -35,7 +67,9 @@ ew(::CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) =
 pw(k:: CosStehno, x::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
 pw(k:: CosStehno, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([cossim(xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
 
-##
+###
+#EditDistancesKernel
+###
 @doc raw"""
     EditDistancesKernel{T} <: Kernel
 
@@ -81,44 +115,3 @@ More information can be found on [Stheno]@ref(https://github.com/willtebbutt/Sth
 """
 
 pw(k::EditDistancesKernel, x::AbstractVector, x′::AbstractVector) = reshape([exp(-evaluate(k.d,xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
-
-
-@doc raw"""
-    LevStehnoexp{T} <: Kernel
-
-The kernel for of the levenshteindistance
-`` k(x, x^\prime) = \exp(-levensthein(x_i,x_j))``
-"""
-struct LevStehnoexp{T} <: Kernel
-    s::T
-end
-
-#=
-
-"""
-    levensthein(xᵢ,xⱼ)
-
-Dynamic calculations of the Levenshtein distance between two vectors of modules.
-"""
-function levenshtein(xᵢ, xⱼ)
-    n, m = length(xᵢ), length(xⱼ)
-    lev = zeros(Int, n+1, m+1)
-    lev[:,1] = 0:n
-    lev[1,:] = 0:m
-    for j in 1:m
-        for i in 1:n
-            lev[i+1, j+1] = min(
-                lev[i, j+1] + 1,
-                lev[i+1, j] + 1,
-                xᵢ[i]==xⱼ[j] ? lev[i, j] : lev[i, j] + 1
-            )
-        end
-    end
-    return last(lev)
-end
-ew(k::LevStehnoexp, x::AbstractVector{N} where N) = exp.(-k.s .*zeros(length(x)))
-ew(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = [exp(-k.s*levenshtein(xᵢ,xⱼ)) for (xᵢ,xⱼ) in zip(x, x′)]
-
-pw(k::LevStehnoexp, x::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
-pw(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
-#=

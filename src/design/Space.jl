@@ -22,11 +22,9 @@ function Base.summary(io::IO, a::EffSpace)
 end
 
 function Base.show(io::IO,a::EffSpace)
-    print("summary of space:\n")
+    print(io,"summary of space:\n")
     space_type,construct_type,n = typeof(a),eltype(a),length(a)
-    print()
     print(io," spacetype| $space_type \n generted constructs| $construct_type \n n_consturcts| $n")
-    _show(a)
 end
 """
     getindex(space::EffSpace,i::Int)

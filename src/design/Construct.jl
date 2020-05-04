@@ -205,3 +205,4 @@ the end of the construct in the first argument position
 Evaluates if two `UnorderedConstruct` are equal.
 """
 Base.isequal(c1::UnorderedConstruct, c2::UnorderedConstruct) = isequal(Set(c1.c),Set(c2.c))
+==(c1::UnorderedConstruct, c2::UnorderedConstruct) = Set(c1.c) == Set(c2.c) 
