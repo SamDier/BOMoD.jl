@@ -6,8 +6,8 @@ Start of Combinatorial problem terms need to be clarified
 2) **A Construct:**  Made from combinations of modules.
 3) **A constrain:** A specific combination of elements that is not allowed in the constructs.
 4) **A Space:**: A container that contains all constructs that can be made form the given modules. Generally, a Space explicitly calculated and all allow constructs are made. In special case generation of all construct is not required.
-5)** Lenght**: The length of all constructs in the space.
-5)** Design** Groups the above features: A design consist of a specific group of moduels, constrains and has one given length. Given these futures, the "Design space" can be constructed with all allowed constructs
+5)**Lenght**: The length of all constructs in the space.
+5)**Design** Groups the above features: A design consist of a specific group of moduels, constrains and has one given length. Given these futures, the "Design space" can be constructed with all allowed constructs
 
 ## Set up the design space:
 
