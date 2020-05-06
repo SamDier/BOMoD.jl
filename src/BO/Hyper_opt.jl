@@ -1,7 +1,10 @@
 ##########################
 #Wrapper Stheno GP modeles
 ##########################
-
+####
+#output structs
+####
+#=
 struct Hyperparmeter{T} <: AbstractVector{T}
         parm::Vector{T}
 end
@@ -9,13 +12,28 @@ end
 Base.length(p::Hyperparmeter) = length(p.parm)
 Base.size(p::Hyperparmeter) = (length(p.parm),1)
 Base.getindex(p::Hyperparmeter,i) = p.parm[i]
+=#
+"""
+        GPModel{T <: Any}
 
-struct GPModel{T <: Any}
-        f̂::T
+Struct to store fitted model with given Kernel K and hyperparmeters θ
+"""
+
+struct GPModel{Tf <: Any, Ts <: Any}
+        f̂::Tf
         K::Kernel
-        θ::Dict{String,Float64}
+        θ::Dict{String,Ts}
 end
 
+"""
+        GPModel{T <: Any}
+
+Struct to store precitions of the model en used input points
+"""
+struct GPpredict{Tf <: Any,Tx<: Any}
+        f̂::Tf
+        x_test::Tx
+end
 ######
 #Kernel specific funtions
 ######
@@ -27,7 +45,7 @@ end
 function _creatGP(k::Linear, α)
         @assert length(α) == 1 "Linear Kernel has only one hyperparamter, α"
         fGP = α[1]* GP(k, GPC())
-        return (fGP,Dict{String,Float64}("α"=>α[1]))
+        return (fGP,Dict{String,Any}("α"=>α[1]))
 end
 
 """
@@ -44,20 +62,24 @@ function transform_data(x_in,mod::GroupMod)
         return hcat(v_out...) |> ColVecs
 end
 
+
 """
      gp_optimised(x_train,y_train::Vector,k::Linear,σ²_n; θ₀= [0])
 
  Returns the optimal hyperparameter for al linear kernel
 """
 
-function gp_optimised(x_train,y_train,k::Linear,σ²_n; θ₀=[0.0])
-        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k),
-                θ_temp->gradient(t -> nlml_stheno(t,x_train,y_train,k),θ_temp)[1],θ₀,
+function gp_optimised(x_train,y_train,k::Linear,σ²_n; θ₀=[1.0])
+        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),
+                θ_temp->gradient(t -> nlml_stheno(t,x_train,y_train,k,σ²_n),θ_temp)[1],θ₀,
                 BFGS(); inplace=false)
 #get optimal hyperparameters
         α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
         return α_opt
 end
+
+
+
 #####
 #General GP fit functions
 #####
@@ -77,7 +99,7 @@ function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimi
         v_train = transform_data(x_train,mod::GroupMod)
         #set Gaussian procces in Stheno framework
         if optimise
-                θ = gp_optimised(v_train,y_train,k,σ²_n )
+                θ = gp_optimised(v_train,y_train,k,σ²_n)
         end
         fGP,θ_save = _creatGP(k,θ)
         push!(θ_save, "σ²_n" => σ²_n)
@@ -85,6 +107,7 @@ function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimi
         #calculate f_postirior based on training data and the prior f
         return GPModel(f_posterior,k,θ_save)
 end
+
 
 
 """
@@ -95,11 +118,12 @@ end
  Adds a small offset ,`σ²_n`, is the variance added to the model.
 """
 
-function nlml_stheno(θ_temp, x_train, y_train, k::Linear; σ²_n = 1e-6)
+function nlml_stheno(θ_temp, x_train, y_train, k::Linear, σ²_n)
     θ_exp = exp.(θ_temp) .+ 1e-6
     f,_ = _creatGP(k,θ_exp)
     return -logpdf(f(x_train,σ²_n), y_train)
 end
+
 
 """
         predict(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
@@ -108,9 +132,9 @@ predicts the value from the unseen datapoints
 """
 function predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          v_test = transform_data(x_test,mod::GroupMod)
-         println
-         return model.f̂(v_test,σ²_test)
+         return  GPpredict(model.f̂(v_test,σ²_test),x_test)
 end
+
 """
         predict(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
 Fitlers first all seen data point out S and than predict values for the unseen datapoints
@@ -118,7 +142,7 @@ Fitlers first all seen data point out S and than predict values for the unseen d
 """
 function predict_GP(S,x_train,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          x_test = filter(x-> !(x in x_train) ,S)
-         predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+        return predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
 end
 
 

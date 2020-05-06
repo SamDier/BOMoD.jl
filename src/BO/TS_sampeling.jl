@@ -1,5 +1,50 @@
 #Sampling methods
 """
+    thompson_sampling(f_pre::GPpredict,b; σ² = 10^-6)
+
+Brute force Thompson sampling  to sample b samples form the unseen design space.
+Use GP_predict ,which contains the Gp model and the unseen design points
+"""
+function thompson_sampling(f_pre::GPpredict,b; σ² = 10^-6)
+    @assert length(f_pre.x_test) ≥ b
+    @assert σ² > 0  #
+    # indices selected
+    selected = Int[]
+    f̂_matrix = rand(f_pre.f̂,b)
+    for j in eachcol(f̂_matrix)
+        j[selected]  .= - Inf64
+       i = argmax(j)
+       push!(selected, i)
+   end
+   return (f_pre.x_test[selected],selected)
+end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"""
     thompson_sampling(f, x::AbstractVector,n_samples, σ²)
 
 Brute force thompson sampling over the inter undiscovered search space.
@@ -8,19 +53,22 @@ Brute force thompson sampling over the inter undiscovered search space.
 function thompson_sampling(f, x::AbstractVector,
                 n_samples::Integer, σ²::AbstractFloat)
     @assert length(x) ≥ n_samples
-    @assert σ² > 0  #CHANGED: added check, if this should be <=
+    @assert σ² => 0  #CHANGED: added check, if this should be <=
     # indices selected
     selected = Int[]
     all_test = copy(x)
     Ndist = f(all_test, σ²)
     while length(selected) < n_samples
         f̂ = rand(Ndist)
-        f̂[selected] .= -Inf64 # CHANGED
+        f̂[selected] .= -Inf64
         i = argmax(f̂)
         push!(selected, i)
     end
     return (x[selected],selected)
 end
+
+
+
 
 
 #FIXME: what is `initer`?
@@ -60,7 +108,7 @@ function thompson_sampling_fast(f, x::AbstractVector,
     # indices selected
     selected = Int[]
     all_test = copy(x)
-    Ndist = f(all_test, σ²)
+    Ndist = predict_GP()
     f̂_matrix = rand(Ndist,n_samples)
     for n in eachcol(f̂_matrix)
         n[selected]  .= - Inf64 # CHANGED
