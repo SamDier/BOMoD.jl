@@ -34,9 +34,12 @@ end
 """
     ConstructConstraints{T}
 
-Constraints that are applicable on a generated construct.
-These can only be used in a filter with isn't very effiecent for large design
-space.
+ If a particular construct is allowed is checked on the construct level,
+ using fitler that block all unwanted constructs.
+ This implies that first all constructed are generated and afterwards filterd,
+ which is not efficient for large space with a limited number of constraints.
+`filterconstrain` than filters the removes the unwanted constructs
+ For more information see [`filterconstrain`](@ref)
 """
 abstract type ConstructConstraints{T} <: ElementConstraints{T} end
 
@@ -44,7 +47,9 @@ abstract type ConstructConstraints{T} <: ElementConstraints{T} end
 """
     SingleConstructConstraints{T}
 
-Abstract type for one single constraint.
+ Type used to as input for a single constraint:
+ two types are currently implemented:
+ `UnOrderedConstraint` and `OrderedConstraint`.
 """
 abstract type SingleConstructConstraints{T} <: ConstructConstraints{T} end
 
@@ -70,11 +75,15 @@ end
 
 Order Constraints a group of modules that can not co-occur in one construct if
 these modules are in a specific position.
-Order because the location of these models in the constructed is used in the
+This type has two inputs both vector of the same length
+The first vector contains the indexes,
+the second contains the forbidden module at the correspoding possiton
+The contraint is order because the location of these modules
+in the constructed is used in the
 evaluation of the constraint.
 
-These modules are given as ``Array{T} where T <: Mod``
 The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.
+These modules are given as ``Array{T} where T <: Mod``
 
 For more information see [`filter_constrain`]@ref.
 

@@ -9,7 +9,7 @@ The Designmatrix has (n x p) dimension where `n` is the number of constructs and
 Depending on the application it needs to be transposed.
 """
 
-function design_maxtrix(subspace,moduels::Group_Mod)
+function designmaxtrix(subspace,moduels::Group_Mod)
     # mod to index
     dict_mod = Dict(moduels.m .=> collect(1:length(moduels.m)))
     # setup design matrix
@@ -28,7 +28,7 @@ end
 Internal function to genarete the design space.
 generates the design vector for one construct.
 """
-function _design_vector(construct,dict_mod)
+function _designvector(construct,dict_mod)
     word2vec = zeros(length(dict_mod))
     index = [dict_mod[mod] for mod in construct]
     word2vec[index] .+=1
@@ -204,7 +204,7 @@ end
 
 Simple random model to use as a baseline to compare with other models.
 """
-function model_random(design,n_first,n_samples,Toy_data,n_cycles)
+function model_random(design,n_first,n_samples,toy_data,n_cycles)
     rng = MersenneTwister()
     max_random = Vector{Float64}(undef,n_cycles)
     #first steps

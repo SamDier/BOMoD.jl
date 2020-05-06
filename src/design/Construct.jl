@@ -45,15 +45,6 @@ Returns the last module of a construct, allow the uses of `end` when indexing on
 Base.lastindex(c::AbstractConstruct) =  last(eachindex(IndexLinear(), c.c))
 
 
-#QUESTION: does c1 == c2 work then?
-"""
-    isequal(c1::AbstractConstruct,c2::AbstractConstruct)
-
-Evaluates if two constructs are equal. If the the type of to constructs differces
-If the type of two constructs aren't equal, it returns `false`, even if the same modules are present.
-"""
-#isequal(c1::AbstractConstruct,c2::AbstractConstruct) = typeof(c1) == typeof(c2) ? isequal(c1,c2) : false
-
 """
     iterate(Construct::AbstractConstruct,state=1)
 
@@ -94,7 +85,7 @@ end
 Evaluates if two OrderedConstruct constructs are equal.
 """
 Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
-
+==(c1::OrderedConstruct,c2::OrderedConstruct) = c1.c == c2.c
 """
     *(m1::Mod, m2::Mod)
 
@@ -205,4 +196,4 @@ the end of the construct in the first argument position
 Evaluates if two `UnorderedConstruct` are equal.
 """
 Base.isequal(c1::UnorderedConstruct, c2::UnorderedConstruct) = isequal(Set(c1.c),Set(c2.c))
-==(c1::UnorderedConstruct, c2::UnorderedConstruct) = Set(c1.c) == Set(c2.c) 
+==(c1::UnorderedConstruct, c2::UnorderedConstruct) = Set(c1.c) == Set(c2.c)
