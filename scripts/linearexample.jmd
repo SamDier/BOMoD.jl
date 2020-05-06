@@ -1,0 +1,53 @@
+# Case studies setup
+## Current Setup
+
+### Set design space using packages
+
+#### Input Settings
+```julia
+length_constructs = 3;
+pre_mod = ["a","b","c","d","e","f","g","h","i"];
+order = false ;
+```
+
+#### Construction using BOMoD.jl
+```julia
+m = groupmod(pre_mod);
+design = constructdesign(m,3,order = order);
+space = getspace(design);
+```
+
+## Generating Toy Data
+```julia
+rng  = MersenneTwister();
+activities = rand(rng,Uniform(0,5),length(m));
+Toy_data = Dict(m .=> activities);
+```
+
+### Frist sampling step
+
+```julia
+n_first = 3;
+constructs = sample(rng,space,n_first)
+```
+
+### Evaluted new data
+
+```julia
+lab_μ,lab_σ = go2lab(rng,constructs,Toy_data)
+df = DataFrame(constructs = constructs,μ = lab_μ, σ = lab_σ);
+```
+
+### Surrogate model
+```julia
+x_train = df.constructs
+y_train = df.μ
+#σ² = (df.σ).^2
+k = Linear()
+linear_model = fit_gp(x_train,y_train,k,m,[1],optimise = true)
+predictions = predict_GP(S,x_train,linear_model,m)
+```
+# Batch sampling step
+```julia
+thompson_sampling(predictions,10)
+```
