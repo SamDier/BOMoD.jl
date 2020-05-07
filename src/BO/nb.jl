@@ -1,23 +1,40 @@
+"""
+    nd(construct::Ordered_Construct,mod::Group_Mod,n::Int)
 
+Retruns n random sample from neighourhood of the given construct.
+The neighourhood is obtain by replacing
+one module of the construct with an other module of the alphabet `mod`.
+This procedure is repeat or every possition and the alphabet `mod`.
+Afterwards random sample of the neighourhood is pickt
 
 """
-d_neibourhood(construct::Ordered_Construct,mod::Group_Mod)
-generates all constructs
-"""
-function neibourhood_1(construct::UnorderedConstruct,mod::Group_Mod)
-    d_n = Vector{Ordered_Construct}(undef,length(mod))
+function nd(construct::OrderedConstruct,mod::GroupMod,n::Int)
+    @assert n < (length(construct)*length(mod)) "neighoorhood is to small to generated $n samples"
+    d_n = Array{OrderedConstruct}(undef,length(construct),length(mod)-1)
     for i in 1:length(construct)
-        if i > 1
-            d_n[i] = construct[1:i-1].*mod.m.*construct[i+1:end]
-        else
-            d_n[i] = mod.m*construct[i+1:end]
+        # avoid make the same construct
+        temp_mod = filter(x -> (x != mod[1]) , mod.m)
+        for j in 1:length(mod)-1
+            if i > 1
+                d_n[i,j] = construct[1:i-1] *  temp_mod[j]  * construct[i+1:end]
+            else
+                d_n[i,j] = temp_mod[j] * construct[2:end]
+            end
         end
     end
-    return d_n
+    return rand(d_n,n)
 end
 
+"""
+    nd(construct::UnorderedConstruct,mod::Group_Mod,n::Int)
 
+Retruns n random sample from neighourhood of the given construct.
+The neighourhood is obtain by replacing
+one module of the construct with an other module of the alphabet `mod`.
+This procedure is repeat or every possition and the alphabet `mod`.
+Afterwards random sample of the neighourhood is pickt
 
+"""
 function nd(construct::UnorderedConstruct,mod::GroupMod,n)
     new_mod = filter(x -> !(x in construct) , mod.m)
     @assert n < (length(construct)*length(new_mod)) "neighoorhood is to small to generated $n samples"
@@ -33,41 +50,3 @@ function nd(construct::UnorderedConstruct,mod::GroupMod,n)
     end
     return rand(d_n,n)
 end
-
-
-
-
-    start = Dict(m.m => (length(new_mod),[]) for m in construct)
-    neiberhood = Array{T}[undef,n]
-    for i in 1:n
-        rand(keys(start))
-         new = sample(new_mod)
-         #Neiberhood.jl
-         """
-         d_neibourhood(construct::Ordered_Construct,mod::Group_Mod)
-         generates all constructs
-         """
-         function d_neibourhood(construct::Ordered_Construct,mod::Group_Mod)
-             d_n = Vector{Ordered_Construct}{undef,size_d_n(length(mod),length(construct),d)}
-             for i in length(construct)
-
-
-         function d_neibourhood(construct::Unordered_Construct,mod::Group_Mod)
-
-         size_d_n(n_mod,l_con,d) = l_con*d^(n_mod-1)
-
-         """
-         d_neibourhood(construct::Ordered_Construct,mod::Group_Mod)
-         generates all constructs
-         """
-         function neibourhood_1(construct::Ordered_Construct,mod::Group_Mod)
-             d_n = Vector{Ordered_Construct}(undef,length(mod))
-             for i in 1:length(construct)
-                 if i > 1
-                     d_n[i] = construct[1:i-1].*mod.m.*construct[i+1:end]
-                 else
-                     d_n[i] = mod.m*construct[i+1:end]
-                 end
-             end
-             return d_n
-         end
