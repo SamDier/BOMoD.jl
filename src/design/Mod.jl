@@ -106,3 +106,8 @@ Base.length(m::GroupMod) = length(m.m)
 Returns the type of the iterator.
 """
 Base.eltype(::GroupMod{T}) where {T} = T
+
+"""
+
+"""
+Base.getindex(m::GroupMod,i) = m.m[i]
