@@ -21,7 +21,7 @@ space = getspace(design);
 ```julia
 rng  = MersenneTwister();
 activities = rand(rng,Uniform(0,5),length(m));
-Toy_data = Dict(m .=> activities);
+toy_data = Dict(m .=> activities);
 ```
 
 ### Frist sampling step
@@ -34,31 +34,22 @@ constructs = sample(rng,space,n_first)
 ### Evaluted new data
 
 ```julia
-lab_μ,lab_σ = go2lab(rng,constructs,toy_data)
+lab_μ,lab_σ = go2lab(rng,constructs,toy_data);
 df = DataFrame(constructs = constructs,μ = lab_μ, σ = lab_σ);
 ```
 
 ### Surrogate model
 ```julia
-x_train = df.constructs
-y_train = df.μ
-#σ² = (df.σ).^2
-k = Linear()
-linear_model = fit_gp(x_train,y_train,k,m,[1],optimise = true)
+x_train = df.constructs;
+y_train = df.μ;
+S = collect(sp)
+σ²_n = 5
+k = EditDistancesKernel(Jaro())
+linear_model = fit_gp(x_train,y_train,k,m,[1.0],optimise = true)
 predictions = predict_GP(S,x_train,linear_model,m)
+
 ```
 # Batch sampling step
 ```julia
 thompson_sampling(predictions,10)
-```
-```julia
-vin=transform_data(x_train,m)
-ew(k,vin)
-pw(k,vin)
-function transform_data(x_in,mod::GroupMod)
-        # get vector embedding
-        v_out = map(x -> _word2vec(x,mod),x_in)
-        #transform to ColVecs
-        return hcat(v_out...) |> ColVecs
-end
 ```

@@ -1,0 +1,82 @@
+# Case studies setup
+## Current Setup
+
+### Set design space using packages
+
+#### Input Settings
+```julia
+length_constructs = 3;
+pre_mod = ["a","b","c","d","e","f","g","h","i"];
+order = false ;
+```
+
+#### Construction using BOMoD.jl
+```julia
+m = groupmod(pre_mod);
+design = constructdesign(m,3,order = order);
+space = getspace(design);
+```
+
+## Generating Toy Data
+```julia
+rng  = MersenneTwister();
+activities = rand(rng,Uniform(0,5),length(m));
+Toy_data = Dict(m .=> activities);
+```
+
+### Frist sampling step
+
+```julia
+n_first = 3;
+constructs = sample(rng,space,n_first,with_index = true)
+```
+
+### Evaluted new data
+
+```julia
+lab_μ,lab_σ = go2lab(rng,constructs[1],toy_data)
+df = DataFrame(constructs = constructs[1],μ = lab_μ, σ = lab_σ, ind =constructs[2] );
+```
+
+
+### Surrogate model
+```julia
+x_train = df.ind
+x_train
+y_train = df.μ
+#σ² = (df.σ).^2
+k = DiffusionKernel()
+edgerule = CosRule()
+S = collect(space)
+graph_model = fit_gp(S,x_train,y_train,k,edgerule,[1,1],optimise = true)
+predictions = predict_GP(collect(1:length(S)),x_train,linear_model,m)
+```
+# Batch sampling step
+```julia
+thompson_sampling(predictions,10)
+```
+```julia
+
+"""
+    sample!(rng::AbstractRNG, space::EffSpace,x::AbstractArray;
+                withindex::Bool = false , replace::Bool=false, ordered::Bool=false)
+
+function to sample for a`EffSpace`.
+Using the default settings, It fills `x` with unique samples from the `EffSpace`.
+It returns a vector with the corresponding samples.
+If withindex = true, corresponding indexes returned together with the sampled constructs.
+
+For more information see [StatsBase](https://juliastats.org/StatsBase.jl/stable/sampling/)
+"""
+
+function StatsBase.sample!(rng::AbstractRNG, space::EffSpace,x::AbstractArray;
+            with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
+    index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
+    if with_index
+        return ([space.space[i] for i in index] ,index)
+    else
+        return ([space.space[i] for i in index])
+    end
+end
+
+```
