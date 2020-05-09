@@ -24,15 +24,20 @@ end
 """
     isless(mod1::Mod, mod2::Mod)
 
-Extensions of ``Base.isless`` for modules of type Mod
-for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
+
+Evaluates the order of two modules based on the input characters,
+needed to allow sorting.
+How sorting is done isn't important for the model;
+it only assures a specific rank between different modules.
+For more information on how the different inputs are sorted exactly
+[see](https://docs.julialang.org/en/v1/base/base/)
 """
 isless(mod1::Mod, mod2::Mod) = isless(mod1.m,mod2.m)
 
 """
     isequal(mod1::Mod, mod2::Mod)
 
-Extension of ``Base.isequal`` for modules of type ``Mod``
+Evaluates if two modules are equal
 for more infromation [see](https://docs.julialang.org/en/v1/base/base/)
 """
 isequal(mod1::Mod, mod2::Mod) = isequal(mod1.m,mod2.m)
@@ -40,7 +45,7 @@ isequal(mod1::Mod, mod2::Mod) = isequal(mod1.m,mod2.m)
 """
     length(mod1::Mod)
 
-Extensions of ``Base.length`` for modules of type ``Mod``
+length of module, is 1
 """
 
 Base.length(mod1::Mod) = 1

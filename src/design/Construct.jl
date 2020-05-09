@@ -61,6 +61,9 @@ function Base.iterate(Construct::AbstractConstruct,state=1)
 end
 
 
+
+
+
 ##################
 #New structs
 ##################
@@ -86,6 +89,11 @@ Evaluates if two OrderedConstruct constructs are equal.
 """
 Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
 ==(c1::OrderedConstruct,c2::OrderedConstruct) = c1.c == c2.c
+"""
+
+"""
+con2indix(construct,)
+
 """
     *(m1::Mod, m2::Mod)
 
