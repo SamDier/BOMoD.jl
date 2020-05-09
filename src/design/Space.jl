@@ -22,10 +22,10 @@ function Base.summary(io::IO, a::EffSpace)
 end
 
 function Base.show(io::IO,a::EffSpace)
-    print(io,"summary of space:\n")
     space_type,construct_type,n = typeof(a),eltype(a),length(a)
     print(io," spacetype| $space_type \n generted constructs| $construct_type \n n_consturcts| $n")
 end
+
 """
     getindex(space::EffSpace,i::Int)
 
@@ -218,10 +218,10 @@ Returns the type of `FrameSpace{T}` if they are collected.
 """
 Base.eltype(K::FrameSpace{T}) where {T} = eltype(K.space)
 
-#FIXME: name
+
 struct MultiSpace{T} <: AbstractSpace{T}
     space::Array{T}
-    MultiSpace(space::Array) = promotetype([typeof(i) for i in space]...) |> x -> new{x}(space)
+    MultiSpace(space::Array) = promote_type([typeof(i) for i in space]...) |> x -> new{x}(space)
 end
 
 Base.eltype(::MultiSpace{T}) where {T} = eltype(T)
