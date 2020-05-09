@@ -22,7 +22,7 @@ function StatsBase.sample!(rng::AbstractRNG, space::EffSpace,x::AbstractArray;
             with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
     index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
     if with_index
-        return [[space.space[i] for i in index]  index]
+        return ([space.space[i] for i in index] , index)
     else
         return ([space.space[i] for i in index])
     end
@@ -99,7 +99,7 @@ function samplereject!(rng::AbstractRNG, space::EffSpace,n::Int, con,
             # number of started constructs
             n_start = size(check_constructs)[1]
             #make new samples
-            new_sample = sample(rng,space,n,with_index = true)
+            new_sample = sample(rng,space,n,with_index = true) |> x -> [x[1] x[2]]
             #check if draw before
             new_sample = _filter_sample!(new_sample,save_index)
             #updated check indexes
@@ -113,7 +113,7 @@ function samplereject!(rng::AbstractRNG, space::EffSpace,n::Int, con,
             # evaluated if their where rejections,
             # if not return else resample for the remaining open positions
             if  n_stop-n_start == n
-                return (check_constructs)
+                return (check_constructs[:,1] , convert(Vector{Int},check_constructs[:,2]))
 
             else
                 delta = n - (n_stop - n_start)
@@ -127,7 +127,7 @@ end
 Internal function to sample_reject!. Evaluates all samples based on the given
 constraints and removes the unallowed constructs.
 """
-_filter_sample!(new_sample,con::ConstructConstraints) = map(y -> !filterconstrain(y,con),new_sample[:,1]) |> (y -> new_sample[y,:])
+_filter_sample!(new_sample,con::ConstructConstraints) = map(y -> !filterconstraint(y,con),new_sample[:,1]) |> (y -> new_sample[y,:])
 
 """
     _filter_sample!(new_sample,saved_index::Array)
@@ -169,7 +169,7 @@ function StatsBase.sample(rng::AbstractRNG, space::MultiSpace, n::Integer; with_
     samples = Array{T where T,2}(undef,n,2)
     # one point,two samplers are used, the first selects which space is chosen, this is weighted based on the length of individual spaces
     # sampler two samples form the selected space.
-    samples[1,:] = sample(rng,collect(1:_nspace(space)), w,1)  |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
+    samples[1,:] = sample(rng,collect(1:_nspace(space)), w,1)  |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,withindex = true)) |> x -> [x[1] x[2]]
     #sampels form whole the design space n times
 
     if n == 1
@@ -177,15 +177,15 @@ function StatsBase.sample(rng::AbstractRNG, space::MultiSpace, n::Integer; with_
     end
 
     for i in 2:n
-        new_point = sample(rng,collect(1:_nspace(space)), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
+        new_point = sample(rng,collect(1:_nspace(space)), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,withindex = true)) |> x -> [x[1] x[2]]
         # select n unique sample, evaluated if draw before
 
         while  new_point[2] in samples[1:i-1,2]
-            new_point = sample(rng,collect(1:size(space)[2]), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true))
+            new_point = sample(rng,collect(1:size(space)[2]), w,1) |> x -> space.space[x[1]] |> y -> (sample(rng,y,1,with_index = true)) |> x -> [x[1] x[2]]
         end
 
         samples[i,:] = new_point
     end
 
-    return samples
+    return (samples[:,1], convert(Vector{Int},samples[:,2]))
 end
