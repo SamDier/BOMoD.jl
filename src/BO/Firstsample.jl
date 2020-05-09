@@ -22,8 +22,6 @@ end
 function Compear_distance(Bᵢ,Bⱼ,d;rev=false)
     Dᵢ = pairwised(Bᵢ,d) |> (t -> sort(t,rev=rev))
     Dⱼ = pairwised(Bⱼ,d) |> (t -> sort(t,rev=rev))
-    println(Dᵢ)for
-    println(Dⱼ)
     for (di,dj) in zip(Dᵢ,Dⱼ)
         if di < dj
             return Bⱼ
@@ -34,3 +32,20 @@ function Compear_distance(Bᵢ,Bⱼ,d;rev=false)
     @info "equaly spaced and first set is returned"
     return Bᵢ
 end
+
+"""
+    greedy_local_search(d,S,B,b,)
+
+"""
+
+function greedy_local_search(d,S,B,b,)
+    while length(B) < b
+        j = argmin([sᵢ ∈ B ? -Inf64:d_max(d,S,push!(copy(B),sᵢ)) for sᵢ in S])
+        push!(B, S[i])
+    end
+return S
+end
+
+
+min_dist(d,sᵢ, B ) = minimum(evaluate(d,sᵢ,xᵢ) for xᵢ in B)
+d_max(d,S,B) = maximum(min_dist(d,sᵢ,B) for sᵢ in S)
