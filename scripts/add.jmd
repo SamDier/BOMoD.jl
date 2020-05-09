@@ -43,7 +43,8 @@ df = DataFrame(constructs = constructs,μ = lab_μ, σ = lab_σ);
 x_train = df.constructs
 y_train = df.μ
 #σ² = (df.σ).^2
-k = Linear()
+S = collect(space)
+k = QgramKernel(StringDistances.Cosine(1)) + EditDistancesKernel(StringDistances.Levenshtein())
 linear_model = fit_gp(x_train,y_train,k,m,[1],optimise = true)
 predictions = predict_GP(S,x_train,linear_model,m)
 ```

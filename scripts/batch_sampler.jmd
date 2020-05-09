@@ -48,6 +48,33 @@ linear_model = fit_gp(x_train,y_train,k,m,[1],optimise = true)
 predictions = predict_GP(S,x_train,linear_model,m)
 ```
 # Batch sampling step
+set size batch
 ```julia
-thompson_sampling(predictions,10)
+b = 5
+```
+## thompson_sampling
+currently 2 implementaiton
+```julia
+ts_sampler_me(predictions,b)
+ts_sampler_stheno(predictions,b)
+```
+# Expected impovent (EI)  and Probability of improvent (PI) sampler
+
+need current max seen value fmax
+```julia
+fmax = maximum(df.μ)
+ei_sampler(predictions,b,fmax)
+pi_sampler(predictions,b,fmax)
+```
+
+# Gaussian Process Upper Confidence Bound
+```julia
+β = 2
+gpubc_sampler(predictions,b,β)
+# optimal beta
+n = length(df.μ)
+t = 1
+δ = 0.1
+β_opt = optimial_β(n,t,δ=δ)
+gpubc_sampler(predictions,b,β_opt)
 ```
