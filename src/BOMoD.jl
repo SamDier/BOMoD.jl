@@ -2,35 +2,34 @@ module BOMoD
 
     using Kronecker
     using StatsBase
-    using Stheno
-    using Optim
-    using Random
     using Statistics
-    using Distributions
-    using DataFrames
-    using Plots
-    using Distances
     using StringDistances
-    #using BayesianLinearRegressors: BayesianLinearRegressor, rand, posterior, marginals
+    using Distances
+    using DataFrames
+    using Random
+    using LinearAlgebra
+    using Optim
+    using Stheno
+    using Zygote: gradient
+    using Distributions
 
 
-
-    import Base: +, *, == ,getindex,length, eltype,isequal,isless,push!,in,show
+    import Base: +, *, getindex,length, eltype,isequal,isless,push!,in,summary,show,==
     import Stheno: ew,pw,Kernel
     import LinearAlgebra: norm, eigvals!, Diagonal,dot
     import Optim: minimizer
+    import Kronecker: KroneckerPower
     import StatsBase: sample
+    import StringDistances: QGramDistance
 
 
-
-    export Mod, GroupMod , groupmod ,getspace
+    export groupmod ,getspace
     export constructdesign
-    export NoConstrain, OrderedConstrain, UnOrderedConstrain, PossitionConstrain
+    export OrderedConstrain, UnOrderedConstrain
     export OrderedConstruct, UnorderedConstruct
-    export FrameSpace,ComputedSpace,FullOrderedspace
-    export GPoptimised,gpoptimised
-    export thompsonsampling, savethompsonsampling
-    export LevStehnoexp
+    export GPModel, GPpredict
+    export fit_gp, predict_GP
+    export ts_sampler_me,ts_sampler_stheno,ei_sampler,pi_sampler,gpucb_sampler
 
 
     # include construction of space
@@ -42,10 +41,10 @@ module BOMoD
     include(joinpath("design", "Designspace.jl"))
     include(joinpath("design", "Sample.jl"))
     #BO
-    include(joinpath("BO", "Hyper_opt.jl"))
-    include(joinpath("BO", "Kernels.jl"))
-    include(joinpath("BO", "TSsampeling.jl"))
-    #linearmodel
-    include(joinpath("linearmodel", "linearmodel.jl"))
+    include(string(pwd(),"\\src","\\BO", "\\util_graph.jl"))
+    include(string(pwd(),"\\src","\\BO", "\\Kernels.jl"))
+    include(string(pwd(),"\\src","\\BO", "\\GP_model.jl"))
+    include(string(pwd(),"\\src","\\BO", "\\batch_sample.jl"))
+    include(string(pwd(),"\\src","\\BO", "\\nb.jl"))
 
 end # module

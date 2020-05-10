@@ -2,7 +2,9 @@
 #NOTE: Not immediately clear what this does...
 
 #TODO: add explanations.
-#import Base: +
+
+
+
 """
     AbstractConstraints{T}
 
@@ -68,6 +70,7 @@ struct UnOrderedConstraint{T<:Mod} <: SingleConstructConstraints{T}
     combination::Array{T}
 end
 
+make_unorderconstraint(c::Array) = UnOrderedConstraint([Mod(m) for m in c])
 
 #FIXME: docstring not clear...
 """
@@ -93,6 +96,7 @@ struct OrderedConstraint{T<:Mod} <: SingleConstructConstraints{T}
     combination::Array{T}
 end
 
+make_orderconstraint(pos::Array{Int},c::Array) = OrderedConstraint(pos,[Mod(m) for m in c])
 
 """
     ComposeConstructConstraints{T}

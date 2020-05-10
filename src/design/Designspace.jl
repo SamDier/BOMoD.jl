@@ -46,9 +46,8 @@ modules can be infinity redrawn. The constructs are not explicitly generated.
 With the use of the Kronecker product, every construct can be made on the fly
 only on the moment when it is required.
 """
-makeorderedspace(mod::GroupMod, len::Int) = reshape(mod.m, length(mod.m),1) |>
-                            (y -> len > 1 ? ⊗(y,len) : mod )
-
+makeorderedspace(mod::GroupMod, len::Int) = reshape(mod.m, length(mod.m),1) |> y -> ⊗(y,len)
+makesinglespace(mod::GroupMod) = reshape(mod.m, length(mod.m),1) |> y -> ⊗(y,ones(Int64,length(mod.m),1))
 
 """
     UnorderedDesign
@@ -81,7 +80,7 @@ The constructs aren't explicitly generated.
 With the use of the ``Combination`` structure, every construct can be made on
 the fly only on the moment it is required.
 """
-makeunorderedspace(mod::GroupMod, len::Int) =  len > 1 ? Combination(mod.m,len) : mod
+makeunorderedspace(mod::GroupMod, len::Int) = Combination(mod.m,len)
 
 
 
@@ -94,7 +93,11 @@ See [`UnorderedDesign`](@ref) or [`OrderedDesign`](@ref)
 """
 function constructdesign(mod::GroupMod, len::Int; order::Bool = false)
     if order == true
-        makeorderedspace(mod,len) |> FullOrderedspace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
+        if len == 1
+            makesinglespace(mod) |> FullOrderedspace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
+        else
+            makeorderedspace(mod,len) |> FullOrderedspace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
+        end
     else
         makeunorderedspace(mod,len) |> FullUnorderedspace |> (y -> UnorderedDesign(mod,len,NoConstraint(nothing),y))
     end
@@ -141,9 +144,13 @@ end
     getspace(Design::SingleDesign; full = false)
 
 
-If the input design has no Constraints, then an efficient space is generated This space type allow most `Base` function that you would have on the explicit generated design space.
-If constraints are added than no efficient space can be generated. For most functionalities explicitly, generation is needed. In some case one can continue using the whole design structure.
-If `full = true` the whole space is generated explicitly, which isn't recommended for large designs. Still for constrained problems is sometimes the best or only option.
+If the input design has no Constraints, then an efficient space is generated
+This space type allow most `Base` function that you would have on the explicit generated design space.
+If constraints are added than no efficient space can be generated.
+For most functionalities explicitly, generation is needed.
+In some case one can continue using the whole design structure.
+If `full = true` the whole space is generated explicitly, which isn't recommended for large designs.
+Still for constrained problems is sometimes the best or only option.
 """
 
 function getspace(Design::SingleDesign; full = false)
@@ -237,7 +244,28 @@ Because the constraint is unordered only all modules in the constraint need to b
 The position is not evaluated.
 """
 
-filterconstraint(construct::AbstractConstruct, con::UnOrderedConstraint) = (Set(construct.c) ∩ Set(con.combination)) |> length |> (y -> y == length(con.combination))
+function filterconstraint(construct::AbstractConstruct, con::UnOrderedConstraint)
+    con_count = count_elements(con.combination)
+    construct_count =  count_elements(construct.c)
+    for (key,n) in con_count
+        if haskey(construct_count,key)
+            if construct_count[key] < n
+                return false
+           end
+       else
+           return false
+       end
+   end
+   return true
+end
+
+function count_elements(a::Array)
+     n = Dict(key => 0 for key in a)
+     for element in a
+         n[element] +=1
+    end
+    return n
+end
 
 """"
     filterconstraint(construct::AbstractConstruct, con::ComposeConstructConstraints)
@@ -342,7 +370,7 @@ end
 
 # Combining of combinations if not all intermediate-length are desired.
 
-Base.:+(des1::T,des2::T) where T = MultiDesign([des1,des2])
-Base.:+(des1::MultiDesign{T} where T, des2::SingleDesign) = MultiDesign([des1.design...,des2])
+Base.:+(des1::SingleDesign,des2::SingleDesign) where T = MultiDesign([des1,des2])
+Base.:+(des1::MultiDesign{T} where T, des2::SingleDesign) = MultiDesign([des1.d...,des2])
 Base.:+(des1::SingleDesign,des2::MultiDesign) = +(des2,des1)
-Base.:+(des1::MultiDesign{T} where T, des2::MultiDesign{N} where N) = MultiDesign([des1.design...,des2.design...])
+Base.:+(des1::MultiDesign{T} where T, des2::MultiDesign{N} where N) = MultiDesign([des1.d...,des2.d...])

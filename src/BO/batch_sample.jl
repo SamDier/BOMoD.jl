@@ -118,7 +118,7 @@ end
   N. Srinivas, A. Krause, S.M. Kakade, M. Seeger.
   arXiv e-prints, pp. arXiv:0912.3995. 2009.
 """
-optimial_β(n,t;δ= 0.1) = 2*log(n*t^2*π^2/(6δ))
+optimial_β(n,t;δ = 0.2) = 2*log(n*t^2*π^2/(6δ))
 
 
 

@@ -62,8 +62,8 @@ end
 
 
 
-
-
+Base.convert(::Type{Array},c::AbstractConstruct) = [m.m for m in c]
+Base.convert(::Type{Array{Mod}},c::AbstractConstruct) = [m for m in c]
 ##################
 #New structs
 ##################
@@ -92,7 +92,7 @@ Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
 """
 
 """
-con2indix(construct,)
+
 
 """
     *(m1::Mod, m2::Mod)
@@ -145,6 +145,10 @@ OrderedConstruct([m1,m2,m1,m4])
 """
 
 *(c1::OrderedConstruct ,c2::OrderedConstruct) = vcat(c1.c,c2.c) |> OrderedConstruct
+
+
+*(m::Mod, i::Int) = repeat([m],i) |> OrderedConstruct
+*(i::Int, m::Mod) = repeat([m],i) |> OrderedConstruct
 """
     UnorderedConstruct{T} <: AbstractConstruct{T}
 
@@ -157,6 +161,8 @@ For example: `UnorderedConstruct([a,b,c])` is considered equal to
 # currently the underlying structure is an array, a Set is can be a more logical alternative
 # still for the first implementation and test, an array structure was preferred. An array can always be transformed Set where needed.
 # The users shouldn't worry too much about this more to run everything smoothly internally
+
+
 
 struct UnorderedConstruct{T<:Mod} <: AbstractConstruct{T}
     c::Array{T}

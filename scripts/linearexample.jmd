@@ -51,3 +51,7 @@ predictions = predict_GP(S,x_train,linear_model,m)
 ```julia
 thompson_sampling(predictions,10)
 ```
+
+```julia
+
+```

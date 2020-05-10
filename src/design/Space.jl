@@ -64,13 +64,14 @@ function Base.iterate(space::EffSpace, state = 1 )
 end
 
 
+
 """
     FullOrderedspace{T}
 
 `EffSpace{T}` space type for space filled with `OrderedConstruct` and without any constraints.
 """
-struct FullOrderedspace{T}<: EffSpace{T}
-    space::KroneckerPower{T}
+struct FullOrderedspace{T} <: EffSpace{T}
+    space::AbstractKroneckerProduct{T}
 end
 
 """
