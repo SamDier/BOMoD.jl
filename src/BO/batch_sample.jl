@@ -84,7 +84,7 @@ function pi_sampler(f_pre::GPpredict,b,fmax;ϵ = 0)
 end
 
 """
-    gpubc_sampler(f_pre::GPpredict,b,β)
+    gpucb_sampler(f_pre::GPpredict,b,β)
 
 Brute force calculation of the  Gaussian Process Upper Confidence Bound (GP-UCB)
 to obtain b samples from the non-evaluated design space.
@@ -180,7 +180,7 @@ function ubc(f_pre::GPpredict,λ)
         Ndist = marginals(f_pre.f̂_pred)
         σ_t = std.(Ndist)
         μ_t = mean.(Ndist)
-        UBC = μ_t .+ λ.*σ_t
+        UCB = μ_t .+ λ.*σ_t
         return DataFrame(UCB = UCB, x_test = f_pre.x_test)
 end
 """

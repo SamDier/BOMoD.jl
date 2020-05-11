@@ -89,9 +89,14 @@ Evaluates if two OrderedConstruct constructs are equal.
 """
 Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
 ==(c1::OrderedConstruct,c2::OrderedConstruct) = c1.c == c2.c
-"""
 
-"""
+function Base.show(io::IO,a::OrderedConstruct)
+    construct = convert(Array,a)
+    print(io,construct)
+end
+
+
+
 
 
 """
@@ -166,6 +171,12 @@ For example: `UnorderedConstruct([a,b,c])` is considered equal to
 
 struct UnorderedConstruct{T<:Mod} <: AbstractConstruct{T}
     c::Array{T}
+end
+
+function Base.show(io::IO,a::UnorderedConstruct)
+    construct = convert(Array,a)
+    s = replace(string(construct), "[" => "{") |> x->  replace(x, "]" => "}")
+    print(io,s)
 end
 
 """

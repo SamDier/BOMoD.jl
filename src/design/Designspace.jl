@@ -47,8 +47,8 @@ With the use of the Kronecker product, every construct can be made on the fly
 only on the moment when it is required.
 """
 makeorderedspace(mod::GroupMod, len::Int) = reshape(mod.m, length(mod.m),1) |> y -> ⊗(y,len)
-makesinglespace(mod::GroupMod) = reshape(mod.m, length(mod.m),1) |> y -> ⊗(y,ones(Int64,length(mod.m),1))
-
+#makesinglespace(mod::GroupMod) = reshape(mod.m, length(mod.m),1) |> y -> ⊗(y,ones(Int64,length(mod.m),1))
+makesinglespace(mod::GroupMod)  = error("no order design with length 1")
 """
     UnorderedDesign
 
