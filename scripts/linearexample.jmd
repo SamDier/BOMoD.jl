@@ -5,9 +5,17 @@
 
 #### Input Settings
 ```julia
-length_constructs = 3;
-pre_mod = ["a","b","c","d","e","f","g","h","i"];
-order = false ;
+length_constructs = 4;
+pre_mod = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n"];
+order_c = false ;
+m = groupmod(pre_mod);
+design = constructdesign(m,length_constructs,order = order_c);
+S = collect(getspace(design))
+#set up toy_data
+rng  = MersenneTwister();
+activities = rand(rng,Uniform(-10,15),length(m));
+toy_data = Dict(m .=> activities);
+
 ```
 
 #### Construction using BOMoD.jl
