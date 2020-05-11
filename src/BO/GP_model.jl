@@ -57,6 +57,7 @@ end
 
 function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimise = false)
         v_train = transform_data(x_train,mod::GroupMod,k)
+        println(σ²_n)
         #set Gaussian procces in Stheno framework
         if optimise
                 θ = gp_optimised(v_train,y_train,k,σ²_n)
@@ -200,11 +201,11 @@ end
 """
 
 function nlml_stheno(θ_temp, x_train, y_train, k::Kernel, σ²_n)
-    θ_exp = exp.(θ_temp) .+ 1e-6
+    println(θ_temp)
+    θ_exp = exp.(θ_temp) .+ 0.001
     f,_ = _creatGP(k,θ_exp)
     return -logpdf(f(x_train,σ²_n), y_train)
 end
-
 
 """
      nlml_stheno(parm, x_train, y_train, k::Kernel, σ²_n = 1e-6)
@@ -237,14 +238,18 @@ end
 
 """
 
-function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -0.01, max = 100.0)
-#do perform optimisation base on gradient
+function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = 0.001, max = 10.0)
+#do perform optimisation
 results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),min,max,
               GoldenSection())
 #get optimal hyperparameters
-        α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
+        α_opt = exp.(Optim.minimizer(results)) .+ 0.001
         return α_opt
 end
+
+
+
+
 
 """
      gp_optimised(n_laplace,x_train,y_train,k::Kernel,σ²_n;θ₀=[0.0,0.0])
@@ -254,7 +259,6 @@ end
  The parameters are obtained by maximum-likelihood estimation.
  The model uses the NelderMead() algorithm  from Optim.jl,
  θ₀ is the initial starting point of the algoritme
-
 """
 function gp_optimised(n_laplace,x_train,y_train,k::KernelGraph,σ²_n,θ₀=[0.0,0.0])
         results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),θ₀,
