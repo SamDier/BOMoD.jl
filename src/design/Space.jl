@@ -74,17 +74,7 @@ struct FullOrderedspace{T} <: EffSpace{T}
     space::AbstractKroneckerProduct{T}
 end
 
-"""
-    _show(a::FullOrderedspace)
 
-specific part of `show(io::IO,a::EffSpace)` for `FullOrderedspace`
-"""
-function _show(a::FullOrderedspace)
-    print("order| true ")
-    first_constructs = a[1:3]
-    last_constructs = a[end]
-    print("first_constructs| $first_constructs\n    .   \n    .   \n    . \n $last_constructs ")
-end
 
 
 """
