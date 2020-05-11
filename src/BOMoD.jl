@@ -41,10 +41,10 @@ module BOMoD
     include(joinpath("design", "Designspace.jl"))
     include(joinpath("design", "Sample.jl"))
     #BO
-    include(string(pwd(),"\\src","\\BO", "\\util_graph.jl"))
-    include(string(pwd(),"\\src","\\BO", "\\Kernels.jl"))
-    include(string(pwd(),"\\src","\\BO", "\\GP_model.jl"))
-    include(string(pwd(),"\\src","\\BO", "\\batch_sample.jl"))
-    include(string(pwd(),"\\src","\\BO", "\\nb.jl"))
+    include(joinpath("BO", "util_graph.jl"))
+    include(joinpath("BO", "Kernels.jl"))
+    include(joinpath("BO", "GP_model.jl"))
+    include(joinpath("BO", "batch_sample.jl"))
+
 
 end # module
