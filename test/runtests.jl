@@ -1,6 +1,6 @@
 using Test
-using BOMoD
-using BOMoD: filterconstraint, Combination, ComposeConstructConstraints
+using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
+    Mod,GroupMod
 using Random
 using StatsBase
 include("./BO_test/test_functions.jl")
