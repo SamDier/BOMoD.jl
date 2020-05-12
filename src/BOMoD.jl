@@ -23,9 +23,9 @@ module BOMoD
     import StringDistances: QGramDistance
 
 
-    export groupmod ,getspace
+    export groupmod, getspace
     export constructdesign
-    export OrderedConstrain, UnOrderedConstrain
+    export OrderedConstraint, UnOrderedConstraint
     export OrderedConstruct, UnorderedConstruct
     export GPModel, GPpredict
     export fit_gp, predict_GP
