@@ -5,6 +5,7 @@ using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
 using Random
 using StatsBase
 using StringDistances
+using Distances
 using Stheno: ew, pw
 include("./BO_test/test_functions.jl")
 
