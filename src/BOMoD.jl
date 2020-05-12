@@ -32,6 +32,7 @@ module BOMoD
     export ts_sampler_me,ts_sampler_stheno,ei_sampler,pi_sampler,gpucb_sampler
 
 
+
     # include construction of space
     include(joinpath("design", "Mod.jl"))
     include(joinpath("design", "Combinatroics.jl"))
