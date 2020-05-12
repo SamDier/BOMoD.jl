@@ -4,6 +4,7 @@ using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
     Mod,GroupMod, _word2vec
 using Random
 using StatsBase
+using StringDistances
 include("./BO_test/test_functions.jl")
 
 @testset "BOMod" begin
