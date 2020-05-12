@@ -88,7 +88,7 @@ evaluation of the constraint.
 The corresponding positions are ``Array{::Int}``, these are the forbidden indexes for the corresponding module.
 These modules are given as ``Array{T} where T <: Mod``
 
-For more information see [`filter_constrain`]@ref.
+For more information see [`filterconstraint`]@ref.
 
 """
 struct OrderedConstraint{T<:Mod} <: SingleConstructConstraints{T}

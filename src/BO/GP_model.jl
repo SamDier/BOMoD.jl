@@ -57,7 +57,6 @@ end
 
 function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimise = false)
         v_train = transform_data(x_train,mod::GroupMod,k)
-        println(σ²_n)
         #set Gaussian procces in Stheno framework
         if optimise
                 θ = gp_optimised(v_train,y_train,k,σ²_n)
@@ -201,7 +200,6 @@ end
 """
 
 function nlml_stheno(θ_temp, x_train, y_train, k::Kernel, σ²_n)
-    println(θ_temp)
     θ_exp = exp.(θ_temp) .+ 0.001
     f,_ = _creatGP(k,θ_exp)
     return -logpdf(f(x_train,σ²_n), y_train)
