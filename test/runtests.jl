@@ -1,7 +1,7 @@
 using Test
 using BOMoD
 using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
-    Mod,GroupMod, _word2vec
+    Mod,GroupMod, _word2vec, degree, laplacian,norm_laplacian
 using Random
 using StatsBase
 using StringDistances
