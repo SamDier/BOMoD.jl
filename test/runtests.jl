@@ -1,4 +1,5 @@
 using Test
+using BOMoD
 using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
     Mod,GroupMod
 using Random
