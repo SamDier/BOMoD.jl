@@ -94,16 +94,6 @@ struct FullUnorderedspace{T}<: EffSpace{T}
     space::Combination{T}
 end
 
-"""
-    _show(a::FullUnorderedspace)
-
-specific part of `show(io::IO,a::EffSpace)` for `FullOrderedspace`
-"""
-function _show(a::FullOrderedspace)
-    print("order: is true ν")
-    first_constructs = a[1].c
-    print("first construct is = $first_constructs")
-end
 
 
 
@@ -115,11 +105,7 @@ Returns the type of `FullUnorderedspace{T}` if they are collected.
 Base.eltype(::Type{FullUnorderedspace{T}}) where {T} = UnorderedConstruct{T}
 
 
-function _show(a::FullOrderedspace)
-    print("order: is true ν")
-    first_construct = a[1].c
-    print("first construct is = first_construct")
-end
+
 
 """
     ComputedSpace{T}

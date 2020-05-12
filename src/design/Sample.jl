@@ -52,7 +52,7 @@ end
 
 # if no RNG object is given
 StatsBase.sample(a::EffSpace, n::Integer;with_index::Bool = false, replace::Bool=false, ordered::Bool=false) =
-    sample(Random.GLOBAL_RNG, a, n; whit_index = with_index, replace=replace, ordered=ordered)
+    sample(Random.GLOBAL_RNG, a, n; with_index = with_index, replace=replace, ordered=ordered)
 
 
 """
