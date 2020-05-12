@@ -37,7 +37,7 @@ ew_test = exp.([-evaluate(Levenshtein(),s1,s5),-evaluate(Levenshtein(),s2,s6),
 end
 
 #test cossim
-testkernel2 = Qgramkernel(StringDistances.Cosine(1))
+testkernel2 = QgramKernel(StringDistances.Cosine(1))
 v1 = [[1,1,1,1],[0,2,1,1],[0,2,2,0],[1,0,2,1]]
 v2 = [_word2vec(i,dict_mod) for i in x2]
 @testset "Qnorm" begin
