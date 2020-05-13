@@ -16,8 +16,8 @@ end
  The `rev` arguments allow to adapt the function to different distances.
  Set rev = false if the distance decreases as two vectors are more similar.
  e.g. Levenshtein distance.
- Set rev = true if the distance increase as two vectors are more similar
- e.g. Cosine  simularity
+ Set rev = true if a simularity is used, which increase as two vectors are more similar
+ e.g. Cosine simularity
 """
 function Compear_distance(Bᵢ,Bⱼ,d;rev=false)
     Dᵢ = pairwised(Bᵢ,d) |> (t -> sort(t,rev=rev))

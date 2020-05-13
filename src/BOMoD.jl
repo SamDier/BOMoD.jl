@@ -12,10 +12,11 @@ module BOMoD
     using Stheno
     using Zygote: gradient
     using Distributions
+    using Reexport
 
 
     import Base: +, *, getindex,length, eltype,isequal,isless,push!,in,summary,show,==
-    import Stheno: ew,pw,Kernel
+    import Stheno: ew,pw Kernel, BaseKernel
     import LinearAlgebra: norm, eigvals!, Diagonal,dot
     import Optim: minimizer
     import Kronecker: KroneckerPower
@@ -31,7 +32,8 @@ module BOMoD
     export fit_gp, predict_GP
     export ts_sampler_me,ts_sampler_stheno,ei_sampler,pi_sampler,gpucb_sampler
     export QgramKernel,EditDistancesKernel
-    
+    @reexport Stheno: Kernel
+    @reexport StatsBase: sample
 
 
 

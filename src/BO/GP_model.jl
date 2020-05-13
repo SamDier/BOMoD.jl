@@ -72,7 +72,7 @@ end
 
 
 """
-    fit_gp(x_train,y_train::Vector,k::Kernel,parm)
+    fit_gp_graph(x_train,y_train::Vector,k::Kernel,parm)
 
   Fit a Gaussian process using a kernel on a graph.
 
@@ -90,11 +90,11 @@ end
   optimise:: Set to true if hyperparameters
   need to be optimised based on maximum likelihood estimation, default = false.
 
-  eturns a GPModel with the posterior of the gp, the kernel, used hyperparameters
+  returns a GPModel with the posterior of the gp, the kernel, used hyperparameters
 """
 
 
-function fit_gp(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule,θ;σ²_n = 10^-6,optimise = false)
+function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule,θ;σ²_n = 10^-6,optimise = false)
         @assert isa(eltype(x_train),Integer) "for kernel on a graph the index of the given combinations are required as input"
         n_laplace = setupgraph(S,k,edgerule)
         #set Gaussian procces in Stheno framework
@@ -116,7 +116,7 @@ end
 predicts the value from the unseen datapoints
 
 """
-function predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          v_test = transform_data(x_test,mod::GroupMod,model.K)
          return  GPpredict(model.f̂(v_test,σ²_test),x_test)
 end
@@ -126,7 +126,7 @@ end
 Fitlers first all seen data point out S and than predict values for the unseen datapoints
 
 """
-function predict_GP(S,x_train,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+function predict_gp(S,x_train,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          x_test = filter(x-> !(x in x_train) ,S)
         return predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
 end
@@ -313,3 +313,18 @@ end
 """
 
 transform_data(x_in,mod::GroupMod,::Kernel) = x_in
+
+
+"""
+        transform_data(x_in,mod::GroupMod,::Linear)
+ Current implementation opt Stheno linear model requires spacial data input.
+ Function transforms the vector of constructs into the vector embedding
+ and then transforms the data into `ColVecs` type to fit linear model
+"""
+
+function transform_data(x_in,mod::GroupMod,::BaseKernel)
+        # get vector embedding
+        v_out = map(x -> _word2vec(x,mod),x_in)
+        #transform to ColVecs
+        return hcat(v_out...) 
+end
