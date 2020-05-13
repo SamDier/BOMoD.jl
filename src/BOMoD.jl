@@ -32,8 +32,9 @@ module BOMoD
     export fit_gp, predict_GP
     export ts_sampler_me,ts_sampler_stheno,ei_sampler,pi_sampler,gpucb_sampler
     export QgramKernel,EditDistancesKernel
-    @reexport Stheno: Kernel
-    @reexport StatsBase: sample
+
+    @reexport using Stheno: Kernel
+    @reexport using StatsBase: sample
 
 
 
