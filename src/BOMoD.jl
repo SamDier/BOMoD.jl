@@ -16,7 +16,7 @@ module BOMoD
 
 
     import Base: +, *, getindex,length, eltype,isequal,isless,push!,in,summary,show,==
-    import Stheno: ew,pw Kernel, BaseKernel
+    import Stheno: ew,pw, Kernel, BaseKernel
     import LinearAlgebra: norm, eigvals!, Diagonal,dot
     import Optim: minimizer
     import Kronecker: KroneckerPower
