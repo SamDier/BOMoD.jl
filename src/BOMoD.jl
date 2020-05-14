@@ -11,7 +11,6 @@ module BOMoD
     using Optim
     using Stheno
     using Distributions
-    using Reexport
 
 
     import Base: +, *, getindex,length, eltype,isequal,isless,push!,in,summary,show,==

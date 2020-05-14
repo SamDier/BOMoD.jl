@@ -112,13 +112,20 @@ end
 
 
 """
-        predict(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
-predicts the value from the unseen datapoints
+        predict(x_test,model::GPModel,mod::GroupMod; σ²_test = true)
+predicts the value from the unseen datapoints `x_test` using the given GPmodel object.
+The use module are needed to transform the data in the proper format.
 
+σ²_test = set the noise for the predictions.
+By default is set to -1 and the mean value of the training noise is use. 
 """
-function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = -1 )
          v_test = transform_data(x_test,mod::GroupMod,model.K)
-         if isa(model.k,KernelGraph)
+         if σ²_test == -1
+                 σ²_test = mean(model.θ[σ²_n])
+        end
+
+         if isa(model.K,KernelGraph)
                  @assert eltype(x_test) == Int  "for kernel on a graph the index of the given combinations are required x_test"
         end
          return  GPpredict(model.f̂(v_test,σ²_test),x_test)
@@ -131,7 +138,7 @@ Fitlers first all seen data point out S and than predict values for the unseen d
 """
 function predict_gp(S,x_train,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          x_test = filter(x-> !(x in x_train) ,S)
-        return predict_GP(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+        return predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
 end
 
 
