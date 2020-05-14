@@ -55,7 +55,7 @@ end
 """
 
 
-function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimise = false)
+function fit_gp(x_train,y_train,k::Kernel,mod::GroupMod; θ = [1], σ²_n = 10^-6,optimise = false)
         v_train = transform_data(x_train,mod::GroupMod,k)
         #set Gaussian procces in Stheno framework
         if optimise
@@ -94,8 +94,8 @@ end
 """
 
 
-function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule,θ;σ²_n = 10^-6,optimise = false)
-        @assert isa(eltype(x_train),Integer) "for kernel on a graph the index of the given combinations are required as input"
+function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule;θ = [1,2],σ²_n = 10^-6,optimise = false)
+        @assert eltype(x_train) == Int "The Kernel graphs requiers the indexes as input"
         n_laplace = setupgraph(S,k,edgerule)
         #set Gaussian procces in Stheno framework
         if optimise
@@ -118,6 +118,9 @@ predicts the value from the unseen datapoints
 """
 function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
          v_test = transform_data(x_test,mod::GroupMod,model.K)
+         if isa(model.k,KernelGraph)
+                 @assert eltype(x_test) == Int  "for kernel on a graph the index of the given combinations are required x_test"
+        end
          return  GPpredict(model.f̂(v_test,σ²_test),x_test)
 end
 
@@ -146,16 +149,7 @@ function _creatGP(k::Kernel, θ)
         return (fGP,Dict{String,Any}("α"=>θ[1]))
 end
 
-"""
-        _creatGP(k::Kernel, α)
-Retuns an Stheno GP  model wiht a given kernel which is scaled with the parameter `α`.
-"""
 
-function _creatGP(k::Kernel)
-        @assert length(α) == 1 " Kernel has only one hyperparamter, α"
-        fGP =  θ[1]* GP(k, GPC())
-        return (fGP,Dict{String,Any}("α"=>α,"β"=>β))
-end
 
 """
         _creatGP(k::Kernel, θ)
@@ -175,9 +169,9 @@ end
         _creatGP(k::Kernel, α)
 Retuns an Stheno GP  model with a p-randomwalk kernel and hyperparameters θ.
 """
-function _creatGP(graph_l,gk::Prandomwalk,θ)
+function _creatGP(graph_l,gk::PrandomKernel,θ)
         α = θ[1]
-        a = θ[2]
+        a = θ[2] + 2 # makes sure a > 2
         k = Precomputed(kernelgraph(n_laplace,gk,a))
         fGP = α * GP(k, GPC())
         return (fGP,Dict{String,Any}("α"=>α,"a"=>a,"p" => gk.p))
@@ -229,14 +223,14 @@ end
 
  Returns optimise a gp_model with a single hyperparameter
  with given input argument x_train,y_train,k,σ²_n
- The parameters are obtained by maximum-likelihood estimation.
+ The parameters are obtained by log maximum-likelihood estimation.
  The model uses the Goldensection algorithm  from Optim.jl,
  min and max are respectively the lower and upper
  initial boundary of the algorithm
 
 """
 
-function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = 0.001, max = 10.0)
+function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -5, max = 10.0)
 #do perform optimisation
 results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),min,max,
               GoldenSection())
@@ -244,8 +238,6 @@ results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),
         α_opt = exp.(Optim.minimizer(results)) .+ 0.001
         return α_opt
 end
-
-
 
 
 
@@ -258,7 +250,7 @@ end
  The model uses the NelderMead() algorithm  from Optim.jl,
  θ₀ is the initial starting point of the algoritme
 """
-function gp_optimised(n_laplace,x_train,y_train,k::KernelGraph,σ²_n,θ₀=[0.0,0.0])
+function gp_optimised(n_laplace,x_train,y_train,k::KernelGraph,σ²_n,θ₀=[1.0,1.0])
         results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),θ₀,
                       NelderMead())
         #get optimal hyperparameters
@@ -266,28 +258,6 @@ function gp_optimised(n_laplace,x_train,y_train,k::KernelGraph,σ²_n,θ₀=[0.0
                 return  θ_opt
 end
 
-####
-#linear
-# think gradient is litte over the top....
-####
-
-#=
-
-"""
-     gp_optimised(x_train,y_train::Vector,k::Linear,σ²_n; θ₀= [0])
-
- Returns the optimal hyperparameter for al linear kernel
-"""
-
-function gp_optimised(x_train,y_train,k::Linear,σ²_n; θ₀=[1.0])
-        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),
-                θ_temp->gradient(t -> nlml_stheno(t,x_train,y_train,k,σ²_n),θ_temp)[1],θ₀,
-                BFGS(); inplace=false)
-#get optimal hyperparameters
-        α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
-        return α_opt
-end
-=#
 
 ######
 # transform_data
@@ -326,5 +296,39 @@ function transform_data(x_in,mod::GroupMod,::BaseKernel)
         # get vector embedding
         v_out = map(x -> _word2vec(x,mod),x_in)
         #transform to ColVecs
-        return hcat(v_out...) 
+        return hcat(v_out...)
 end
+
+#=
+"""
+        _creatGP(k::Kernel, α)
+Retuns an Stheno GP  model wiht a given kernel which is scaled with the parameter `α`.
+"""
+
+function _creatGP(k::EditDistancesKernel,θ)
+        fGP =  θ[1]* GP(k, GPC())
+        return (fGP,Dict{String,Any}("α"=>α,"β"=>β))
+end
+
+####
+#linear
+# think gradient is litte over the top....
+####
+
+
+
+"""
+     gp_optimised(x_train,y_train::Vector,k::Linear,σ²_n; θ₀= [0])
+
+ Returns the optimal hyperparameter for al linear kernel
+"""
+
+function gp_optimised(x_train,y_train,k::Linear,σ²_n; θ₀=[1.0])
+        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),
+                θ_temp->gradient(t -> nlml_stheno(t,x_train,y_train,k,σ²_n),θ_temp)[1],θ₀,
+                BFGS(); inplace=false)
+#get optimal hyperparameters
+        α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
+        return α_opt
+end
+=#

@@ -20,6 +20,7 @@ For more information see [StatsBase](https://juliastats.org/StatsBase.jl/stable/
 
 function StatsBase.sample!(rng::AbstractRNG, space::EffSpace,x::AbstractArray;
             with_index::Bool = false , replace::Bool=false, ordered::Bool=false)
+            
     index = sample!(rng,1:length(space),x;replace=replace,ordered=ordered)
     if with_index
         return ([space.space[i] for i in index] , index)

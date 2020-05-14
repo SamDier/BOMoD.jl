@@ -19,6 +19,7 @@ space = getspace(design);
 
 ## Generating Toy Data
 ```julia
+using Random
 rng  = MersenneTwister();
 activities = rand(rng,Uniform(0,5),length(m));
 toy_data = Dict(m .=> activities);

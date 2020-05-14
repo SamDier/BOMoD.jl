@@ -63,7 +63,7 @@ and max is the maximum levenstein distance between xᵢ, xⱼ possible.
 
 function edgevalue(rule::LevRule, xᵢ, xⱼ)
     max = maximum([length(xᵢ),length(xⱼ)])
-    return (1 - evaluate(Levenshtein, xᵢ, xⱼ)/max)
+    return (1 - evaluate(Levenshtein(), xᵢ, xⱼ)/max)
 end
 
 """

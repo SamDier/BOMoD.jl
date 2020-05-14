@@ -106,17 +106,35 @@ pw(k::EditDistancesKernel, x::AbstractVector, x′::AbstractVector) = reshape([e
 
 """
     KernelGraph{T}
-allow to use a Diffion kernel on a graph.
-The graph is constructed based on all combinations.
+A Kernel wich is caluclated based on a underlying graph.
+The graph constructed based on all possible combinations.
 """
-abstract type KernelGraph{T} <: Kernel end
+abstract type KernelGraph <: Kernel end
 
+"""
+    DiffusionKernel
 
-struct DiffusionKernel{T}  <: KernelGraph{T} end
-struct Prandomwalk{T}   <: KernelGraph{T}
+Struct to call the diffusion Kernel
+"""
+struct DiffusionKernel <: KernelGraph end
+
+"""
+    PwalkKernel{T}
+
+Struct to call the diffusion p - random walk kernel.
+
+"""
+struct PrandomKernel{T}  <: KernelGraph
     p::Int
- end
+end
 
+"""
+    setupgraph(S,k::KernelGraph,edgerule::EdgeRule)
+
+Intral function that returs the normalized laplacian of the given graph.
+The weighed graph is generated based on the whole design space S.
+The weights are calculated using the given edgeRule.
+"""
 function setupgraph(S,k::KernelGraph,edgerule::EdgeRule)
     fullspace = collect(S)
     return  adjacency(fullspace, edgerule) |>  norm_laplacian
@@ -137,12 +155,13 @@ kernelgraph(L,gk::DiffusionKernel,β) = exp(-β*L)
 """
      kernelgraph(l::AbstractArray,gk::Diffusion;a = 1)
 p-random walk kernel on the normalized laplacian `l` wiht hyper parameter a
+
 with ``a geq 2``
 Smola A.J., Kondor R. (2003) Kernels and Regularization on Graphs.
 In: Schölkopf B., Warmuth M.K. (eds) Learning Theory and Kernel Machines.
 Lecture Notes in Computer Science, vol 2777. Springer, Berlin, Heidelberg
 """
-function kernelgraph(L,gk::Prandomwalk,a)
+function kernelgraph(L,gk::PrandomKernel,a)
     @assert a >= 2 "a has to be larger than 2"
     return (a*I - L)^(gk.p)
 end

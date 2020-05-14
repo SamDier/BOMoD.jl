@@ -10,30 +10,41 @@ module BOMoD
     using LinearAlgebra
     using Optim
     using Stheno
-    using Zygote: gradient
     using Distributions
     using Reexport
 
 
     import Base: +, *, getindex,length, eltype,isequal,isless,push!,in,summary,show,==
-    import Stheno: ew,pw,  BaseKernel
+    import Stheno:ew,pw, BaseKernel,Kernel
     import LinearAlgebra: norm, eigvals!, Diagonal,dot
     import Optim: minimizer
     import Kronecker: KroneckerPower
     import StringDistances: QGramDistance
 
 
-    export groupmod, getspace
-    export constructdesign
-    export OrderedConstraint, UnOrderedConstraint
-    export OrderedConstruct, UnorderedConstruct
-    export GPModel, GPpredict
-    export fit_gp, predict_GP
-    export ts_sampler_me,ts_sampler_stheno,ei_sampler,pi_sampler,gpucb_sampler
-    export QgramKernel,EditDistancesKernel
+    export groupmod,
+           getspace,
+           constructdesign,
+           OrderedConstraint,
+           UnOrderedConstraint
+           OrderedConstruct,
+           UnorderedConstruct
+           GPModel,
+           GPpredict
+           fit_gp,
+           predict_GP
+           ts_sampler_me,
+           ts_sampler_stheno,
+           ei_sampler,
+           pi_sampler,
+           gpucb_sampler
+           QgramKernel,
+           EditDistancesKernel
+           PrandomKernel
+           DiffusionKernel
+           sample
 
-    @reexport using Stheno: Kernel
-    @reexport using StatsBase: sample
+
 
 
 
