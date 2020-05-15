@@ -20,7 +20,7 @@ function Base.show(io::IO,m::SingleDesign)
         print(io,m.mod ,"\n")
         print(io,"allowed length : ", m.len, "\n",
                "constraints : " , m.con ,"\n")
-        print(io,"designspace : \n")
+        print(io,"\t \t designspace \n")
         print(io,m.space)
 end
 
@@ -311,10 +311,10 @@ struct MultiDesign{T} <: AbstractDesign{T}
 end
 
 function Base.show(io::IO,d::MultiDesign)
-    l = length(m)
+    l = length(d)
    print(io,"Number of single designs: $l \n")
    for i in d
-       print(io,i , "\n")
+       print(io,"\n", i , "\n")
    end
 end
 
