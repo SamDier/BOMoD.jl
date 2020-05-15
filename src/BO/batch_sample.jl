@@ -5,7 +5,7 @@
 ###
 
 """
-    thompson_sampling(f_pre::GPpredict,b; σ² = 10^-6)
+    thompson_sampling(f_pre::GPpredict,b)
 
 Brute force Thompson sampling of all unseen data obtain b new samples.
 Use GPpredict object,
@@ -60,6 +60,7 @@ higher ϵ values will explore the search space more.
 """
 
 function ei_sampler(f_pre::GPpredict,b,fmax;ϵ = 0)
+    @assert length(f_pre.x_test) ≥ b
     ei_values = ei(f_pre,fmax,;ϵ = 0) |> x -> sort( x,:EI,rev=true)
     return ei_values.x_test[1:b]
 end
@@ -79,6 +80,7 @@ which contains the GP_prediction model and the unseen design points
 higher ϵ values will explore the search space more.
 """
 function pi_sampler(f_pre::GPpredict,b,fmax;ϵ = 0)
+    @assert length(f_pre.x_test) ≥ b
     pi_values = pi(f_pre,fmax;ϵ = 0) |> x -> sort( x ,:PI,rev=true)
     return pi_values.x_test[1:b]
 end
@@ -96,12 +98,14 @@ which contains the GP_prediction model and the unseen design points
 β is a paramters to balance between exploring and exploiting.
 higher β values will explore the search space more.
 """
-function gpucb_sampler(f_pre::GPpredict,b,β)
+function gpucb_sampler(f_pre::GPpredict,b;β = 1)
+    @assert length(f_pre.x_test) ≥ b
     gpubc_values = gp_ubc(f_pre::GPpredict,β) |> x -> sort( x ,:UCB,rev=true)
     return gpubc_values.x_test[1:b]
 end
 
 function ucb_sampler(f_pre::GPpredict,λ,b)
+    @assert length(f_pre.x_test) ≥ b
     ubc_values = ubc(f_pre::GPpredict,λ) |> x -> sort( x ,:UCB,rev=true)
     return ubc_values.x_test[1:b]
 end

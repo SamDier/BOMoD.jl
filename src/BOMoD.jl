@@ -20,33 +20,6 @@ module BOMoD
     import Kronecker: KroneckerPower
     import StringDistances: QGramDistance
 
-
-    export groupmod,
-           getspace,
-           constructdesign,
-           OrderedConstraint,
-           UnOrderedConstraint
-           OrderedConstruct,
-           UnorderedConstruct
-           GPModel,
-           GPpredict
-           fit_gp,
-           predict_GP
-           ts_sampler_me,
-           ts_sampler_stheno,
-           ei_sampler,
-           pi_sampler,
-           gpucb_sampler
-           QgramKernel,
-           EditDistancesKernel
-           PrandomKernel
-           DiffusionKernel
-           sample
-
-
-
-
-
     # include construction of space
     include(joinpath("design", "Mod.jl"))
     include(joinpath("design", "Combinatroics.jl"))
@@ -60,6 +33,35 @@ module BOMoD
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "GP_model.jl"))
     include(joinpath("BO", "batch_sample.jl"))
+
+    
+    export groupmod,
+           getspace,
+           constructdesign,
+           OrderedConstraint,
+           UnOrderedConstraint,
+           OrderedConstruct,
+           UnorderedConstruct
+           GPModel,
+           GPpredict
+           fit_gp,
+           predict_GP
+           ts_sampler_me,
+           ts_sampler_stheno,
+           ei_sampler,
+           pi_sampler,
+           gpucb_sampler
+           QgramKernel,
+           EditDistancesKernel,
+           PrandomKernel,
+           DiffusionKernel,
+           sample
+
+
+
+
+
+
 
 
 end # module
