@@ -15,6 +15,16 @@ They can be combined to form more complex design space.
 """
 abstract type SingleDesign{T} <: AbstractDesign{T} end
 
+function Base.show(io::IO,m::SingleDesign)
+     mod = show(m.mod);
+     space = show(m.space)
+    print(io,"Used modules: $mod \n
+                allowed length: m.len \n
+                constraints: m.con \n
+                designspace: $space" )
+end
+
+
 
 """
     OrderedDesign
@@ -296,6 +306,14 @@ Currently only used to allow multiple lengths of constructs for the same design 
 
 struct MultiDesign{T} <: AbstractDesign{T}
     d::Vector{T}
+end
+
+Base.show(io::IO,m:MultiDesign:)
+    l = length(m)
+   print(io,"Number of single designs: $l"\n)
+   for i in m
+       show(i)
+   end
 end
 
 """
