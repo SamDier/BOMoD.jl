@@ -116,3 +116,7 @@ Base.eltype(::GroupMod{T}) where {T} = T
 
 """
 Base.getindex(m::GroupMod,i) = m.m[i]
+
+function Base.show(io::IO,m::GroupMod)
+    print(io,"[m.m]")
+end

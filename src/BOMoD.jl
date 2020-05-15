@@ -34,7 +34,7 @@ module BOMoD
     include(joinpath("BO", "GP_model.jl"))
     include(joinpath("BO", "batch_sample.jl"))
 
-    
+
     export groupmod,
            getspace,
            constructdesign,
@@ -45,7 +45,7 @@ module BOMoD
            GPModel,
            GPpredict
            fit_gp,
-           predict_GP
+           predict_gp
            ts_sampler_me,
            ts_sampler_stheno,
            ei_sampler,
@@ -56,6 +56,7 @@ module BOMoD
            PrandomKernel,
            DiffusionKernel,
            sample
+
 
 
 
