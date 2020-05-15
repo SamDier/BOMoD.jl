@@ -41,7 +41,7 @@ module BOMoD
            OrderedConstraint,
            UnOrderedConstraint,
            OrderedConstruct,
-           UnorderedConstruct
+           UnorderedConstruct,
            GPModel,
            GPpredict
            fit_gp,
@@ -50,7 +50,7 @@ module BOMoD
            ts_sampler_stheno,
            ei_sampler,
            pi_sampler,
-           gpucb_sampler
+           gpucb_sampler,
            QgramKernel,
            EditDistancesKernel,
            PrandomKernel,
