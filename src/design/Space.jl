@@ -135,6 +135,11 @@ struct FrameSpace{Ts <: EffSpace{T} where T, Tc <: ConstructConstraints} <: Abst
     con::Tc
 end
 
+function Base.show(io::IO,a::FrameSpace)
+    print(io,"Effspace:")
+    print(io,a.space, "\n")
+    print(io,"constraint:", a.con)
+end
 
 
 # getindex seem not very usefull in this case

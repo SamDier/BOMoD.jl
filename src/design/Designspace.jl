@@ -16,13 +16,15 @@ They can be combined to form more complex design space.
 abstract type SingleDesign{T} <: AbstractDesign{T} end
 
 function Base.show(io::IO,m::SingleDesign)
-     mod = show(m.mod);
-     space = show(m.space)
-    print(io,"Used modules: $mod \n
-                allowed length: m.len \n
-                constraints: m.con \n
-                designspace: $space" )
+        print(io,"Used modules : ")
+        print(io,m.mod ,"\n")
+        print(io,"allowed length : ", m.len, "\n",
+               "constraints : " , m.con ,"\n")
+        print(io,"designspace : \n")
+        print(io,m.space)
 end
+
+
 
 
 
@@ -308,11 +310,11 @@ struct MultiDesign{T} <: AbstractDesign{T}
     d::Vector{T}
 end
 
-Base.show(io::IO,m:MultiDesign:)
+function Base.show(io::IO,d::MultiDesign)
     l = length(m)
-   print(io,"Number of single designs: $l"\n)
-   for i in m
-       show(i)
+   print(io,"Number of single designs: $l \n")
+   for i in d
+       print(io,i , "\n")
    end
 end
 

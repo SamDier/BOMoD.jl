@@ -72,7 +72,7 @@ end
 
 make_unorderconstraint(c::Array) = UnOrderedConstraint([Mod(m) for m in c])
 
-#FIXME: docstring not clear...
+
 """
     OrderedConstraint{T<:Mod}
 
@@ -89,6 +89,7 @@ The corresponding positions are ``Array{::Int}``, these are the forbidden indexe
 These modules are given as ``Array{T} where T <: Mod``
 
 For more information see [`filterconstraint`]@ref.
+or read the documentation regareding the use of constraints.
 
 """
 struct OrderedConstraint{T<:Mod} <: SingleConstructConstraints{T}
