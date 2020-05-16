@@ -40,6 +40,6 @@ module BOMoD
     export UnOrderedConstraint, OrderedConstruct,  UnorderedConstruct
     export GPModel, GPpredict, fit_gp, predict_gp, ts_sampler, ei_sampler
     export pi_sampler, gpucb_sampler, QgramKernel, EditDistancesKernel
-    export PrandomKernel, DiffusionKernel, sample, Linear
+    export PrandomKernel, DiffusionKernel, sample, CosRule, LevRule, Linear
 
 end
