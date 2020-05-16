@@ -171,9 +171,9 @@ Retuns an Stheno GP  model with a p-randomwalk kernel and hyperparameters θ.
 """
 function _creatGP(n_laplace,gk::PrandomKernel,θ)
         α = θ[1]
-        a = θ[2] + 2 # makes sure a > 2
+        a = 2 # makes sure a > 2
         k = Precomputed(kernelgraph(n_laplace,gk,a))
-        fGP = α * GP(k, GPC())
+        fGP =  α*GP(k, GPC())
         return (fGP,Dict{String,Any}("α"=>α,"a"=>a,"p" => gk.p))
 end
 
@@ -245,7 +245,7 @@ end
  The model uses the NelderMead() algorithm  from Optim.jl,
  θ₀ is the initial starting point of the algoritme
 """
-function gp_optimised(n_laplace,x_train,y_train,k::DiffusionKernel,σ²_n,min = -5, max = 10.0))
+function gp_optimised(n_laplace,x_train,y_train,k::KernelGraph,σ²_n,min = -5, max = 10.0)
         results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),min,max,
                       GoldenSection())
         #get optimal hyperparameters
@@ -254,24 +254,6 @@ function gp_optimised(n_laplace,x_train,y_train,k::DiffusionKernel,σ²_n,min = 
 end
 
 
-
-
-"""
-     gp_optimised(n_laplace,x_train,y_train,k::Kernel,σ²_n;θ₀=[0.0,0.0])
-
- Returns optimise a gp_model for a kernel on a graph with two hyperparameters
- with given input argument n_laplace, x_train, y_train, k, σ²_n
- The parameters are obtained by maximum-likelihood estimation.
- The model uses the NelderMead() algorithm  from Optim.jl,
- θ₀ is the initial starting point of the algoritme
-"""
-function gp_optimised(n_laplace,x_train,y_train,k::PrandomKernel,σ²_n,θ₀=[1.0,1.0])
-        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),θ₀,
-                      NelderMead())
-        #get optimal hyperparameters
-                  θ_opt = exp.(Optim.minimizer(results)) .+ 10^-6
-                return  θ_opt
-end
 
 
 ######
@@ -346,4 +328,22 @@ function gp_optimised(x_train,y_train,k::Linear,σ²_n; θ₀=[1.0])
         α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
         return α_opt
 end
+
+"""
+     gp_optimised(n_laplace,x_train,y_train,k::Kernel,σ²_n;θ₀=[0.0,0.0])
+
+ Returns optimise a gp_model for a kernel on a graph with two hyperparameters
+ with given input argument n_laplace, x_train, y_train, k, σ²_n
+ The parameters are obtained by maximum-likelihood estimation.
+ The model uses the NelderMead() algorithm  from Optim.jl,
+ θ₀ is the initial starting point of the algoritme
+"""
+function gp_optimised(n_laplace,x_train,y_train,k::PrandomKernel,σ²_n,θ₀=[1.0,1.0])
+        results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),θ₀,
+                      NelderMead())
+        #get optimal hyperparameters
+                  θ_opt = exp.(Optim.minimizer(results)) .+ 10^-6
+                return  θ_opt
+end
+
 =#
