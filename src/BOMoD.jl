@@ -37,6 +37,7 @@ module BOMoD
 
     export groupmod,
            getspace,
+           Mod,
            constructdesign,
            OrderedConstraint,
            UnOrderedConstraint,
@@ -46,8 +47,7 @@ module BOMoD
            GPpredict
            fit_gp,
            predict_gp
-           ts_sampler_me,
-           ts_sampler_stheno,
+           ts_sampler,
            ei_sampler,
            pi_sampler,
            gpucb_sampler,

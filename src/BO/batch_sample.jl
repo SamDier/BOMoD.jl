@@ -8,24 +8,11 @@
     thompson_sampling(f_pre::GPpredict,b)
 
 Brute force Thompson sampling of all unseen data obtain b new samples.
-Use GPpredict object,
-which contains the GP_prediction model and the unseen design points
+Use GPpredict object, which contains the GP_prediction model and the unseen design points
 
 """
-function ts_sampler_stheno(f_pre::GPpredict,b)
-    @assert length(f_pre.x_test) ≥ b
-    # indices selected
-    selected = Int[]
-    f̂_matrix = rand(f_pre.f̂_pred,b)
-    for j in eachcol(f̂_matrix)
-        j[selected]  .= - Inf64
-       i = argmax(j)
-       push!(selected, i)
-   end
-   return f_pre.x_test[selected]
-end
 
-function ts_sampler_me(f_pre::GPpredict,b)
+function ts_sampler(f_pre::GPpredict,b)
     # some checks
     @assert length(f_pre.x_test) ≥ b
     # index selected
@@ -88,7 +75,7 @@ end
 """
     gpucb_sampler(f_pre::GPpredict,b,β)
 
-Brute force calculation of the  Gaussian Process Upper Confidence Bound (GP-UCB)
+Brute force calculation of the Gaussian Process Upper Confidence Bound (GP-UCB)
 to obtain b samples from the non-evaluated design space.
 The  (GP-UCB) is calculated for all unseen construct,
 and the b constructs with the highest value are returned.
@@ -202,8 +189,28 @@ gp_ubc(f_pre::GPpredict,β) =  ubc(f_pre::GPpredict,sqrt(β))
 
 
 
-#FIXME: what is `initer`?
-#FIXME: `save_thompson_sampling` => `safe_thompson_sampling`
+
+"""
+    thompson_sampling(f_pre::GPpredict,b)
+
+Brute force Thompson sampling of all unseen data obtain b new samples.
+Use GPpredict object,
+which contains the GP_prediction model and the unseen design points
+
+"""
+function ts_sampler_stheno(f_pre::GPpredict,b)
+    @assert length(f_pre.x_test) ≥ b
+    # indices selected
+    selected = Int[]
+    f̂_matrix = rand(f_pre.f̂_pred,b)
+    for j in eachcol(f̂_matrix)
+        j[selected]  .= - Inf64
+       i = argmax(j)
+       push!(selected, i)
+   end
+   return f_pre.x_test[selected]
+end
+
 """
     save_thompson_sampling(f, x::AbstractVector,n_samples, σ²)
 
@@ -224,3 +231,6 @@ function save_thompson_sampling(f_post, constructs_test::AbstractVector,
     end
     return nextsample
 end
+
+
+####

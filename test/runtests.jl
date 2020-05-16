@@ -1,12 +1,13 @@
 using Test
-using BOMoD
-using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
-    Mod,GroupMod, _word2vec, degree, laplacian,norm_laplacian
 using Random
 using StatsBase
 using StringDistances
 using Distances
 using Stheno: ew, pw
+using BOMoD
+using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
+    Mod,GroupMod, _word2vec, degree, laplacian,norm_laplacian
+
 include("./BO_test/test_functions.jl")
 
 @testset "BOMod" begin
