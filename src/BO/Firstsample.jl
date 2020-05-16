@@ -33,6 +33,7 @@ function Compear_distance(Bᵢ,Bⱼ,d;rev=false)
     return Bᵢ
 end
 
+#=
 """
     greedy_local_search(d,S,B,b,)
 
@@ -49,3 +50,4 @@ end
 
 min_dist(d,sᵢ, B ) = minimum(evaluate(d,sᵢ,xᵢ) for xᵢ in B)
 d_max(d,S,B) = maximum(min_dist(d,sᵢ,B) for sᵢ in S)
+=#
