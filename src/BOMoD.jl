@@ -44,7 +44,7 @@ module BOMoD
            OrderedConstruct,
            UnorderedConstruct,
            GPModel,
-           GPpredict
+           GPpredict,
            fit_gp,
            predict_gp
            ts_sampler,
@@ -57,12 +57,4 @@ module BOMoD
            DiffusionKernel,
            sample
 
-
-
-
-
-
-
-
-
-end # module
+end 
