@@ -135,7 +135,7 @@ Intral function that returs the normalized laplacian of the given graph.
 The weighed graph is generated based on the whole design space S.
 The weights are calculated using the given edgeRule.
 """
-function setupgraph(S,k::KernelGraph,edgerule::EdgeRule)
+function setupgraph(S,edgerule::EdgeRule)
     fullspace = collect(S)
     return  adjacency(fullspace, edgerule) |>  norm_laplacian
 end
