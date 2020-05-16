@@ -124,7 +124,7 @@ struct DiffusionKernel <: KernelGraph end
 Struct to call the diffusion p - random walk kernel.
 
 """
-struct PrandomKernel{T}  <: KernelGraph
+struct PrandomKernel <: KernelGraph
     p::Int
 end
 
