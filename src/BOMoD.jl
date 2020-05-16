@@ -33,7 +33,7 @@ module BOMoD
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "GP_model.jl"))
     include(joinpath("BO", "batch_sample.jl"))
-    icludee(joinpath("BO", "Firstsample.jl"))
+    include(joinpath("BO", "Firstsample.jl"))
 
 
     export groupmod, getspace, Mod, constructdesign, OrderedConstraint
