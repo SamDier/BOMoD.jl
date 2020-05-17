@@ -148,8 +148,8 @@ Retuns an Stheno GP  model wiht a given kernel which is scaled with the paramete
 """
 function _creatGP(k::Kernel, θ)
         @assert length(θ) == 1 " Kernel has only one hyperparamter, α"
-        k2 = θ[1]*k
-        fGP = GP(k2, GPC())
+        α = θ[1]
+        fGP = α*GP(k, GPC())
         return (fGP,Dict{String,Any}("α"=>θ[1]))
 end
 
@@ -196,7 +196,7 @@ end
  Adds a small offset ,`σ²_n`, is the variance added to the model.
 """
 function nlml_stheno(θ_temp, x_train, y_train, k::Kernel, σ²_n)
-    θ_exp = exp.(θ_temp) .+ 0.001
+    θ_exp = exp.(θ_temp) .+ 10^-6
     f,_ = _creatGP(k,θ_exp)
     return -logpdf(f(x_train,σ²_n), y_train)
 end
@@ -230,12 +230,12 @@ end
  initial boundary of the algorithm
 
 """
-function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -5, max = 10.0)
+function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -7, max = 10.0)
 #do perform optimisation
 results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),min,max,
               GoldenSection())
 #get optimal hyperparameters
-        α_opt = exp.(Optim.minimizer(results)) .+ 0.0001
+        α_opt = exp.(Optim.minimizer(results)) .+ 10^-6
         return α_opt
 end
 
