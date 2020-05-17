@@ -118,7 +118,9 @@ function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = -1 )
          v_test = transform_data(x_test,mod::GroupMod,model.K)
          if σ²_test == -1
                  σ²_test = mean(model.θ["σ²_n"])
-        end
+         else
+                 σ²_test = mean(σ²_test)
+         end
 
          if isa(model.K,KernelGraph)
                  @assert eltype(x_test) == Int  "for kernel on a graph the index of the given combinations are required x_test"
@@ -146,7 +148,8 @@ Retuns an Stheno GP  model wiht a given kernel which is scaled with the paramete
 """
 function _creatGP(k::Kernel, θ)
         @assert length(θ) == 1 " Kernel has only one hyperparamter, α"
-        fGP = θ[1]* GP(k, GPC())
+        k2 = θ[1]*k
+        fGP = GP(k2, GPC())
         return (fGP,Dict{String,Any}("α"=>θ[1]))
 end
 
