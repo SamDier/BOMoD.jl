@@ -25,9 +25,9 @@ struct GPModel{Tf <: Any, Ts <: Any}
 end
 
 """
-        GPModel{T <: Any}
+        GPpredict{Tf <: Any,Tx<: Any}
 
-Struct to store precitions of the model en used input points
+Struct to store precitions, f̂_pred of the model en used test points,x_test
 """
 struct GPpredict{Tf <: Any,Tx<: Any}
         f̂_pred::Tf
@@ -40,7 +40,7 @@ end
 #####
 
 """
-   fit_gp(x_train,y_train,k::Kernel,mod::GroupMod,θ;σ²_n = 10^-6,optimise = false)
+   fit_gp(x_train,y_train,k::Kernel,mod::GroupMod; θ = [1], σ²_n = 10^-6,optimise = false)
 
   Fit a Gaussian process with kernel `k` to the given training data `x_train`,`y_train`.
   Respectively the input constructs a corresponding activity values.
@@ -89,7 +89,7 @@ end
 
   returns a GPModel with the posterior of the gp, the kernel, used hyperparameters
 """
-function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule;θ = [1,1],σ²_n = 10^-6,optimise = false)
+function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule;θ = [1,1],σ²_n = 10^-5,optimise = false)
         @assert eltype(x_train) == Int "The Kernel graphs requiers the indexes as input"
         n_laplace = setupgraph(S,edgerule)
         #set Gaussian procces in Stheno framework
@@ -129,7 +129,7 @@ function predict_gp(x_test,model::GPModel,mod::GroupMod; σ²_test = -1 )
 end
 
 """
-        predict(x_test,model::GPModel,mod::GroupMod; σ²_test = 1e-6)
+        predict_gp(S,x_train,model::GPModel,mod::GroupMod; σ²_test = -1)
 Fitlers first all seen data point out S and than predict values for the unseen datapoints
 
 """
@@ -230,7 +230,7 @@ end
  initial boundary of the algorithm
 
 """
-function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -7, max = 10.0)
+function gp_optimised(x_train,y_train,k::Kernel,σ²_n;min = -5, max = 8.0)
 #do perform optimisation
 results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,x_train,y_train,k,σ²_n),min,max,
               GoldenSection())
