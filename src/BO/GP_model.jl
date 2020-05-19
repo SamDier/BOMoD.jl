@@ -104,6 +104,22 @@ function fit_gp_graph(S,x_train,y_train,k::KernelGraph,edgerule::EdgeRule;θ = [
 end
 
 
+function fit_gp_graph(x_train,y_train,k::KernelGraph,n_laplace;θ = [1],σ²_n = 10^-5,optimise = false)
+        @assert eltype(x_train) == Int "The Kernel graphs requiers the indexes as input"
+        #set Gaussian procces in Stheno framework
+        if optimise
+                θ = gp_optimised(n_laplace,x_train,y_train,k,σ²_n)
+        end
+        fGP,θ_save = _creatGP(n_laplace,k,θ)
+        push!(θ_save, "σ²_n" => σ²_n)
+        f_posterior = fGP | Obs( fGP(x_train,σ²_n), y_train)
+        #calculate f_postirior based on training data and the prior f
+        return GPModel(f_posterior,k,θ_save)
+end
+
+
+
+
 
 
 """
