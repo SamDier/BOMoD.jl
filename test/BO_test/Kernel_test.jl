@@ -54,14 +54,3 @@ v2 = [_word2vec(i,dict_mod) for i in x2_test]
     @test  Grammatrix_cossine(x1_test,x1_test,dict_mod) ≈ pw(testkernel2,x1)
     @test  Grammatrix_cossine(x1_test,x2_test,dict_mod) ≈ pw(testkernel2,x1,x2)
 end
-
-
-struct LevStehnoexp{T} <: Kernel
-    s ::T
-end
-
-ew(k::LevStehnoexp, x::AbstractVector{N} where N) = exp.(-k.s .*zeros(length(x)))
-ew(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = [exp(-k.s*levenshtein(xᵢ,xⱼ)) for (xᵢ,xⱼ) in zip(x, x′)]
-
-pw(k::LevStehnoexp, x::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
-pw(k::LevStehnoexp, x::AbstractVector{N} where N, x′::AbstractVector{N} where N) = reshape([exp(-k.s*levenshtein(xᵢ,xⱼ)) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
