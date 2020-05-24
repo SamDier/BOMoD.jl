@@ -37,8 +37,7 @@ The BOMoD package difference form classic BO package is two crital points.
  ## Theoretical background
  More information on Bayesian optimisation a Gaussian Prosses can be found:
 
-[Agnihotri & Batra, "Exploring Bayesian Optimization", Distill, 2020]
-(https://distill.pub/2020/bayesian-optimization/)
+[Agnihotri & Batra, "Exploring Bayesian Optimization", Distill, 2020](https://distill.pub/2020/bayesian-optimization/)
 
 [Görtler, et al., "A Visual Exploration of Gaussian Processes", Distill, 2019.](https://distill.pub/2019/visual-exploration-gaussian-processes/)
 
