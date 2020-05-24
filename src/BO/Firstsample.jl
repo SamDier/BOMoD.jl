@@ -19,7 +19,7 @@ end
  Set rev = true if a simularity is used, which increase as two vectors are more similar
  e.g. Cosine simularity
 """
-function Compear_distance(Bᵢ,Bⱼ,d;rev=false)
+function compare_distance(Bᵢ,Bⱼ,d;rev=false)
     Dᵢ = pairwised(Bᵢ,d) |> (t -> sort(t,rev=rev))
     Dⱼ = pairwised(Bⱼ,d) |> (t -> sort(t,rev=rev))
     for (di,dj) in zip(Dᵢ,Dⱼ)
