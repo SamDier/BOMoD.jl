@@ -1,10 +1,4 @@
 
-#NOTE: Not immediately clear what this does...
-
-#TODO: add explanations.
-
-
-
 """
     AbstractConstraints{T}
 
@@ -100,17 +94,17 @@ end
 make_orderconstraint(pos::Array{Int},c::Array) = OrderedConstraint(pos,[Mod(m) for m in c])
 
 """
-    ComposeConstructConstraints{T}
+   ComposedConstructConstraints{T}
 
 Constraint that are applicable on a generated construct.
 These can only be used in a filter that is not very efficient for large design
 spaces.
 """
-struct ComposeConstructConstraints{T <: SingleConstructConstraints} <: ConstructConstraints{T}
+structComposedConstructConstraints{T <: SingleConstructConstraints} <: ConstructConstraints{T}
     constructcon :: Array{T}
 end
 
-Base.eltype(K::ComposeConstructConstraints{T}) where {T} = T
+Base.eltype(K::ComposedConstructConstraints{T}) where {T} = T
 
 
 # concentration of multiple Constraints can be done using + sign
@@ -118,31 +112,31 @@ Base.eltype(K::ComposeConstructConstraints{T}) where {T} = T
 """
     +(con1::SingleConstructConstraints,con2::SingleConstructConstraints)
 
-Returns a `ComposeConstructConstraints` containing both Constraints `con1` and `con2`.
+Returns a `ComposedConstructConstraints` containing both Constraints `con1` and `con2`.
 """
-Base.:+(con1::SingleConstructConstraints,con2::SingleConstructConstraints) = ComposeConstructConstraints([con1,con2])
+Base.:+(con1::SingleConstructConstraints,con2::SingleConstructConstraints) = ComposedConstructConstraints([con1,con2])
 
 """
-    Base.:+(con1::ComposeConstructConstraints{T} where T, con2::N where N <: SingleConstructConstraints)
+    Base.:+(con1::ComposedConstructConstraints{T} where T, con2::N where N <: SingleConstructConstraints)
 
-Returns a `ComposeConstructConstraints` containing where `con2` is add to the `con1`
+Returns a `ComposedConstructConstraints` containing where `con2` is add to the `con1`
 """
 
-Base.:+(con1::ComposeConstructConstraints{T} where T, con2::N where N <: SingleConstructConstraints) = ComposeConstructConstraints([con1.constructcon;con2])
+Base.:+(con1::ComposedConstructConstraints{T} where T, con2::N where N <: SingleConstructConstraints) = ComposedConstructConstraints([con1.constructcon;con2])
 
 """
-    Base.:+(con1::SingleConstructConstraints,con2::ComposeConstructConstraints)
+    Base.:+(con1::SingleConstructConstraints,con2::ComposedConstructConstraints)
 
-Returns a `ComposeConstructConstraints` containing where `con1` is add to the `con2`
+Returns a `ComposedConstructConstraints` containing where `con1` is add to the `con2`
 """
-Base.:+(con1::SingleConstructConstraints,con2::ComposeConstructConstraints) = +(con2,con1)
+Base.:+(con1::SingleConstructConstraints,con2::ComposedConstructConstraints) = +(con2,con1)
 
 """
-    Base.:+(con1::ComposeConstructConstraints{T} where T, con2::ComposeConstructConstraints{N} where N)
+    Base.:+(con1::ComposedConstructConstraints{T} where T, con2::ComposedConstructConstraints{N} where N)
 
-Returns a `ComposeConstructConstraints` concatenation of `con1` and `con2`
+Returns a `ComposedConstructConstraints` concatenation of `con1` and `con2`
 """
-Base.:+(con1::ComposeConstructConstraints{T} where T, con2::ComposeConstructConstraints{N} where N) = ComposeConstructConstraints([con1.constructcon;con2.constructcon;])
+Base.:+(con1::ComposedConstructConstraints{T} where T, con2::ComposedConstructConstraints{N} where N) = ComposedConstructConstraints([con1.constructcon;con2.constructcon;])
 
 
 ##################################
