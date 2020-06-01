@@ -23,7 +23,7 @@ end
 
 function Base.show(io::IO,a::EffSpace)
     space_type,construct_type,n = typeof(a),eltype(a),length(a)
-    print(io," spacetype| $space_type \n generted constructs| $construct_type \n n_consturcts| $n")
+    print(io," spacetype | $space_type \n generted constructs | $construct_type \n n_consturcts | $n")
 end
 
 """
@@ -66,11 +66,11 @@ end
 
 
 """
-    FullOrderedspace{T}
+    FullOrderedSpace{T}
 
 `EffSpace{T}` space type for space filled with `OrderedConstruct` and without any constraints.
 """
-struct FullOrderedspace{T} <: EffSpace{T}
+struct FullOrderedSpace{T} <: EffSpace{T}
     space::KroneckerPower{T}
 end
 
@@ -78,19 +78,19 @@ end
 
 
 """
-    eltype(::Type{FullOrderedspace)
+    eltype(::Type{FullOrderedSpace)
 
-Returns the type of `FullOrderedspace{T}` if they are collected.
+Returns the type of `FullOrderedSpace{T}` if they are collected.
 """
-Base.eltype(::Type{FullOrderedspace{T}}) where {T} = OrderedConstruct{T}
+Base.eltype(::Type{FullOrderedSpace{T}}) where {T} = OrderedConstruct{T}
 
 
 """
-    FullUnorderedspace{T}
+    FullUnorderedSpace{T}
 
 `EffSpace{T}` space type for space filled with `UnorderedConstruct` and without any constraints
 """
-struct FullUnorderedspace{T}<: EffSpace{T}
+struct FullUnorderedSpace{T}<: EffSpace{T}
     space::Combination{T}
 end
 
@@ -98,11 +98,11 @@ end
 
 
 """
-    eltype(::Type{FullUnorderedspace{T}}) where {T}
+    eltype(::Type{FullUnorderedSpace{T}}) where {T}
 
-Returns the type of `FullUnorderedspace{T}` if they are collected.
+Returns the type of `FullUnorderedSpace{T}` if they are collected.
 """
-Base.eltype(::Type{FullUnorderedspace{T}}) where {T} = UnorderedConstruct{T}
+Base.eltype(::Type{FullUnorderedSpace{T}}) where {T} = UnorderedConstruct{T}
 
 
 

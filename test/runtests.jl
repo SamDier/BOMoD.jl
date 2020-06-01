@@ -5,7 +5,7 @@ using StringDistances
 using Distances
 using Stheno: ew, pw
 using BOMoD
-using BOMoD: filterconstraint, Combination, ComposeConstructConstraints,
+using BOMoD: filterconstraint, Combination,  ComposedConstructConstraints,
     Mod,GroupMod, _word2vec, degree, laplacian,norm_laplacian
 
 include("./BO_test/test_functions.jl")

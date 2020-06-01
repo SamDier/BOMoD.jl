@@ -188,7 +188,7 @@ end
         _creatGP(k::Kernel, α)
 Retuns an Stheno GP  model with a p-randomwalk kernel and hyperparameters θ.
 """
-function _creatGP(n_laplace,gk::PrandomKernel,θ)
+function _creatGP(n_laplace,gk::PRandomKernel,θ)
         α = θ[1]
         a = 2 # makes sure a > 2
         k = Precomputed(kernelgraph(n_laplace,gk,a))
@@ -357,7 +357,7 @@ end
  The model uses the NelderMead() algorithm  from Optim.jl,
  θ₀ is the initial starting point of the algoritme
 """
-function gp_optimised(n_laplace,x_train,y_train,k::PrandomKernel,σ²_n,θ₀=[1.0,1.0])
+function gp_optimised(n_laplace,x_train,y_train,k::PRandomKernel,σ²_n,θ₀=[1.0,1.0])
         results = Optim.optimize(θ_temp->nlml_stheno(θ_temp,n_laplace,x_train,y_train,k,σ²_n),θ₀,
                       NelderMead())
         #get optimal hyperparameters

@@ -106,12 +106,12 @@ See [`UnorderedDesign`](@ref) or [`OrderedDesign`](@ref)
 function constructdesign(mod::GroupMod, len::Int; order::Bool = false)
     if order == true
         if len == 1
-            makesinglespace(mod) |> FullOrderedspace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
+            makesinglespace(mod) |> FullOrderedSpace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
         else
-            makeorderedspace(mod,len) |> FullOrderedspace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
+            makeorderedspace(mod,len) |> FullOrderedSpace |> (y -> OrderedDesign(mod,len,NoConstraint(nothing),y))
         end
     else
-        makeunorderedspace(mod,len) |> FullUnorderedspace |> (y -> UnorderedDesign(mod,len,NoConstraint(nothing),y))
+        makeunorderedspace(mod,len) |> FullUnorderedSpace |> (y -> UnorderedDesign(mod,len,NoConstraint(nothing),y))
     end
 end
 
@@ -140,10 +140,10 @@ See [`UnorderedDesign`](@ref) or [`OrderedDesign`](@ref)
 """
 function constructdesign(mod::GroupMod, len::Int, con::ConstructConstraints{T} where T; order = false)
     if order == true
-        makeorderedspace(mod,len) |> x -> FrameSpace(FullOrderedspace(x),con) |> (y -> OrderedDesign(mod,len,con,y))
+        makeorderedspace(mod,len) |> x -> FrameSpace(FullOrderedSpace(x),con) |> (y -> OrderedDesign(mod,len,con,y))
     else
         if isa(con,UnOrderedConstraint) || promotetype(eltype(con),UnOrderedConstraint) == UnOrderedConstraint
-            return makeunorderedspace(mod,len) |> x -> FrameSpace(FullUnorderedspace(x),con) |> (y -> UnorderedDesign(mod,len,con,y))
+            return makeunorderedspace(mod,len) |> x -> FrameSpace(FullUnorderedSpace(x),con) |> (y -> UnorderedDesign(mod,len,con,y))
         else
             error("Ordered contrains can't be used in unorderd design set order to true or remove Constraints")
         end
@@ -280,13 +280,13 @@ function count_elements(a::Array)
 end
 
 """"
-    filterconstraint(construct::AbstractConstruct, con::ComposeConstructConstraints)
+    filterconstraint(construct::AbstractConstruct, con::ComposedConstructConstraints)
 
 A wrapper to evaluated multiple constraints regarding the same constructs.
 The function terminates if one of the constraint matches to the given constructs and returns `true`.
 """
 
-function filterconstraint(construct::AbstractConstruct, con::ComposeConstructConstraints)
+function filterconstraint(construct::AbstractConstruct, con::ComposedConstructConstraints)
     for temp_con in con.constructcon
         if filterconstraint(construct,temp_con)
             return true

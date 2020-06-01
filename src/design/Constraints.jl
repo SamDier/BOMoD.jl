@@ -100,7 +100,7 @@ Constraint that are applicable on a generated construct.
 These can only be used in a filter that is not very efficient for large design
 spaces.
 """
-structComposedConstructConstraints{T <: SingleConstructConstraints} <: ConstructConstraints{T}
+struct ComposedConstructConstraints{T <: SingleConstructConstraints} <: ConstructConstraints{T}
     constructcon :: Array{T}
 end
 

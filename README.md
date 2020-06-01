@@ -2,9 +2,8 @@
 *A userfriendly package to solve combinatorial modular design optimisation problems within a Bayesian optimisation framework.*
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
-[![Build Status](https://ci.appveyor.com/api/projects/status/github/SamDier/BOMoD.jl?svg=true)](https://ci.appveyor.com/project/SamDier/BOMoD-jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
-[![Coveralls](https://coveralls.io/repos/github/SamDier/BOMoD.jl/badge.svg?branch=master)](https://coveralls.io/github/SamDier/BOMoD.jl?branch=master)
+
 
 ## Installation
 The package is not registered, to install this package use:
@@ -35,7 +34,7 @@ The BOMoD package difference form classic BO package is two crital points.
  if found in the documentation, a quickstart example is given:
 
  ## Theoretical background
- More information on Bayesian optimisation a Gaussian Prosses can be found:
+ More information on Bayesian optimisation a Gaussian Prosses can be found in:
 
 [Agnihotri & Batra, "Exploring Bayesian Optimization", Distill, 2020](https://distill.pub/2020/bayesian-optimization/)
 

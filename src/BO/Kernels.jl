@@ -35,15 +35,15 @@ end
 ####
 #Q-gram distances
 ####
-struct QgramKernel{T <: QGramDistance } <: Kernel
+struct QGramKernel{T <: QGramDistance } <: Kernel
     d::T
 end
 
-ew(k::QgramKernel, x::AbstractVector) = [1-evaluate(k.d,xᵢ,xᵢ) for xᵢ in x]
-ew(k::QgramKernel, x::AbstractVector, x′::AbstractVector) = [1-evaluate(k.d,xᵢ,xⱼ) for (xᵢ,xⱼ) in zip(x, x′)]
+ew(k::QGramKernel, x::AbstractVector) = [1-evaluate(k.d,xᵢ,xᵢ) for xᵢ in x]
+ew(k::QGramKernel, x::AbstractVector, x′::AbstractVector) = [1-evaluate(k.d,xᵢ,xⱼ) for (xᵢ,xⱼ) in zip(x, x′)]
 
-pw(k::QgramKernel, x::AbstractVector) = reshape([1-evaluate(k.d,xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
-pw(k::QgramKernel, x::AbstractVector, x′::AbstractVector) = reshape([1-evaluate(k.d,xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
+pw(k::QGramKernel, x::AbstractVector) = reshape([1-evaluate(k.d,xᵢ,xⱼ) for xᵢ in x for xⱼ in x] ,(length(x),length(x)))
+pw(k::QGramKernel, x::AbstractVector, x′::AbstractVector) = reshape([1-evaluate(k.d,xᵢ,xⱼ) for xⱼ in x′ for xᵢ in x] ,(length(x),length(x′)))
 
 ###
 #EditDistancesKernel
@@ -124,7 +124,7 @@ struct DiffusionKernel <: KernelGraph end
 Struct to call the diffusion p - random walk kernel.
 
 """
-struct PrandomKernel <: KernelGraph
+struct PRandomKernel <: KernelGraph
     p::Int
 end
 
@@ -161,7 +161,7 @@ Smola A.J., Kondor R. (2003) Kernels and Regularization on Graphs.
 In: Schölkopf B., Warmuth M.K. (eds) Learning Theory and Kernel Machines.
 Lecture Notes in Computer Science, vol 2777. Springer, Berlin, Heidelberg
 """
-function kernelgraph(L,gk::PrandomKernel,a)
+function kernelgraph(L,gk::PRandomKernel,a)
     @assert a >= 2 "a has to be larger than 2"
     return (a*I - L)^(gk.p)
 end

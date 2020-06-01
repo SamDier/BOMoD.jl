@@ -92,7 +92,7 @@ Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
 
 function Base.show(io::IO,a::OrderedConstruct)
     construct = convert(Array,a)
-    print(io,"OrderedConstruct",a)
+    print(io,"OrderedConstruct",construct)
 end
 
 

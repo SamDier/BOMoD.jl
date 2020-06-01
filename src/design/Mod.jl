@@ -120,5 +120,5 @@ Base.getindex(m::GroupMod,i) = m.m[i]
 function Base.show(io::IO,m::GroupMod)
     s = [mi.m for mi in m.m]
     s = replace(string(s), "[" => "{") |> x->  replace(x, "]" => "}")
-    print(io,"GroupMod: $s ")
+    print(io,"{GroupMod}$s")
 end

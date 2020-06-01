@@ -21,7 +21,7 @@ toy_data = Dict(m .=> activities);
 #### Construction using BOMoD.jl
 ```julia
 m = groupmod(pre_mod);
-design = constructdesign(m,3,order = order);
+design = constructdesign(m,3,order = order_c);
 space = getspace(design);
 ```
 
@@ -42,7 +42,7 @@ constructs = sample(rng,space,n_first)
 ### Evaluted new data
 
 ```julia
-lab_μ,lab_σ = go2lab(rng,constructs,toy_data)
+lab_μ,lab_σ = go2lab(constructs,toy_data)
 df = DataFrame(constructs = constructs,μ = lab_μ, σ = lab_σ);
 ```
 
@@ -52,8 +52,14 @@ x_train = df.constructs
 y_train = df.μ
 #σ² = (df.σ).^2
 k = Linear()
-linear_model = fit_gp(x_train,y_train,k,m,[1],optimise = true)
-predictions = predict_GP(S,x_train,linear_model,m)
+_creatGP(Linear(),[1])[1].args[3].k
+linear_model = fit_gp(x_train,y_train,k,m,optimise = false)
+
+
+
+
+
+predictions = predict_gp(S,x_train,linear_model,m)
 ```
 # Batch sampling step
 ```julia
