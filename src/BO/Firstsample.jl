@@ -9,7 +9,7 @@ function pairwised(X,d)
 end
 
 """
-    Compear_distance(Bᵢ,Bⱼ,d;rev=false)
+    more_filling(Bᵢ,Bⱼ,d;rev=false)
 
  Returns the most spacefilling subset given Bᵢ of Bⱼ.
  The distance `d` is used to evaluate the pairwise distance in every set.
@@ -19,7 +19,7 @@ end
  Set rev = true if a simularity is used, which increase as two vectors are more similar
  e.g. Cosine simularity
 """
-function compare_distance(Bᵢ,Bⱼ,d;rev=false)
+function more_filling(Bᵢ,Bⱼ,d;rev=false)
     Dᵢ = pairwised(Bᵢ,d) |> (t -> sort(t,rev=rev))
     Dⱼ = pairwised(Bⱼ,d) |> (t -> sort(t,rev=rev))
     for (di,dj) in zip(Dᵢ,Dⱼ)
