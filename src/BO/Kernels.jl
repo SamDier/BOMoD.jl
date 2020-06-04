@@ -165,3 +165,12 @@ function kernelgraph(L,gk::PRandomKernel,a)
     @assert a >= 2 "a has to be larger than 2"
     return (a*I - L)^(gk.p)
 end
+
+
+struct PrandomKernel <: KernelGraph
+    p::Int
+end
+
+struct QgramKernel{T <: QGramDistance } <: Kernel
+    d::T
+end

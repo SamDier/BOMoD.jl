@@ -23,7 +23,7 @@ end
 
 function Base.show(io::IO,a::EffSpace)
     space_type,construct_type,n = typeof(a),eltype(a),length(a)
-    print(io," spacetype | $space_type \n generted constructs | $construct_type \n n_consturcts | $n")
+    print(io," spacetype | $space_type \n generated constructs | $construct_type \n n_consturcts | $n")
 end
 
 """

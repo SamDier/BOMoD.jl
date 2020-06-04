@@ -92,7 +92,7 @@ Base.isequal(c1::OrderedConstruct,c2::OrderedConstruct) = isequal(c1.c,c2.c)
 
 function Base.show(io::IO,a::OrderedConstruct)
     construct = convert(Array,a)
-    print(io,"OrderedConstruct",construct)
+    print(io,"{OrderedConstruct}",construct)
 end
 
 
@@ -176,7 +176,7 @@ end
 function Base.show(io::IO,a::UnorderedConstruct)
     construct = convert(Array,a)
     s = replace(string(construct), "[" => "{") |> x->  replace(x, "]" => "}")
-    print(io,"UnorderedConstruct",s)
+    print(io,"{UnorderedConstruct}",s)
 end
 
 """
