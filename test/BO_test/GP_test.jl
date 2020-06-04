@@ -15,7 +15,7 @@
         _creatGP(k2,[1])[1].args[3].k == k2
     end
 
-    k1 = QGramKernel(Cosine(1))
+    k1 = QGramKernel(StringDistances.Cosine(1))
     @testset "GP3" begin
         isa(_creatGP(k1,[1])[1],Stheno.CompositeGP) == true
         _creatGP(k1,[1])[1].args[3].k == k1
