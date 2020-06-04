@@ -5,6 +5,7 @@ using Stheno
 using StringDistances
 using Distances
 using Stheno: ew, pw
+using LinearAlgebra
 using BOMoD
 using BOMoD: filterconstraint, Combination,  ComposedConstructConstraints,
     Mod,GroupMod, _word2vec, degree, laplacian,norm_laplacian, _len1,_creatGP
