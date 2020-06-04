@@ -33,13 +33,13 @@ module BOMoD
     include(joinpath("BO", "Kernels.jl"))
     include(joinpath("BO", "GP_model.jl"))
     include(joinpath("BO", "batch_sample.jl"))
-    include(joinpath("BO", "Firstsample.jl"))
+
 
 
     export groupmod, getspace, Mod, constructdesign, OrderedConstraint
     export UnOrderedConstraint, OrderedConstruct,  UnorderedConstruct
     export GPModel, GPpredict, fit_gp, predict_gp, ts_sampler, ei_sampler
-    export pi_sampler, gpucb_sampler, QgramKernel, EditDistancesKernel
-    export PrandomKernel, DiffusionKernel, sample, CosRule, LevRule, Linear
+    export pi_sampler, gpucb_sampler, QGramKernel, EditDistancesKernel
+    export PRandomKernel, DiffusionKernel, sample, CosRule, LevRule, Linear
 
 end
