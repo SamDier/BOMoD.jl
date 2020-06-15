@@ -1,9 +1,9 @@
 using Documenter
 using BOMoD
-
+using BOMoD: Mod
 makedocs(sitename="BOMoD.jl",
         authors = "Sam Dierickx",
-        format = :html,
+        format = Documenter.HTML(),
        modules = [BOMoD])
 
 deploydocs(

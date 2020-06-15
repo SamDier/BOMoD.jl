@@ -70,15 +70,6 @@ A Function to facilitate the input of multiple modules. It returns a "Group_mod"
 structure. The input is an array containing the data that needs to be transformed
 to an ``Mod`` and grouped afterwards. See [`Group_mod`](@ref)
 
-```jldoctest
-Mods = [:a,:b,:c]
-grouped_mods = group_mod(Mods)
-isa(grouped_mods,Group_Mod)
-
-# output
-
-true
-```
 """
 groupmod(input::Array{T} where T) = GroupMod([Mod(newmod) for newmod in input])
 

@@ -6,8 +6,6 @@ Abstract type for all possible constructs.
 """
 abstract type AbstractConstraints{T} end
 
-# FIXME: using the style guide (https://docs.julialang.org/en/v1/manual/style-guide/index.html),
-# one uses `ElementConstraints` no underscores for types.
 
 """
     ElementConstraints{T}
