@@ -14,7 +14,7 @@ The package is currently under development and changes are made daily
 
 ## A modular design
 To understand the concept of modular design, we introduce two crucial terms.
-1) **A Module**: A single element without extra features.
+1) **A module**: A single element without extra features.
 It is a building block that can be connected or grouped with other modules; in this way, different combinations of modules can then be made.
 2) **A construct**: A specific combination of different modules is called a construct.
 Every construct can be evaluated, this result in an certain "activity" value.
@@ -24,7 +24,7 @@ Every construct can be evaluated, this result in an certain "activity" value.
 ## Bayesian optimisation in BOMoD.
 This package uses a Bayesian optimisation framework to find the best combintion.
 The surrogate model used in the pakcage is a Gaussian process calculted with the
-[Stheno.jl](https://github.com/willtebbutt/Stheno.jl)package.
+[Stheno.jl](https://github.com/willtebbutt/Stheno.jl) package.
 
 The BOMoD package difference form classic BO package is two crital points.
 
@@ -196,9 +196,9 @@ jar_space = getspace(jar_of_ice_unorderd);
 
 
 ````
-spacetype| BOMoD.FullUnorderedspace{BOMoD.Mod{Symbol}}
+spacetype | BOMoD.FullUnorderedspace{BOMoD.Mod{Symbol}}
  generted constructs| BOMoD.UnorderedConstruct{BOMoD.Mod{Symbol}}
- n_consturcts| 3
+ n_consturcts | 3
 ````
 
 
@@ -326,7 +326,7 @@ new_icecreams = ts_sampler(predictions,2)
 
 ## Repeat 2B & 2C
 
-The given combination can than be evaluated in the lab and added to the current data frame.
+The given combination can then be evaluated and added to the current data frame.
 
 ````julia
 new_lab_values =  go2lab(new_icecreams )
