@@ -10,26 +10,26 @@ The package is not registered, to install this package use:
 `] add https://github.com/SamDier/BOMoD.jl.git`
 
 **Warning**
-The package is currently under development and changes are made daily
+The package is currently under development, only a first experimental version is made. 
 
 ## A modular design
 To understand the concept of modular design, we introduce two crucial terms.
 1) **A module**: A single element without extra features.
 It is a building block that can be connected or grouped with other modules; in this way, different combinations of modules can then be made.
 2) **A construct**: A specific combination of different modules is called a construct.
-Every construct can be evaluated, this result in an certain "activity" value.
+Every construct can be evaluated. This result in a certain "activity" value.
 
-**The goal**: Find the construct with the highest "activity", given an group of moduels, which is an optimisation process.
+**The goal**: Find the construct with the highest "activity", given a group of modules, which is an optimisation process.
 
 ## Bayesian optimisation in BOMoD.
-This package uses a Bayesian optimisation framework to find the best combintion.
-The surrogate model used in the pakcage is a Gaussian process calculted with the
+This package uses a Bayesian optimisation framework to find the best combination.
+The surrogate model used in the package is a Gaussian process calculated with the
 [Stheno.jl](https://github.com/willtebbutt/Stheno.jl) package.
 
-The BOMoD package difference form classic BO package is two crital points.
+The BOMoD package difference form classic BO package is two critical points.
 
-1) Custom kernels are made to evaluated the string distance between the input construct.
-2) Batch sampling algorithems are given to propse multiple datapoints in every iteration
+1) Custom kernels are made to evaluate the string distance between the input construct.
+2) Batch sampling algorithms are given to propose multiple datapoints in every iteration
 
  if found in the documentation, a quickstart example is given:
 
@@ -43,11 +43,11 @@ The BOMoD package difference form classic BO package is two crital points.
 
 ## Quickstart With the BOMoD package
 
-This quick start section focuses on the aspects that need to be known to use the package. Figure below shows an overview of the BOMoD pipeline, blue are functions and green are types
+This quick start section focuses on the aspects that need to be known to use the package. The figure below shows an overview of the BOMoD pipeline, blue are functions, and green are types.
 
 
 ![Manual picture](Manual_picture_6.jpg)
-a more elaborated explanation can be found in the other help pages.
+a more elaborate explanation can be found in the other help pages.
 To illustrated the package, a trivial example is made using scoops of icecream:
 The goal is to find the best flavour combination with two scoops,
 using the different flavours  Vanilla, Chocolate, Strawberry, without the need to test all possible combinations.
@@ -83,7 +83,7 @@ This option is called "order" in the BOMoD ecosystem.
 
 One simple function of `construct design` is used to generate all possibilities.
 The `order = true` indicated that order option is desired.
-The `getspace` function retrieves than all desired combination
+The `getspace` function retrieves than all desired combination.
 
 ````julia
 Cone_of_ice_ordered = constructdesign(Ice_flavours,2,order = true );
@@ -140,7 +140,7 @@ a_sample = sample(rng,Cone_space,3)
 
 
 
-4) Iteration over all combintion
+4) Iteration over all combinations
 ````julia
 for cone in Cone_space
     @show cone
@@ -209,7 +209,7 @@ spacetype | BOMoD.FullUnorderedspace{BOMoD.Mod{Symbol}}
 
 
 All the above functionalities can be used in this space.
-The significant difference is the construct that is produced aren't array but sets of modules
+The significant difference is the construct that is produced aren't array but sets of modules.
 
 ````julia
 for jar in jar_space
@@ -234,7 +234,7 @@ In the remaining of this example, the first option is chosen, we continue with t
 
 First, a method is needed to evaluate a given flavour combination.
 This is something that needs the be done and set up in the lab. In this example, this step is mimicked by a "go2lab" function
-which attributes a random value. The function is indicates where BOMoD  algorithm needs data input form the lab.
+which attributes a random value. The function is indicated where BOMoD algorithm needs data input form the lab.
 
 ````julia
 function go2lab(ice)
@@ -255,7 +255,7 @@ go2lab (generic function with 1 method)
 ### Step 2a) Sample first data points
 
 
-The first 2 flavour combintions are obtained using the `sample` function.
+The first two flavour combinations are obtained using the `sample` function.
 ````julia
 first_icecreams = sample(Cone_space,2)
 ````
@@ -290,8 +290,8 @@ df = DataFrame(flavour_combinations = first_icecreams , lab_value = lab_value)
 
 ### Step 2B) Fit Surrogate model
 
-In the second step, the sample flavour combinations and their lab values are fitted in a Gaussian Prosses using the `fit_gp` function
-This model requires a Kernel, different kernels are implemented in BOMoD and can be found in the help page.
+In the second step, the sample flavour combinations and their lab values are fitted in a Gaussian Prosses using the `fit_gp` function.
+This model requires a Kernel; different kernels are implemented in BOMoD and can be found in the help page.
 In this example, a linear Kernel is used.
 
 ````julia
@@ -311,7 +311,7 @@ predictions = predict_gp(S,x_train,linear_model,Ice_flavours);
 
 ### Step 2C)
 
-The final step in than obtaining a new batch of b datapoints using a batch sampling algorithm.
+The final step in to obtain a new batch of b datapoints using a batch sampling algorithm.
 In this example b = 2.
 # Batch sampling step
 ````julia
@@ -351,5 +351,5 @@ append!(df,df_new)
 
 
 
-This data can then be fed to the model, improved predictions can be made and new data points can be sampled.
+This data can then be fed to the model, improved predictions can be made, and new data points can be sampled.
 This cycle can be repeated multiple times until the entire budget is used.
