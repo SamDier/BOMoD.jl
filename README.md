@@ -1,7 +1,7 @@
 # BOMoD.jl
 *A userfriendly package to solve combinatorial modular design optimisation problems within a Bayesian optimisation framework.*
 
-[![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
+[![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
 
 
