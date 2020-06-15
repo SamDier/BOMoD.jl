@@ -1,6 +1,4 @@
-
-
-## Bayesian optimisation
+# Bayesian optimisation
 
 The BO pipeline proposed in the BOMoD package focuses specifically on real-world modular design optimisation problems.
 There are two significant differences compared to the classical Bayesian optimisation setup:
@@ -54,7 +52,7 @@ julia> full_space = getspace(design);
 
 
 
-### First sampling step
+## First sampling step
 
 The first step of the BOMoD pipeline is sampling the first $n$ data points, which are used to fit the surrogate model of stage two.
 In the current version of the package, only a  algorithm that samples uniformly at random is available.
@@ -180,7 +178,7 @@ In the current version of the package, only the Levenshtein distance has been te
 The calculated Levenshtein distance between $\mathbf{x}_i$ and $\mathbf{x}_j$ is transformed in a kernel using:
 
 ```math
-K(\mathbf{x}_i,\mathbf{x_{j}) =  e^{-\text{lev}|\mathbf{x}_i,\mathbf{x}_j|
+K(\mathbf{x}_i,\mathbf{x}_j) = e^{\text{lev}| \mathbf{x}_i,\mathbf{x}_j|}
 ```
 The kernel is designed to work with all other edit distances available in the StringDistances package. This is still in an experimental phase and errors could occur.
 In the general case, `EditDistancesKernel` takes one argument: the chosen edit distance.
@@ -251,9 +249,9 @@ To calculate the cosine similarities, the StringDistances package is used. This 
 The obtained distances are transformed into the corresponding kernel by:
 
 ```math
-$$k(\mathbf{x}_i,\mathbf{x}_j)= 1 - \text{cosine}|\mathbf{x}_i,\mathbf{x}_j|$$
-where $\mathbf{x}_i$, $\mathbf{x}_j$ are two constructs.
+k(\mathbf{x}_i,\mathbf{x}_j)= 1 - \text{cosine}|\mathbf{x}_i,\mathbf{x}_j|
 ```
+where $\mathbf{x}_i$, $\mathbf{x}_j$ are two constructs.
 The StringDistances package provides a range of q-gram distances, all can be transformed into a similarity value. The cosine distance with q = 1 is the only q-gram distance that was tested.
 Again the other q-gram distances available in the StringDistances package can be used, but this is still in an experimental phase, and errors could occur.
 
@@ -355,7 +353,9 @@ The other arguments are optional keyword arguments with a given default value. S
 The $\theta$ vector contains the hyperparameter of the GP model.
 Only one hyperparameter is used for all different kernels to reduce the complexity of the models.
 In all cases, this is the scaling parameter $\alpha$ of the GP model.
-$$y = \alpha * GP$$
+```math
+y = \alpha * GP
+```
 Still, it is important that the parameter is given as a vector.
 The $\theta $ vector is ignored if `optimise=true`
 
@@ -383,9 +383,10 @@ julia> a_gp_model = fit_gp(x_train,y_train,EditDistancesKernel(Levenshtein()),m)
 ````
 
 The output is a `GPModel` structure containing  three arguments:
-* $\hat{f}$: The Stheno object of the fitted GP model.
+
+* ``\hat{f}``: The Stheno object of the fitted GP model.
 * K: A kernel object of the used kernel in the GP model.
-* $\theta$: A dictionary containing the used hyperparameter and the noise parameter with their corresponding values.
+* ``\theta``: A dictionary containing the used hyperparameter and the noise parameter with their corresponding values.
 
 
 #### experimental function: `fit_gp_graph``
@@ -495,7 +496,7 @@ BOMoD.CosRule()
 
 
 
-The edge rules are used to construct the adjacency matrix, which allows for the calculation of the normalised Laplacian $\tilde{\mathcal{L``$.\\
+The edge rules are used to construct the adjacency matrix, which allows for the calculation of the normalised Laplacian $\tilde{\mathcal{L}}$.
 These steps are all done automatically in the package with an internal function: `setupgraph`.
 The normalised Laplacian is then used to obtain the kernel.
 
@@ -648,23 +649,7 @@ julia> S = collect(full_space);
  {OrderedConstruct}["d", "d", "d"]
 
 julia> prediction = predict_gp(S,x_train,a_gp_model,m);
-BOMoD.GPpredict{Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1}}(Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}}(
-f: Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}}((|, Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}}((*, 1, Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}(Stheno.ZeroMean{Float64}(), BOMoD.EditDistancesKernel{StringDistances.Levenshtein}(StringDistances.Levenshtein()), 1, Stheno.GPC(3))), 2, Stheno.GPC(3)), LinearAlgebra.Cholesky{Float64,Array{Float64,2}}([1.000000499999875 0.04978704347434843 0.04978704347434843; 0.049787068367863944 0.9987603567934018 0.13302143265401753; 0.049787068367863944 0.1353352832366127 0.9898623887979359], 'U', 0), [0.3298539140289637, 0.10413492269987418, 0.40125406794134766], Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}}(
-f: Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}}((*, 1, Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}(Stheno.ZeroMean{Float64}(), BOMoD.EditDistancesKernel{StringDistances.Levenshtein}(StringDistances.Levenshtein()), 1, Stheno.GPC(3))), 2, Stheno.GPC(3))
-x: BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["b", "d", "d"], {OrderedConstruct}["c", "a", "c"], {OrderedConstruct}["a", "a", "b"]]
-Σy: [1.0000000000000006e-6 0.0 0.0; 0.0 1.0000000000000006e-6 0.0; 0.0 0.0 1.0000000000000006e-6]
-)
-, [0.355016080112298, 0.17486131913864977, 0.4317700578229935]), 3, Stheno.GPC(3))
-x: BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["a", "a", "a"], {OrderedConstruct}["a", "a", "c"], {OrderedConstruct}["a", "a", "d"], {OrderedConstruct}["a", "b", "a"], {OrderedConstruct}["a", "b", "b"], {OrderedConstruct}["a", "b", "c"], {OrderedConstruct}["a", "b", "d"], {OrderedConstruct}["a", "c", "a"], {OrderedConstruct}["a", "c", "b"], {OrderedConstruct}["a", "c", "c"]  …  {OrderedConstruct}["d", "b", "c"], {OrderedConstruct}["d", "b", "d"], {OrderedConstruct}["d", "c", "a"], {OrderedConstruct}["d", "c", "b"], {OrderedConstruct}["d", "c", "c"], {OrderedConstruct}["d", "c", "d"], {OrderedConstruct}["d", "d", "a"], {OrderedConstruct}["d", "d", "b"], {OrderedConstruct}["d", "d", "c"], {OrderedConstruct}["d", "d", "d"]]
-Σy: [1.0000000000000006e-6 0.0 … 0.0 0.0; 0.0 1.0000000000000006e-6 … 0.0 0.0; … ; 0.0 0.0 … 1.0000000000000006e-6 0.0; 0.0 0.0 … 0.0 1.0000000000000006e-6]
-)
-, BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["a", "a", "a"], {OrderedConstruct}["a", "a", "c"], {OrderedConstruct}["a", "a", "d"], {OrderedConstruct}["a", "b", "a"], {OrderedConstruct}["a", "b", "b"], {OrderedConstruct}["a", "b", "c"], {OrderedConstruct}["a", "b", "d"], {OrderedConstruct}["a", "c", "a"], {OrderedConstruct}["a", "c", "b"], {OrderedConstruct}["a", "c", "c"]  …  {OrderedConstruct}["d", "b", "c"], {OrderedConstruct}["d", "b", "d"], {OrderedConstruct}["d", "c", "a"], {OrderedConstruct}["d", "c", "b"], {OrderedConstruct}["d", "c", "c"], {OrderedConstruct}["d", "c", "d"], {OrderedConstruct}["d", "d", "a"], {OrderedConstruct}["d", "d", "b"], {OrderedConstruct}["d", "d", "c"], {OrderedConstruct}["d", "d", "d"]])
-
 ````
-
-
-
-
 
 For the prediction of models using kernels on a graph, the provided design space `S` should contain all indices and not the constructs themselves, because `x_train` contains all indices of the given data points. See `fit_gp_graph` for more information.
 
@@ -698,35 +683,19 @@ x_test_costume = [OrderedConstruct([Mod(m) for m in cᵢ]) for cᵢ in [c₁,c�
 ````
 
 
-
-
-
-
 Then the `x_test_custom` can be used in the `predict_gp` function:
 
 ````julia
 julia> prediction_costume = predict_gp(x_test_costume,a_gp_model,m);
-BOMoD.GPpredict{Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1}}(Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}}(
-f: Stheno.CompositeGP{Tuple{typeof(|),Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},LinearAlgebra.Cholesky{Float64,Array{Float64,2}},Array{Float64,1},Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}},Array{Float64,1}}}((|, Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}}((*, 1, Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}(Stheno.ZeroMean{Float64}(), BOMoD.EditDistancesKernel{StringDistances.Levenshtein}(StringDistances.Levenshtein()), 1, Stheno.GPC(3))), 2, Stheno.GPC(3)), LinearAlgebra.Cholesky{Float64,Array{Float64,2}}([1.000000499999875 0.04978704347434843 0.04978704347434843; 0.049787068367863944 0.9987603567934018 0.13302143265401753; 0.049787068367863944 0.1353352832366127 0.9898623887979359], 'U', 0), [0.3298539140289637, 0.10413492269987418, 0.40125406794134766], Stheno.FiniteGP{Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}},Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1},LinearAlgebra.Diagonal{Float64,FillArrays.Fill{Float64,1,Tuple{Base.OneTo{Int64}}}}}(
-f: Stheno.CompositeGP{Tuple{typeof(*),Int64,Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}}}((*, 1, Stheno.GP{Stheno.ZeroMean{Float64},BOMoD.EditDistancesKernel{StringDistances.Levenshtein}}(Stheno.ZeroMean{Float64}(), BOMoD.EditDistancesKernel{StringDistances.Levenshtein}(StringDistances.Levenshtein()), 1, Stheno.GPC(3))), 2, Stheno.GPC(3))
-x: BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["b", "d", "d"], {OrderedConstruct}["c", "a", "c"], {OrderedConstruct}["a", "a", "b"]]
-Σy: [1.0000000000000006e-6 0.0 0.0; 0.0 1.0000000000000006e-6 0.0; 0.0 0.0 1.0000000000000006e-6]
-)
-, [0.355016080112298, 0.17486131913864977, 0.4317700578229935]), 3, Stheno.GPC(3))
-x: BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["b", "b", "b", "d"], {OrderedConstruct}["a", "a", "c", "c"]]
-Σy: [1.0000000000000006e-6 0.0; 0.0 1.0000000000000006e-6]
-)
-, BOMoD.OrderedConstruct{BOMoD.Mod{String}}[{OrderedConstruct}["b", "b", "b", "d"], {OrderedConstruct}["a", "a", "c", "c"]])
-
 ````
 
 
 
 
 
-The output of the `predict_gp` function is a `GPpredict` object containing two elements:\\
-$\hat{f}$_pred: contains the Stheno object that holds the prediction values.\\
-x_test: contains the array of all constructs whose prediction values are available.
+The output of the `predict_gp` function is a `GPpredict` object containing two elements:
+* ``\hat{f}_pred``: contains the Stheno object that holds the prediction values.
+*   * x_test: contains the array of all constructs whose prediction values are available.
 
 ### Batch sampling`
 
@@ -751,12 +720,12 @@ $\epsilon$ is a hyperparameter to balance the exploration and exploitation prope
 The sampler can be used with the `pi_sampler` function, which takes four arguments:
 
 **arg**:
-* f_pre: `GPpredict` object from the `predict_gp` function
-* $b$: number of newly sampled data points
+* f\_pre: `GPpredict` object from the `predict_gp` function
+* ``b``: number of newly sampled data points
 * fmax: current highest observed activity value.
 
 **kwarg**:
-* $\epsilon$: hyperparameter to balance the exploration and exploitation properties of the sampling algorithm. A higher $\epsilon$ value results in a more exploratory sampling algorithm. The default value is zero.
+* ``\epsilon``: hyperparameter to balance the exploration and exploitation properties of the sampling algorithm. A higher $\epsilon$ value results in a more exploratory sampling algorithm. The default value is zero.
 The batch of $b$ samples is obtained, after sorting the constructs from high to low given their PI value. The first $b$ data points are returned as a batch.
 
 ````julia
@@ -786,7 +755,7 @@ $\hat{\sigma}_r(\mathbf{x})$ the predicted standard deviation of construct $\mat
 
 ```math
     EI(\mathbf{x}) = \begin{cases}(\hat{\mu}_r(\mathbf{x})- f(\mathbf{x}^+) - \epsilon)\Phi(z(\mathbf{x})) +\hat{\sigma}_r(\mathbf{x})\phi(z(\mathbf{x})) &\text{ , if } {\hat{\sigma}_r}(\mathbf{x}) > 0 \\
-		0  \text{, if } \hat{\sigma}_r(\mathbf{x}) = 0\\
+		0  &\text{, if } \hat{\sigma}_r(\mathbf{x}) = 0\\
 		\end{cases}
 ```
 
@@ -804,12 +773,12 @@ $\hat{\sigma}_r > 0$ is always true because the GP models from Stheno package  r
 The sampler can be used with the `ei_sampler` function, which takes four arguments:
 
 **arg**
-* f_pre: `GPpredict` object from the `predict_gp` function
-* $b$: number of newly sampled data points
+* f\_pre: `GPpredict` object from the `predict_gp` function
+* ``b``: number of newly sampled data points
 * fmax: current highest observed activity value.
 
 **kwarg**
-* $\epsilon$: hyperparameter to balance the exploration and exploitation properties of the sampling algorithm. A higher $\epsilon$ value results in a more exploratory sampling algorithm. The default value is zero.
+* ``\epsilon``: hyperparameter to balance the exploration and exploitation properties of the sampling algorithm. A higher $\epsilon$ value results in a more exploratory sampling algorithm. The default value is zero.
 
 The batch of $b$ samples is obtained, after sorting the constructs from high to low based on their EI values. The first $b$ data points are returned as a batch.
 
@@ -843,11 +812,11 @@ where $\beta$ is the hyperparameter to balance the exploration and exploitation 
 The algorithm can be used with `gpubc_sampler` function, which takes three arguments:
 
 **arg**
-* f_pre: `GPpredict` object from the `predict_gp` function
-* b: number of newly sampled data points.
+* f\_pre: `GPpredict` object from the `predict_gp` function
+* ``b``: number of newly sampled data points.
 
 **kwarg**
-* $\beta$: hyperparameter to balance the exploration and exploitation properties of the sampler, the default value is 1.
+* ``\beta``: hyperparameter to balance the exploration and exploitation properties of the sampler, the default value is 1.
 
 The batch of $b$ samples is obtained, after sorting the constructs from high to low given their GP-UCB values. The first $b$ data points are returned as a batch.
 
@@ -878,11 +847,11 @@ IEEE Transactions on Information Theory 58.5 (2012): 3250–3265.
 The above mentioned formula is implemented in the `optimal_β$` function that takes three input arguments:
 
 **arg**
-$n$: number of training data points\\
-$r$: current iteration number
+* ``n``: number of training data points
+* ``r``: current iteration number
 
 **kwarg**
-$\delta$: parameter of the function between zero and one. The default value is 0.2.
+* ``\delta``: parameter of the function between zero and one. The default value is 0.2.
 
 There is less theoretical support that the given $\beta$ is also useful for batch sampling, but the option to use this value is made available and was used before in a batch sampling setting
 
@@ -903,8 +872,8 @@ with $\hat{\mu}_r(\mathbf{x})$ the mean prediction value and $\hat{\sigma}_r(\ma
 the predicted standard deviation of construct $\mathbf{x}$ at iteration $r$ of the BOMoD algorithm.
 
 **arg**
-f_pre: GPpredict object from the `predict_gp` function
-$b$: number of data points in a batch
+* f\_pre: GPpredict object from the `predict_gp` function
+* ``b``: number of data points in a batch
 
 ````julia
 julia> b = 3
@@ -1005,7 +974,7 @@ julia> # Concatend both batches
 
 
 
-## Iteration
+### Iteration
 
 The BOMoD algorithm is an iterative procedure. The final two steps should be repeated after evaluating the newly proposed data points.
 The GP model is then fitted on a more extensive training set, which improves the prediction capacity of the model.

@@ -1,19 +1,5 @@
 
-
-# The BOMoD.jl package
-
-
-## Introduction
-This section describes the implementation of the package. It can be seen as an extended manual, containing all information needed for further development.
-In the GitHub repository, a "quick-start" can be found in the README file. Figure below shows an overview of the BOMoD pipeline, blue are functions and green are types
-
-![Manual picture](Manual_picture_6.jpg)
-
-
-The first section of the manual deals with part A: the construction of the design space.
-The second section of the manual deals with part B: the new BO pipeline and how the package deals with the modular design input. The final section gives some additional information on why the package was written in the Julia language.
-
-## Constructing design space
+# Constructing design space
 
 The setup of a modular design problem requires the construction of the design space containing all different combinations.
 Using the BOMoD package, this can be done in a few easy steps.
@@ -140,7 +126,7 @@ true
 
 
 
-### Constraints
+## Constraints
 
 Constraints are used to remove specific combinations that are forbidden in the design space, the input of constraints is optional.\\
 Many constraints are possible. Currently, two types are implemented: `UnOrderedConstraint` and `OrderedConstraint`.
@@ -267,7 +253,7 @@ true
 
 
 
-### Construct design
+## Construct design
 
 ### Type hierarchy: design
 
@@ -458,7 +444,7 @@ constraints : BOMoD.NoConstraint{Nothing}(nothing)
 
 
 
-## The space object`
+## The space object
 
 The design structure is mainly a data container that is implemented as a safety step to verify whether all input arguments are correct.
 A special function: `getspace` is made to get access to the `space` object.
@@ -568,7 +554,6 @@ space_full = collect(space)
 
 julia> # sample random 5 constructs
 rng = MersenneTwister();
-Random.MersenneTwister(UInt32[0x77fbe059, 0x00955f83, 0x67b4966c, 0x2e67d2bc], Random.DSFMT.DSFMT_state(Int32[-2103530885, 1072746739, 684755277, 1073687098, 1964930812, 1072955409, -61753990, 1073277443, -1164120872, 1073710474  …  -386009955, 1073720590, -567513523, 1072696081, 1642483288, 1103711674, -249232869, 275245640, 382, 0]), [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0  …  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], UInt128[0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000  …  0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000, 0x00000000000000000000000000000000], 1002, 0)
 
 julia> random_sample = sample(rng,space,5)
 5-element Array{BOMoD.OrderedConstruct{BOMoD.Mod{String}},1}:
