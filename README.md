@@ -43,7 +43,10 @@ The BOMoD package difference form classic BO package is two crital points.
 
 ## Quickstart With the BOMoD package
 
-This quick start section focuses on the aspects that need to be known to use the package.
+This quick start section focuses on the aspects that need to be known to use the package. Figure below shows an overview of the BOMoD pipeline, blue are functions and green are types
+
+
+![Manual picture](Manual_picture_6.jpg)
 a more elaborated explanation can be found in the other help pages.
 To illustrated the package, a trivial example is made using scoops of icecream:
 The goal is to find the best flavour combination with two scoops,

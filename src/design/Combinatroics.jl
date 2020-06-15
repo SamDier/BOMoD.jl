@@ -52,7 +52,7 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
 
     # special case len = 1
     if c.len == 1
-        _len1(c,state)
+        return _len1(c,state)
     end
 
     # case len > 1
@@ -77,7 +77,7 @@ function Base.iterate(c::Combination{T} where T, state = [i for i in c.len:-1:1]
     end
     return (construct,state)
 
-end;
+end
 
 """
     _restate(state, i)

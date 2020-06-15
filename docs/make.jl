@@ -1,4 +1,4 @@
-using Documenter, BOMoD
+using Documenter
 using BOMoD
 
 makedocs(sitename="BoMoD.jl",
