@@ -7,5 +7,5 @@ makedocs(sitename="BOMoD.jl",
        modules = [BOMoD])
 
 deploydocs(
-        repo = "https://github.com/SamDier/BOMoD.jl.git",
+        repo = "github.com/SamDier/BOMoD.jl.git",
         )
