@@ -14,7 +14,7 @@ The second section of the manual deals with part B: the new BO pipeline and how 
 
 ```@contents
 Pages = [
-    "man/BO_docs.md",
     "man/design.md"
+    "man/BO_docs.md",
 ]
 ```

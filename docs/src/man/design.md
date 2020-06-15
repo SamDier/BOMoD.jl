@@ -4,7 +4,7 @@
 The setup of a modular design problem requires the construction of the design space containing all different combinations.
 Using the BOMoD package, this can be done in a few easy steps.
 
-### Set design inputs
+## Set design inputs
 
 To start a BOMoD project the package has to be loaded:
 ````julia

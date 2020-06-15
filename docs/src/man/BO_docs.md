@@ -72,10 +72,7 @@ julia> first_sample = sample(full_space,n)
 ````
 
 
-
-
-
-### Surrogate model
+## Surrogate model
 
 In the package, GPs are used as surrogate models.
 Other packages are integrated to handle different steps in the model procedure:
@@ -93,7 +90,7 @@ As a consequence of the easy-to-use philosophy, it is impossible to integrate th
 The current version of the BOMoD focuses on the integration of some case-specific functions.
 This section will first cover how a GP model can be fitted using BOMoD, and afterwards, the prediction for new test data is covered.
 
-#### The fit_gp function
+### The fit_gp function
 There is one function `fit_gp` that fits the entire GP model. The term "fit" indicates that the model is conditioned on the given training data and the posterior distribution is obtained.
 It requires multiple input arguments; some are trivial, others need some additional explanation.
 
@@ -101,7 +98,7 @@ It requires multiple input arguments; some are trivial, others need some additio
 
 **kwarg**: ``\theta =[1]``, $\sigma^2_n = 10^{-6}$, optimise=false
 
-##### x\_train and y\_train`
+#### x\_train and y\_train`
 
 `x_train` is a vector containing all constructs that have been evaluated.
 This means that every construct has a corresponding activity stored in the `y_train` vector.
@@ -144,7 +141,7 @@ df = DataFrame(x_train=x_train ,y_train=y_train);
 
 
 
-##### k::Kernel
+#### k::Kernel
 
 The kernel that is used has a substantial effect on the prediction capacity of the model. It tries to find structure among the different training data points. Depending on the problem, different kernels are preferred.
 Various kernels are implemented in the package. All of them were developed to deal with the specific modular design input, a vector containing a vector of strings.
@@ -332,7 +329,7 @@ Stheno.Sum{BOMoD.EditDistancesKernel{StringDistances.Levenshtein},BOMoD.QGramKer
 
 Unfortunately, the current implementation of the linear kernel in Stheno requires a unique input structure. This makes it not possible to combine it with the other given string kernels.
 
-##### mod::GroupMod
+#### mod::GroupMod
 
 The `mod` argument contains the input modules, and they are used to transform the data into a vector embedding, if needed.
 
@@ -348,7 +345,7 @@ julia> m = groupmod(["a", "b", "c", "d"]);
 Above, the four mandatory arguments to fit a GP model were discussed.
 The other arguments are optional keyword arguments with a given default value. Still, these parameters can have a significant effect on the performance of the model.
 
-##### θ (default = [1])
+#### θ (default = [1])
 
 The $\theta$ vector contains the hyperparameter of the GP model.
 Only one hyperparameter is used for all different kernels to reduce the complexity of the models.
@@ -369,7 +366,7 @@ The noise factor can have two different inputs:
 2) A vector containing a value for every training data point separately. The length of the vector equals the length of `x_train`.
 
 
-##### optimise (default = [false])
+#### optimise (default = [false])
 
 The `optimise` argument takes a boolean input, true or false. If the argument is set to true the `fit_gp` function will optimise the hyperparameter of the GP model.
 The optimal hyperparameter is obtained after maximisation of the log marginal likelihood implemented in Stheno.
@@ -389,7 +386,7 @@ The output is a `GPModel` structure containing  three arguments:
 * ``\theta``: A dictionary containing the used hyperparameter and the noise parameter with their corresponding values.
 
 
-#### experimental function: `fit_gp_graph``
+### experimental function: `fit_gp_graph``
 
  A `fit_gp_graph` function is available in the package.
  The kernels used in this function are based on an underlying graph structure. Of course, this requires first the construction of a graph containing all different combinations.
@@ -402,11 +399,11 @@ The output is a `GPModel` structure containing  three arguments:
  **kwarg**: $\theta= [1]$, $\sigma^2_n = 10^{-6}$, optimise = false
 
 
-##### S : The Design space
+#### S : The Design space
 
  `S` is the entire design space of the modular design problem and is needed to construct the underlying graph, which is used to compute the kernel.
 
-###### x_train and y_train
+#### x_train and y_train
 
 The kernel value between the two constructs is no longer independent of all other possible combinations.
 The entire graph network is used to calculate the kernel value between two constructs, which has as consequence that the entire graph and the corresponding kernel have to be precomputed to fit the GP model correctly.
@@ -476,7 +473,7 @@ julia> contructs = explicit_space[indexes]
 
 The vector `y_train` still contains the activity value of the given `x_train` inputs.
 
-##### EdgeRule
+#### EdgeRule
 
 A new type, `EdgeRule`, is introduced, to set the desired weight on the edges of the graph.
 As for the different kernels, the string distances from the StringDistances package were transformed into similarities and then used as weights on edges of the graph.
@@ -500,7 +497,7 @@ The edge rules are used to construct the adjacency matrix, which allows for the 
 These steps are all done automatically in the package with an internal function: `setupgraph`.
 The normalised Laplacian is then used to obtain the kernel.
 
-##### k::KernelGraph
+#### k::KernelGraph
 
 The kernels used on a graph received a specific abstract type `KernelGraph`.
 BOMoD provides two kernels which use a graph structure, both are in an experimental phase.
@@ -608,12 +605,12 @@ julia> fit_gp_graph(S,x_train_graph,y_train,DiffusionKernel(),LevRule());
 
 
 
-#### The predict_gp function
+### The predict_gp function
 
 The `predict_gp` function is a straightforward wrapper to fit the desired `x_test` values in the Stheno framework.
 There are two different options to use the function.
 
-##### Prediction for all unseen data
+#### Prediction for all unseen data
 
 The first option provides a tool to predict the activity values for all unseen constructs.
 The filter step filters the training data from the design space which is done within the function.
@@ -653,7 +650,7 @@ julia> prediction = predict_gp(S,x_train,a_gp_model,m);
 
 For the prediction of models using kernels on a graph, the provided design space `S` should contain all indices and not the constructs themselves, because `x_train` contains all indices of the given data points. See `fit_gp_graph` for more information.
 
-##### Prediction user-defined test set
+#### Prediction user-defined test set
 
 A second option is to make predictions for a user-defined test set of constructs.
 First, these selected constructs are transformed to fit smoothly in the BOMoD ecosystem.
@@ -697,7 +694,7 @@ The output of the `predict_gp` function is a `GPpredict` object containing two e
 * ``\hat{f}_pred``: contains the Stheno object that holds the prediction values.
 *   * x_test: contains the array of all constructs whose prediction values are available.
 
-### Batch sampling`
+## Batch sampling`
 
 The final step in the BOMoD process is to select the best batch of data points, which needs to be evaluated in the lab.
 Five different sampling methods are available in the package.
@@ -706,7 +703,7 @@ The fourth option is Thompson sampling (TS).
 As a final option, one can use a random sampling algorithm.
 All sampling approaches are explained in detail below.
 
-#### Probability of improvement (PI)
+### Probability of improvement (PI)
 
 The PI of a construct $\mathbf{x}$ with $\hat{\mu}_r(\mathbf{x})$ the mean prediction value and
 $\hat{\sigma}_r(\mathbf{x})$ the predicted standard deviation of construct $\mathbf{x}$ at iteration $r$ is given by:
@@ -743,12 +740,7 @@ julia> batch_pi = pi_sampler(prediction,b,fmax)
 
 ````
 
-
-
-
-
-
-#### Expected improvement (EI)
+### Expected improvement (EI)
 
 The EI of a construct $\mathbf{x}$ with $\hat{\mu}_r(\mathbf{x})$ the mean prediction value  and
 $\hat{\sigma}_r(\mathbf{x})$ the predicted standard deviation of construct $\mathbf{x}$ at iteration $r$ is given by:
@@ -799,7 +791,7 @@ julia> batch_pi = ei_sampler(prediction,b,fmax)
 
 
 
-#### Gaussian process upper confidence bound (GP-UCB)
+### Gaussian process upper confidence bound (GP-UCB)
 
 The GP-UCB of a construct $\mathbf{x}$ with $\hat{\mu}_r(\mathbf{x})$ the mean prediction value and
 $\hat{\sigma}_r(\mathbf{x})$ the predicted standard deviation of construct $\mathbf{x}$ at iteration $r$ is given by:
@@ -829,10 +821,6 @@ julia> batch_pi = gpucb_sampler(prediction,3)
 
 ````
 
-
-
-
-
 An extra feature is introduced in BOMoD. For a sequential GP-UBC, a value of $\beta$ can be obtained that bounds the cumulative regret with high probability:
 
 ```math
@@ -855,7 +843,7 @@ The above mentioned formula is implemented in the `optimal_β$` function that ta
 
 There is less theoretical support that the given $\beta$ is also useful for batch sampling, but the option to use this value is made available and was used before in a batch sampling setting
 
-#### Thompson sampling (TS)
+### Thompson sampling (TS)
 
 The TS algorithm works differently compared to the above acquisition functions.
 It is based on a stochastic sampling procedure that is repeated $b$ times:
@@ -889,13 +877,11 @@ julia> batch_pi = ts_sampler(prediction,b)
 
 
 
-
-
-#### Random sampling
+### Random sampling
 
 The final sampling algorithm is a simple random sampling algorithm. In this case, the construction of a model is, of course not needed.
 
-#### Combination of samplers
+### Combination of samplers
 
 The use of the random sampling algorithm as single sampler should be avoided, but it can be used in combination with one of the other samplers.
 This depends on the desired properties of the obtained batch because the new data points have two different functions:
@@ -970,11 +956,7 @@ julia> # Concatend both batches
 
 ````
 
-
-
-
-
-### Iteration
+## Iteration
 
 The BOMoD algorithm is an iterative procedure. The final two steps should be repeated after evaluating the newly proposed data points.
 The GP model is then fitted on a more extensive training set, which improves the prediction capacity of the model.
