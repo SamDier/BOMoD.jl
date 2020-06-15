@@ -3,6 +3,7 @@
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://SamDier.github.io/BOMoD.jl/dev)
 
 
 ## Installation
@@ -10,7 +11,7 @@ The package is not registered, to install this package use:
 `] add https://github.com/SamDier/BOMoD.jl.git`
 
 **Warning**
-The package is currently under development, only a first experimental version is made. 
+The package is currently under development, only a first experimental version is made.
 
 ## A modular design
 To understand the concept of modular design, we introduce two crucial terms.
