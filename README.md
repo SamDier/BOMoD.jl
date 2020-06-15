@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://SamDier.github.io/BOMoD.jl/dev)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://SamDier.github.io/BOMoD.jl/stable)
 
 
 ## Installation
