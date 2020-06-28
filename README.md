@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
-[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://samdier.github.io/BOMoD.jl/dev/)
+
 
 
 ## Installation
@@ -29,9 +29,10 @@ The surrogate model used in the package is a Gaussian process calculated with th
 
 The BOMoD package difference form classic BO package is two critical points.
 
-1) Custom kernels are made to evaluate the string distance between the input constructs.
+1) Custom kernels are made to evaluate the string distance between the input construct.
 2) Batch sampling algorithms are given to propose multiple datapoints in every iteration
 
+ if found in the documentation, a quickstart example is given:
 
  ## Theoretical background
  More information on Bayesian optimisation a Gaussian Prosses can be found in:
@@ -46,15 +47,15 @@ The BOMoD package difference form classic BO package is two critical points.
 This quick start section focuses on the aspects that need to be known to use the package. The figure below shows an overview of the BOMoD pipeline, blue are functions, and green are types.
 
 
-![Manual_picture](Manual_picture.png)
+![Manual picture](Manual_picture.png)
 a more elaborate explanation can be found in the other help pages.
 To illustrated the package, a trivial example is made using scoops of icecream:
 The goal is to find the best flavour combination with two scoops,
 using the different flavours  Vanilla, Chocolate, Strawberry, without the need to test all possible combinations.
 
 The package is build up in two stages:
-* Step A: Make the design space.
-* Step B: Use The BOMoD Bayesian optimisation pipeline.
+Step 1) Make the design space.
+Step 2) Use The BOMoD Bayesian optimisation pipeline.
 
 ## Stage 1) Make the design space
 
