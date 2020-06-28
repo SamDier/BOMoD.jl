@@ -29,10 +29,9 @@ The surrogate model used in the package is a Gaussian process calculated with th
 
 The BOMoD package difference form classic BO package is two critical points.
 
-1) Custom kernels are made to evaluate the string distance between the input construct.
+1) Custom kernels are made to evaluate the string distance between the input constructs.
 2) Batch sampling algorithms are given to propose multiple datapoints in every iteration
 
- if found in the documentation, a quickstart example is given:
 
  ## Theoretical background
  More information on Bayesian optimisation a Gaussian Prosses can be found in:
@@ -47,7 +46,7 @@ The BOMoD package difference form classic BO package is two critical points.
 This quick start section focuses on the aspects that need to be known to use the package. The figure below shows an overview of the BOMoD pipeline, blue are functions, and green are types.
 
 
-![Manual picture](Manual_picture_6.jpg)
+![Manual_picture](Manual_picture.jpg)
 a more elaborate explanation can be found in the other help pages.
 To illustrated the package, a trivial example is made using scoops of icecream:
 The goal is to find the best flavour combination with two scoops,
