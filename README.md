@@ -53,8 +53,8 @@ The goal is to find the best flavour combination with two scoops,
 using the different flavours  Vanilla, Chocolate, Strawberry, without the need to test all possible combinations.
 
 The package is build up in two stages:
-Step 1) Make the design space.
-Step 2) Use The BOMoD Bayesian optimisation pipeline.
+* Step A: Make the design space.
+* Step B: Use The BOMoD Bayesian optimisation pipeline.
 
 ## Stage 1) Make the design space
 
