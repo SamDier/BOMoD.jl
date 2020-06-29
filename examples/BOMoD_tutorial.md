@@ -1,8 +1,8 @@
 # Illustrations BOMoD.jl
 
-##############################
-## A Construct Design space #
-##############################
+
+## A Construct Design space
+
 
 ### Input Settings
 ````julia
@@ -97,9 +97,8 @@ S = collect(space)
 
 
 
-##############################
-## B Bayesian Optimisation   #
-##############################
+## B Bayesian Optimisation
+
 
 ## (Simulated activities)
 ````julia
