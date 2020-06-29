@@ -3,7 +3,7 @@
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
-[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://samdier.github.io/BOMoD.jl/dev/)
+[![](https://img.shields.io/badge/docs-dev-blue.svg)](https://samdier.github.io/BOMoD.jl/dev/)
 
 ## Installation
 The package is not registered, to install this package use:
