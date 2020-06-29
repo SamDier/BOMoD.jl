@@ -1,8 +1,8 @@
 # Illustrations BOMoD.jl
 
-
-## A) Construct Design space
-
+##############################
+## A Construct Design space #
+##############################
 
 ### Input Settings
 ````julia
@@ -11,9 +11,9 @@ using DataFrames
 using Plots
 
 # Input modules u
-ice_flavours = groupmod([:Vanilla, :Chocolate, :Strawberry, :Banana, :Pistachio, :Stracciatella, :Almond, :Blackberry, :Coffee, :Lemon]);
+ice_flavours = groupmod([:Vanilla, :Chocolate, :Strawberry, :Banana, :Pistachio, :Stracciatella, :Almond, :Blackberry, :Coffee, :Lemon, :Cherry, :Caramel, :Ginger, :Hazelnut, :Mango]);
 n_scopes = 2
-cone = true; # cone = orderd ice_cream
+jar = false; # jar = unorderd ice_cream
 ````
 
 
@@ -37,19 +37,20 @@ Mod{Symbol}(:Vanilla), BOMoD.Mod{Symbol}(:Chocolate)])
 
 ### Constructing Design
 ````julia
-design = constructdesign(ice_flavours,n_scopes,order = cone);
+design = constructdesign(ice_flavours,n_scopes,order = jar)
 ````
 
 
 ````
-Used modules : {GroupMod}{:Almond, :Banana, :Blackberry, :Chocolate, :Coffe
-e, :Lemon, :Pistachio, :Stracciatella, :Strawberry, :Vanilla}
+Used modules : {GroupMod}{:Almond, :Banana, :Blackberry, :Caramel, :Cherry,
+ :Chocolate, :Coffee, :Ginger, :Hazelnut, :Lemon, :Mango, :Pistachio, :Stra
+cciatella, :Strawberry, :Vanilla}
 allowed length : 2
 constraints : BOMoD.NoConstraint{Nothing}(nothing)
 	 	 designspace
- spacetype | BOMoD.FullOrderedSpace{BOMoD.Mod{Symbol}}
- generated constructs | BOMoD.OrderedConstruct{BOMoD.Mod{Symbol}}
- n_consturcts | 100
+ spacetype | BOMoD.FullUnorderedSpace{BOMoD.Mod{Symbol}}
+ generated constructs | BOMoD.UnorderedConstruct{BOMoD.Mod{Symbol}}
+ n_consturcts | 105
 ````
 
 
@@ -69,32 +70,36 @@ S = collect(space)
 
 
 ````
-100-element Array{BOMoD.OrderedConstruct{BOMoD.Mod{Symbol}},1}:
- {OrderedConstruct}[:Almond, :Almond]
- {OrderedConstruct}[:Almond, :Banana]
- {OrderedConstruct}[:Almond, :Blackberry]
- {OrderedConstruct}[:Almond, :Chocolate]
- {OrderedConstruct}[:Almond, :Coffee]
- {OrderedConstruct}[:Almond, :Lemon]
- {OrderedConstruct}[:Almond, :Pistachio]
- {OrderedConstruct}[:Almond, :Stracciatella]
- {OrderedConstruct}[:Almond, :Strawberry]
- {OrderedConstruct}[:Almond, :Vanilla]
+105-element Array{BOMoD.UnorderedConstruct{BOMoD.Mod{Symbol}},1}:
+ {UnorderedConstruct}{:Banana, :Almond}
+ {UnorderedConstruct}{:Blackberry, :Almond}
+ {UnorderedConstruct}{:Blackberry, :Banana}
+ {UnorderedConstruct}{:Caramel, :Almond}
+ {UnorderedConstruct}{:Caramel, :Banana}
+ {UnorderedConstruct}{:Caramel, :Blackberry}
+ {UnorderedConstruct}{:Cherry, :Almond}
+ {UnorderedConstruct}{:Cherry, :Banana}
+ {UnorderedConstruct}{:Cherry, :Blackberry}
+ {UnorderedConstruct}{:Cherry, :Caramel}
  ⋮
- {OrderedConstruct}[:Vanilla, :Banana]
- {OrderedConstruct}[:Vanilla, :Blackberry]
- {OrderedConstruct}[:Vanilla, :Chocolate]
- {OrderedConstruct}[:Vanilla, :Coffee]
- {OrderedConstruct}[:Vanilla, :Lemon]
- {OrderedConstruct}[:Vanilla, :Pistachio]
- {OrderedConstruct}[:Vanilla, :Stracciatella]
- {OrderedConstruct}[:Vanilla, :Strawberry]
- {OrderedConstruct}[:Vanilla, :Vanilla]
+ {UnorderedConstruct}{:Vanilla, :Chocolate}
+ {UnorderedConstruct}{:Vanilla, :Coffee}
+ {UnorderedConstruct}{:Vanilla, :Ginger}
+ {UnorderedConstruct}{:Vanilla, :Hazelnut}
+ {UnorderedConstruct}{:Vanilla, :Lemon}
+ {UnorderedConstruct}{:Vanilla, :Mango}
+ {UnorderedConstruct}{:Vanilla, :Pistachio}
+ {UnorderedConstruct}{:Vanilla, :Stracciatella}
+ {UnorderedConstruct}{:Vanilla, :Strawberry}
 ````
 
 
-## B Bayesian Optimisation
 
+
+
+##############################
+## B Bayesian Optimisation   #
+##############################
 
 ## (Simulated activities)
 ````julia
@@ -107,19 +112,28 @@ ground_truth(construct,toy_data) = [sum([toy_data[m] for m in c]) for c in const
 ````
 
 
+````
+ground_truth (generic function with 1 method)
+````
+
+
+
+
+
+
 ### Frist sampling step
 
 ````julia
 n_first = 3;
-ice_combinations = sample(rng,space,n_first)
+ice_combinations = sample(rng,space,n_first);
 ````
 
 
 ````
-3-element Array{BOMoD.OrderedConstruct{BOMoD.Mod{Symbol}},1}:
- {OrderedConstruct}[:Almond, :Banana]
- {OrderedConstruct}[:Vanilla, :Blackberry]
- {OrderedConstruct}[:Almond, :Pistachio]
+3-element Array{BOMoD.UnorderedConstruct{BOMoD.Mod{Symbol}},1}:
+ {UnorderedConstruct}{:Ginger, :Banana}
+ {UnorderedConstruct}{:Mango, :Chocolate}
+ {UnorderedConstruct}{:Stracciatella, :Coffee}
 ````
 
 
@@ -133,6 +147,15 @@ lab_μ = ground_truth(ice_combinations,toy_data)
 df = DataFrame(ice_combinations = ice_combinations, μ = lab_μ);
 maximums = [maximum(df.μ)]
 ````
+
+
+````
+1-element Array{Float64,1}:
+ 15.847248649066662
+````
+
+
+
 
 
 ### Surrogate model
@@ -167,8 +190,6 @@ predictions = predict_gp(S,x_train,linear_model,ice_flavours)
 ````
 
 
-
-
 ## Batch sampling step
 ````julia
 new_comb = ts_sampler(predictions,3)
@@ -176,10 +197,10 @@ new_comb = ts_sampler(predictions,3)
 
 
 ````
-3-element Array{BOMoD.OrderedConstruct{BOMoD.Mod{Symbol}},1}:
- {OrderedConstruct}[:Vanilla, :Almond]
- {OrderedConstruct}[:Chocolate, :Vanilla]
- {OrderedConstruct}[:Almond, :Almond]
+3-element Array{BOMoD.UnorderedConstruct{BOMoD.Mod{Symbol}},1}:
+ {UnorderedConstruct}{:Hazelnut, :Chocolate}
+ {UnorderedConstruct}{:Stracciatella, :Almond}
+ {UnorderedConstruct}{:Stracciatella, :Chocolate}
 ````
 
 
@@ -206,7 +227,7 @@ scatter!(([0:length(maximums)-1],maximums),label = "")
 
 
 
-## Iteration 2...
+## Iteration 2
 ````julia
 # setup the model
 x_train = df.ice_combinations
@@ -230,7 +251,13 @@ scatter!(([0:length(maximums)-1],maximums),label = "")
 
 
 ![](figures/BOMoD_tutorial_11_1.png)
+
+
+
 ## Iteration 3
 ![](figures/BOMoD_tutorial_12_1.png)
-## Iteration 4
+
+
+
+## Iteration 4....
 ![](figures/BOMoD_tutorial_13_1.png)
