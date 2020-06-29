@@ -189,7 +189,7 @@ predictions = predict_gp(S,x_train,linear_model,ice_flavours)
 ````
 
 
-## Batch sampling step
+### Batch sampling step
 ````julia
 new_comb = ts_sampler(predictions,3)
 ````
@@ -206,7 +206,7 @@ new_comb = ts_sampler(predictions,3)
 
 
 
-## Iteration 1
+### Iteration 1
 ````julia
 # evaluation
 lab_μ = ground_truth(new_comb,toy_data)
@@ -226,7 +226,7 @@ scatter!(([0:length(maximums)-1],maximums),label = "")
 
 
 
-## Iteration 2
+### Iteration 2
 ````julia
 # setup the model
 x_train = df.ice_combinations
@@ -253,10 +253,10 @@ scatter!(([0:length(maximums)-1],maximums),label = "")
 
 
 
-## Iteration 3
+### Iteration 3
 ![](figures/BOMoD_tutorial_12_1.png)
 
 
 
-## Iteration 4....
+### Iteration 4....
 ![](figures/BOMoD_tutorial_13_1.png)
