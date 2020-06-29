@@ -3,8 +3,7 @@
 
 [![Build Status](https://travis-ci.com/SamDier/BOMoD.jl.svg?branch=master)](https://travis-ci.com/SamDier/BOMoD.jl)
 [![Codecov](https://codecov.io/gh/SamDier/BOMoD.jl/branch/master/graph/badge.svg)](https://codecov.io/gh/SamDier/BOMoD.jl)
-
-
+[![](https://img.shields.io/badge/docs-stable-blue.svg)](https://samdier.github.io/BOMoD.jl/dev/)
 
 ## Installation
 The package is not registered, to install this package use:
@@ -32,7 +31,6 @@ The BOMoD package difference form classic BO package is two critical points.
 1) Custom kernels are made to evaluate the string distance between the input construct.
 2) Batch sampling algorithms are given to propose multiple datapoints in every iteration
 
- if found in the documentation, a quickstart example is given:
 
  ## Theoretical background
  More information on Bayesian optimisation a Gaussian Prosses can be found in:
@@ -54,8 +52,8 @@ The goal is to find the best flavour combination with two scoops,
 using the different flavours  Vanilla, Chocolate, Strawberry, without the need to test all possible combinations.
 
 The package is build up in two stages:
-Step 1) Make the design space.
-Step 2) Use The BOMoD Bayesian optimisation pipeline.
+* Step 1: Make the design space.
+* Step 2: Use The BOMoD Bayesian optimisation pipeline.
 
 ## Stage 1) Make the design space
 
@@ -302,7 +300,7 @@ k = Linear()
 linear_model = fit_gp(x_train,y_train,k,Ice_flavours)
 ````
 
-Base on this model prediction can be made for all unseen flavour combinations using the `predict_gp`` function.
+Base on this model prediction can be made for all unseen flavour combinations using the ``predict_gp`` function.
 
 ````julia
 S = collect(Cone_space)
